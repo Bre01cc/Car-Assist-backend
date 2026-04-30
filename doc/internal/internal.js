@@ -1,3 +1,5 @@
  const veiculo = require("./veiculo/veiculo_internal.js")
 
- module.exports={}
+ module.exports={
+    ...veiculo
+ }

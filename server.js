@@ -17,16 +17,17 @@ const bodyParserJSON = bodyParser.json()
 
 const app = express()
 
-const PORT = process.PORT || 8080
+const PORT = process.env.PORT || 8080
 //Controle de acesso
 app.use((request, response, next) => {
     response.header('Access-Control-Allow-Origin', '*')
     response.header('Access-Control-Allow-Methods', '*')
-    
-    app.use(cors())
 
     next()
 })
+
+  app.use(cors())
+  app.use(express.json())
 
 // Documentação do swagger
 const swaggerUi = require('swagger-ui-express');
