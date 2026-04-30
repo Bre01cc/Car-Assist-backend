@@ -1,6 +1,5 @@
 ![API REST](https://img.shields.io/badge/API-REST-blue)
-![Node.js](https://img.shields.io/badge/Node.js-18+-green?logo=node.js)
-![Express](https://img.shields.io/badge/Express.js-Framework-black?logo=express)
+![Node.js](https://img.shields.io/badge/Node.js-green?logo=node.js)
 ![Status](https://img.shields.io/badge/Status-em%20desenvolvimento-orange)
 
 # Car-Assist_Back-End
