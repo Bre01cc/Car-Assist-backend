@@ -1,3 +1,8 @@
+![API REST](https://img.shields.io/badge/API-REST-blue)
+![Node.js](https://img.shields.io/badge/Node.js-18+-green?logo=node.js)
+![Express](https://img.shields.io/badge/Express.js-Framework-black?logo=express)
+![Status](https://img.shields.io/badge/Status-em%20desenvolvimento-orange)
+
 # Car-Assist_Back-End
 ![alt text](assets/logo-back_end.png)
 
@@ -13,23 +18,28 @@ Empresa especializada no desenvolvimento de aplicações voltadas para o setor a
 
 Este repositório é destinado ao desenvolvimento do back-end da aplicação **Car Assist**. Nele estão concentrados o código-fonte da API, a documentação Swagger dos endpoints, a organização estrutural do projeto e as tarefas relacionadas à evolução do sistema.
 
+## Pré-requisitos
+
+## Instalação 
+
+## Tecnologias
+| Tecnologia | Versão |
+|------------|--------|
+| Node.js | 20.17.0 |
+| Express.js | 5.2.1 |
+| Knex.js | - |
+| Swagger UI Express | 5.0.1 |
+
 ## Estrutura do Projeto
 
 - 📁 `assets/`
-  - 📄 `logo-back.png`
-
 
 - 📁 `controller/`
-  - 📄 `veiculo_controller.js`
-
 
 - 📁 `model/`
     - 📁 `DAO/`
-      - 📄 `veiculo.js`
-
-
+    
 - 📁 `routes/`
-  - 📄 `veiculo_route.js`
 
 ## Descrição das Pastas
 ### assets
@@ -43,14 +53,6 @@ Contém os arquivos DAO (Data Access Object), responsáveis pela comunicação d
 
 ### routes
 Armazena os arquivos de rotas da aplicação. Define os endpoints disponíveis e direciona cada requisição para seu respectivo controller.
-
-## Tecnologias
-| Tecnologia | Versão |
-|------------|--------|
-| Node.js | 20.17.0 |
-| Express.js | 5.2.1 |
-| Knex.js | - |
-| Swagger UI Express | 5.0.1 |
 
 ## Autores
 - [@Breno Reis](https://github.com/Bre01cc)

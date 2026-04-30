@@ -1,0 +1,2 @@
+https://github.com/iuricode/padroes-de-commits
+https://www.npmjs.com/package/swagger-autogen
