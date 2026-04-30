@@ -40,6 +40,14 @@ Este repositório é destinado ao desenvolvimento do back-end da aplicação **C
     
 - 📁 `routes/`
 
+- 📁 `doc/`
+  - 📁 `components/`
+  - 📁 `internal/`
+  - 📄 `doc.js/`
+  - 📄 `infoDoc.js/`
+- 📄 `sever.js/`
+
+
 ## Descrição das Pastas
 ### assets
 Diretório responsável por armazenar arquivos estáticos utilizados no projeto, como logos, imagens e outros recursos visuais.
@@ -52,6 +60,13 @@ Contém os arquivos DAO (Data Access Object), responsáveis pela comunicação d
 
 ### routes
 Armazena os arquivos de rotas da aplicação. Define os endpoints disponíveis e direciona cada requisição para seu respectivo controller.
+
+### doc
+ -  #### components:
+ -  #### internal:
+
+### server
+
 
 ## Autores
 - [@Breno Reis](https://github.com/Bre01cc)
