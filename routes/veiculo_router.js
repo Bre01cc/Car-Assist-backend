@@ -9,11 +9,24 @@
  * @swagger
  * /v1/car-assist/veiculo/{id}:
  *   get:
- *     summary: Retorna pelo id do usuário
- *     description: Obtém a lista completa de veiculos.
+ *     summary: Retorna um veículo pelo ID
+ *     description: Obtém os dados de um veículo específico com base no ID informado.
  *     tags:
- *       - Veículos
+ *       -Veículos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID do veículo
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: Lista de endereços retornada com sucesso.
+ *         description: Veículo encontrado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Veiculo'
+ *       404:
+ *         description: Veículo não encontrado
  */
