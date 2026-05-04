@@ -32,9 +32,9 @@ app.use((request, response, next) => {
 // Documentação do swagger
 const swaggerUi = require('swagger-ui-express');
 
-const swaggerDocument = require('./doc/doc.js');
+const swaggerDocument = require('./swagger.js');
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument.definition));
 
 app.listen(PORT, () => {
     console.log('API aguardando requisições na porta ' + PORT)
