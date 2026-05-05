@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pelas rotas referente ao usuário
+ * Objetivo: Arquivo responsável pelas rotas referente ao tipo da manutenção
  * Data: 05/05/2026
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
