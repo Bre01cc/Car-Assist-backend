@@ -4,6 +4,13 @@
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
+const express =    require('express')
+const cors =       require('cors') 
+const bodyParser = require('body-parser')
+
+const bodyParserJSON = bodyParser.json()
+
+const router = express.Router()
 
 /**
  * @swagger
@@ -12,7 +19,7 @@
  *     summary: Retorna um veículo pelo ID
  *     description: Obtém os dados de um veículo específico com base no ID informado.
  *     tags:
- *       -Veículos
+ *       - Veículos
  *     parameters:
  *       - in: path
  *         name: id
@@ -30,3 +37,6 @@
  *       404:
  *         description: Veículo não encontrado
  */
+
+
+module.exports = router

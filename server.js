@@ -29,12 +29,16 @@ app.use((request, response, next) => {
   app.use(cors())
   app.use(express.json())
 
+const veiculoRouter = require('./routes/veiculo_router.js')
+
+app.use('/v1/car-assist/veiculo', veiculoRouter)
+
 // Documentação do swagger
 const swaggerUi = require('swagger-ui-express');
 
 const swaggerDocument = require('./swagger.js');
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument.definition));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(PORT, () => {
     console.log('API aguardando requisições na porta ' + PORT)
