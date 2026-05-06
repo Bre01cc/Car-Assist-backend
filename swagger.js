@@ -33,12 +33,16 @@ const options = {
                 description: 'Operações relacionadas a gastos'
             },
             {
-                name: 'Categoria gastos',
+                name: 'Categoria_gastos',
                 description: 'Operações relacionadas a categoria de gastos'
             },
             {
                 name: 'Serviço',
                 description: 'Operações relacionadas a serviço'
+            },
+            {
+                name: 'Tipo_Serviço',
+                description: 'Operações relacionadas ao tipo do serviço'
             },
             {
                 name: 'Endereço',
@@ -125,11 +129,6 @@ const options = {
                             type: 'string',
                             description: 'Senha do usuário',
                             example: '123456'
-                        },
-                        is_ativo: {
-                            type: 'boolean',
-                            description: 'Indica se o usuário está ativo',
-                            example: true
                         }
                     },
                     required: [
@@ -498,8 +497,269 @@ const options = {
                         'id',
                         'nome_categoria'
                     ]
+                },
+                ServicosResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'integer',
+                            description: 'ID do serviço',
+                            example: 1
+                        },
+                        nome_local: {
+                            type: 'string',
+                            description: 'Nome do local',
+                            example: 'Auto Mecânica Silva'
+                        },
+                        tipo_estabelecimento: {
+                            type: 'string',
+                            description: 'Tipo do estabelecimento',
+                            example: 'Oficina'
+                        },
+                        latitude: {
+                            type: 'number',
+                            format: 'double',
+                            description: 'Latitude do local',
+                            example: -23.550520
+                        },
+                        longitude: {
+                            type: 'number',
+                            format: 'double',
+                            description: 'Longitude do local',
+                            example: -46.633308
+                        },
+                        fk_id_tipo_servico: {
+                            type: 'integer',
+                            description: 'ID do tipo de serviço',
+                            example: 2
+                        }
+                    },
+                    required: [
+                        'id',
+                        'nome_local',
+                        'tipo_estabelecimento',
+                        'endereco',
+                        'latitude',
+                        'longitude',
+                        'fk_id_tipo_servico'
+                    ]
+                },
+                ServicosRequest: {
+                    type: 'object',
+                    properties: {
+                        nome_local: {
+                            type: 'string',
+                            description: 'Nome do local',
+                            example: 'Auto Mecânica Silva'
+                        },
+                        tipo_estabelecimento: {
+                            type: 'string',
+                            description: 'Tipo do estabelecimento',
+                            example: 'Oficina'
+                        },
+                        latitude: {
+                            type: 'number',
+                            format: 'double',
+                            description: 'Latitude do local',
+                            example: -23.550520
+                        },
+                        longitude: {
+                            type: 'number',
+                            format: 'double',
+                            description: 'Longitude do local',
+                            example: -46.633308
+                        },
+                        fk_id_tipo_servico: {
+                            type: 'integer',
+                            description: 'ID do tipo de serviço',
+                            example: 2
+                        }
+                    },
+                    required: [
+                        'nome_local',
+                        'tipo_estabelecimento',
+                        'endereco',
+                        'latitude',
+                        'longitude',
+                        'fk_id_tipo_servico'
+                    ]
+                },
+                TipoServicoResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'integer',
+                            description: 'ID do tipo de serviço',
+                            example: 1
+                        },
+                        nome: {
+                            type: 'string',
+                            description: 'Nome do tipo de serviço',
+                            example: 'Oficina'
+                        }
+                    },
+                    required: [
+                        'id',
+                        'nome'
+                    ]
+                },
+                EnderecosResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'integer',
+                            description: 'ID do endereço',
+                            example: 1
+                        },
+                        logradouro: {
+                            type: 'string',
+                            description: 'Logradouro (rua, avenida, etc.)',
+                            example: 'Rua das Flores, 123'
+                        },
+                        cep: {
+                            type: 'string',
+                            description: 'CEP do endereço',
+                            example: '06600-000'
+                        },
+                        complemento: {
+                            type: 'string',
+                            description: 'Complemento do endereço',
+                            example: 'Apto 12B'
+                        },
+                        fk_id_servico: {
+                            type: 'integer',
+                            description: 'ID do serviço relacionado',
+                            example: 5
+                        }
+                    },
+                    required: [
+                        'id',
+                        'logradouro',
+                        'cep',
+                        'fk_id_servico'
+                    ]
+                },
+                EnderecosRequest: {
+                    type: 'object',
+                    properties: {
+                        logradouro: {
+                            type: 'string',
+                            description: 'Logradouro (rua, avenida, etc.)',
+                            example: 'Rua das Flores, 123'
+                        },
+                        cep: {
+                            type: 'string',
+                            description: 'CEP do endereço',
+                            example: '06600-000'
+                        },
+                        complemento: {
+                            type: 'string',
+                            description: 'Complemento do endereço',
+                            example: 'Apto 12B'
+                        },
+                        fk_id_servico: {
+                            type: 'integer',
+                            description: 'ID do serviço relacionado',
+                            example: 5
+                        }
+                    },
+                    required: [
+                        'logradouro',
+                        'cep',
+                        'fk_id_servico'
+                    ]
+                },
+                LembretesResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'integer',
+                            description: 'ID do lembrete',
+                            example: 1
+                        },
+                        titulo: {
+                            type: 'string',
+                            description: 'Título do lembrete',
+                            example: 'Trocar óleo'
+                        },
+                        descricao: {
+                            type: 'string',
+                            description: 'Descrição do lembrete',
+                            example: 'Realizar troca de óleo do motor'
+                        },
+                        data_criacao: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Data de criação do lembrete',
+                            example: '2026-05-06T10:00:00Z'
+                        },
+                        data_vencimento: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Data de vencimento',
+                            example: '2026-06-01T12:00:00Z'
+                        },
+                        status: {
+                            type: 'string',
+                            description: 'Status do lembrete',
+                            example: 'PENDENTE'
+                        },
+                        fk_id_veiculo: {
+                            type: 'integer',
+                            description: 'ID do veículo',
+                            example: 3
+                        }
+                    },
+                    required: [
+                        'id',
+                        'titulo',
+                        'descricao',
+                        'data_criacao',
+                        'data_vencimento',
+                        'status',
+                        'fk_id_veiculo'
+                    ]
+                },
+                LembretesRequest: {
+                    type: 'object',
+                    properties: {
+                        titulo: {
+                            type: 'string',
+                            description: 'Título do lembrete',
+                            example: 'Trocar óleo'
+                        },
+                        descricao: {
+                            type: 'string',
+                            description: 'Descrição do lembrete',
+                            example: 'Realizar troca de óleo do motor'
+                        },
+                        data_vencimento: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Data de vencimento',
+                            example: '2026-06-01T12:00:00Z'
+                        },
+                        status: {
+                            type: 'string',
+                            description: 'Status do lembrete',
+                            example: 'PENDENTE'
+                        },
+                        fk_id_veiculo: {
+                            type: 'integer',
+                            description: 'ID do veículo',
+                            example: 3
+                        }
+                    },
+                    required: [
+                        'titulo',
+                        'descricao',
+                        'data_vencimento',
+                        'status',
+                        'fk_id_veiculo'
+                    ]
                 }
             },
+
             ResponseApi: {
                 ERROR_NOT_FOUND: {
                     type: 'object',
@@ -519,7 +779,7 @@ const options = {
                     },
                     required: ['status', 'status_code', 'message']
                 },
-                ERROR_INTERNAL_SERVER_CONTRLOLLER: {
+                ERROR_INTERNAL_SERVER: {
                     type: 'object',
                     properties: {
                         status: {

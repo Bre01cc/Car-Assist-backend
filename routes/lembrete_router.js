@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pelas rotas referente ao tipo da manutenção
+ * Objetivo: Arquivo responsável pelas rotas referente ao lembrete
  * Data: 05/05/2026
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
@@ -10,43 +10,40 @@ const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
 
-const router = express.Router()
-
 /**
  * @swagger
- * /v1/car-assist/veiculo/{id}:
- *   get:
- *     summary: Retorna um veículo pelo ID
- *     description: Obtém os dados de um veículo específico com base no ID informado.
+ * /v1/car-assist/lembretes/{id}:
+ *   delete:
+ *     summary: Deleta um Lembrete pelo ID
+ *     description: Deleta um Lembrete pelo ID.
  *     tags:
- *       - Veículos
+ *       - Lembretes
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do veículo
+ *         description: ID do Lembrete
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Veículo encontrado com sucesso
+ *         description: Lembrete deletado com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/VeiculoResponse'
+ *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
  *       404:
- *         description: Veículo não encontrado
+ *         description: Lembrete não encontrado
  *         content:
  *           application/json:
- *              schema:
- *                   $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
  *       500:
  *         description: Erro interno do servidor
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
- *         
  */
 
-module.exports = router
+const router = express.Router()

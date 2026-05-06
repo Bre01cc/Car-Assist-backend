@@ -15,6 +15,42 @@ const router = express.Router()
 
 /**
  * @swagger
+ * /v1/car-assist/manutencao/{id}:
+ *   delete:
+ *     summary: Deleta uma manutenção pelo ID
+ *     description: Deleta uma manuntenção pelo ID.
+ *     tags:
+ *       - Manuntenção
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID da manuntenção
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Manutenção deletado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
+ *       404:
+ *         description: Manutenção não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ */
+
+/**
+ * @swagger
  * /v1/car-assist/manuntencao/{id}:
  *   get:
  *     summary: Retorna uma manutenção pelo ID
@@ -36,7 +72,17 @@ const router = express.Router()
  *             schema:
  *               $ref: '#/components/schemas/ManutencaoResponse'
  *       404:
- *         description: Manuntenção não encontrada
+ *         description: Veículo não encontrado
+ *         content:
+ *           application/json:
+ *              schema:
+ *                   $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
 
 module.exports = router

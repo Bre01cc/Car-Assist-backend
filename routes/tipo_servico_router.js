@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pelas rotas referente ao veículo
- * Data: 10/04/2026
+ * Objetivo: Arquivo responsável pelas rotas referente ao tipo do seviço
+ * Data: 06/05/2026
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
@@ -14,45 +14,9 @@ const router = express.Router()
 
 /**
  * @swagger
- * /v1/car-assist/veiculo/{id}:
- *   delete:
- *     summary: Deleta um veículo pelo ID
- *     description: Deleta um veículo pelo ID.
- *     tags:
- *       - Veículos
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID do veículo
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Veículo deletado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
- *       404:
- *         description: Veículo não encontrado
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
- *       500:
- *         description: Erro interno do servidor
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
- */
-
-/**
- * @swagger
- * /v1/car-assist/veiculo/{id}:
+ * /v1/car-assist/tipo-servico/{id}:
  *   get:
- *     summary: Retorna um veículo pelo ID
+ *     summary: Retorna um tipo d+  pelo ID
  *     description: Obtém os dados de um veículo específico com base no ID informado.
  *     tags:
  *       - Veículos
@@ -84,6 +48,5 @@ const router = express.Router()
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  *         
  */
-
 
 module.exports = router

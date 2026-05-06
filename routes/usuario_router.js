@@ -12,6 +12,111 @@ const bodyParserJSON = bodyParser.json()
 
 const router = express.Router()
 
+
+/**
+ * @swagger
+ * /v1/car-assist/usuario/{id}:
+ *   put:
+ *     summary: Atualiza um usuário pelo id.
+ *     description: Atualiza um usuário  no sistema.
+ *     tags:
+ *       - Usuário
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do usuário
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UsuarioRequest'
+ *     responses:
+ *       200:
+ *         description: Atualiza um usuário com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_UPDATE_ITEM'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ *      400:
+ *         description: 
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
+ * 
+ */
+
+/**
+ * @swagger
+ * /v1/car-assist/usuario/{id}:
+ *   delete:
+ *     summary: Deleta um Usuário pelo ID
+ *     description: Deleta um Usuário pelo ID.
+ *     tags:
+ *       - Usuário
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID do Usuário
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Usuário deletado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
+ *       404:
+ *         description: Usuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ */
+
+
+/**
+ * @swagger
+ * /v1/car-assist/usuario:
+ *   post:
+ *     summary: Cria um novo usuário
+ *     description: Cadastra um novo usuário no sistema.
+ *     tags:
+ *       - Usuário
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UsuarioRequest'
+ *     responses:
+ *       201:
+ *         description: Usuário criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_CREATED_ITEM'
+ *  
+ */
+
 /**
  * @swagger
  * /v1/car-assist/usuario/{id}:
@@ -36,6 +141,16 @@ const router = express.Router()
  *               $ref: '#/components/schemas/UsuarioResponse'
  *       404:
  *         description: Usuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
 
 
