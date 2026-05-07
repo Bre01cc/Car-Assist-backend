@@ -10,6 +10,7 @@ const usuarioDAO = require('../../model/DAO/usuario.js')
 const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
 
 
+//Retorna um usuário pelo id
 const buscarUsuarioId = async (id) => {
 
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
@@ -23,8 +24,6 @@ const buscarUsuarioId = async (id) => {
             if (resultUsuario) {
 
                 if (resultUsuario.length > 0) {
-                    console.log(resultUsuario)
-
 
                     MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_REQUEST.status
                     MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_REQUEST.status_code
@@ -51,6 +50,53 @@ const buscarUsuarioId = async (id) => {
 
 }
 
+//Retorna um usuário pelo email
+const buscarUsuarioEmail = async (email) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+       
+        //Validação da chegada do ID
+        if (email != undefined ||
+            email != null ||
+            email != '' ||
+            email.length < 100 ||
+            email.includes('@')) {
+
+
+            let resultUsuario = await usuarioDAO.getUserByEmail(email)
+
+            if (resultUsuario) {
+
+                if (resultUsuario.length > 0) {
+
+                    MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_REQUEST.status
+                    MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_REQUEST.status_code
+                    MENSSAGENS.DEFAULT_HEADER.data.usuario = resultUsuario
+
+                    return MENSSAGENS.DEFAULT_HEADER
+
+
+                } else {
+                    return MENSSAGENS.ERROR_NOT_FOUND//404
+                }
+
+            } else {
+                return MENSSAGENS.ERROR_NOT_FOUND
+            }
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Email incorreto]'
+            return MENSSAGENS.ERROR_REQUIRED_FIELDS//400
+        }
+
+    } catch (error) {
+        return MENSSAGENS.ERROR_INTERNAL
+    }
+
+}
+
+//Cadastra um usuario no banco de dados
 const inserirUsuario = async (usuario, contentType) => {
 
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
@@ -62,9 +108,11 @@ const inserirUsuario = async (usuario, contentType) => {
             //Validação dos dados do usuário
             let validar = validarUsuario(usuario)
 
+
             if (!validar) {
 
                 let resultUsuario = await usuarioDAO.postUser(usuario)
+
 
                 if (resultUsuario) {
 
@@ -103,8 +151,63 @@ const inserirUsuario = async (usuario, contentType) => {
     }
 }
 
+//Atualiza um usuário pelo id
+const atualizarUsuario = async (usuario, id, contentType) => {
+    let MENSSAGES = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+
+        // Validação do content-type
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            // Chama a função para validar os dados do usuário
+            let validar = await validarUsuario(usuario, true)
+
+            if (!validar) {
+
+                // Verifica se o ID existe no banco
+                let validarId = await buscarUsuarioId(id)
+
+                if (validarId.status_code == 200) {
+
+                    // Adiciona o ID no objeto
+                    usuario.id = Number(id)
+
+                    // Chama a DAO para atualizar
+                    let resultUsuario = await usuarioDAO.putUser(usuario)
+
+                    if (resultUsuario) {
+
+                        MENSSAGES.DEFAULT_HEADER.status = MENSSAGES.SUCCESS_UPDATE_ITEM.status
+                        MENSSAGES.DEFAULT_HEADER.status_code = MENSSAGES.SUCCESS_UPDATE_ITEM.status_code
+                        MENSSAGES.DEFAULT_HEADER.message = MENSSAGES.SUCCESS_UPDATE_ITEM.message
+
+                        MENSSAGES.DEFAULT_HEADER.data.usuario = usuario
+
+                        return MENSSAGES.DEFAULT_HEADER // 200
+
+                    } else {
+                        return MENSSAGES.ERROR_INTERNAL // 500 model
+                    }
+
+                } else {
+                    return validarId // retorna erro 400, 404 ou 500
+                }
+            } else {
+                return validar // erro de validação
+            }
+
+        } else {
+            return MENSSAGES.ERROR_CONTENT_TYPE // 415
+        }
+
+    } catch (error) {
+        return MENSSAGES.ERROR_INTERNAL_SERVER
+    }
+}
+
 //Valida os dados de um usuário
-const validarUsuario = (usuario) => {
+const validarUsuario = (usuario, validar) => {
 
     let MENSSAGES = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
@@ -166,25 +269,61 @@ const validarUsuario = (usuario) => {
     }
 
     // Validação da foto (opcional)
-    else if (
-        usuario.foto_usuario != undefined &&
-        usuario.foto_usuario != null &&
-        usuario.foto_usuario != '' &&
-        usuario.foto_usuario.length > 255
-    ) {
-        MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Foto inválida]'
-        return MENSSAGES.ERROR_REQUIRED_FIELDS
+    if (validar) {
+        if (
+            usuario.foto_usuario != undefined &&
+            usuario.foto_usuario != null &&
+            usuario.foto_usuario != '' &&
+            usuario.foto_usuario.length > 255
+        ) {
+            MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Foto inválida]'
+            return MENSSAGES.ERROR_REQUIRED_FIELDS
+        }
     }
 
     // is_ativo não precisa validar (BOOLEAN default TRUE no banco)
 
-    else {
-        return false
+    return false
+}
+
+//Desativa um usuário pelo id
+const deletarUsuarioId = async (id) => {
+
+    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        let validarId = await buscarUsuarioId(id)
+        if (validarId.status_code == 200) {
+
+            let deletarUsuario = await usuarioDAO.deleteUser(id)
+
+            if (deletarUsuario) {
+
+                MENSAGENS.DEFAULT_HEADER.status = MENSAGENS.SUCCESS_REQUEST.status
+                MENSAGENS.DEFAULT_HEADER.status_code = MENSAGENS.SUCCESS_REQUEST.status_code
+                MENSAGENS.DEFAULT_HEADER.message = MENSAGENS.SUCCESS_DELETE.message
+                delete MENSAGENS.DEFAULT_HEADER.data
+
+                return MENSAGENS.DEFAULT_HEADER
+            }
+            else {
+                return MENSAGENS.ERROR_INTERNAL
+            }
+
+        } else {
+            return validarId
+        }
+    } catch (error) {
+
+        return MENSAGENS.ERROR_INTERNAL_SERVER_CONTRLOLLER
     }
 }
 
+//Exports das funções
 module.exports = {
     buscarUsuarioId,
-    inserirUsuario
-
+    inserirUsuario,
+    deletarUsuarioId,
+    atualizarUsuario,
+    buscarUsuarioEmail
 }
