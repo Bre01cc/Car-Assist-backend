@@ -12,6 +12,8 @@ const bodyParserJSON = bodyParser.json()
 
 const router = express.Router()
 
+const controllerUsuario = require('../controller/usuario/usuario_controller.js')
+
 
 /**
  * @swagger
@@ -55,6 +57,8 @@ const router = express.Router()
  *                 $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  * 
  */
+
+
 
 /**
  * @swagger
@@ -152,6 +156,13 @@ const router = express.Router()
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
+
+router.get('/v1/car-assist/usuario/:id', cors(), async(req,res)=>{
+    let idUsuario = req.params.id;
+    let usuario = await controllerUsuario.buscarUsuarioId(idUsuario)
+    console.log(usuario)
+    res.status(usuario.status_code).json(usuario);
+});
 
 
 module.exports = router

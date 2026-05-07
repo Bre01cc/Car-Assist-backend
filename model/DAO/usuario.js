@@ -14,12 +14,14 @@ const getUserById = async (id) => {
             'SELECT * FROM tbl_usuario WHERE id = ?',
             [id]
         );
-
+    
         if (result && result[0] && result[0].length > 0) {
             return result[0];
+        } else {
+            return false;
         }
 
-        return false;
+
 
     } catch (error) {
       
@@ -27,27 +29,111 @@ const getUserById = async (id) => {
     }
 }
 
-//Retorna todos os usuários
-const getAllUsers = async () => {
+const getSelectLastId = async () => {
     try {
-        const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_usuario ORDER BY id'
-        );
 
-        if (result && result[0] && result[0].length > 0) {
-            return result[0];
+        let result = await conexaoKnex
+            .select('id')
+            .from('tbl_usuario')
+            .orderBy('id', 'desc')
+            .limit(1)
+
+        if (Array.isArray(result) && result.length > 0) {
+            return Number(result[0].id)
+        } else {
+            return false
         }
 
-        return false;
-
     } catch (error) {
-        console.error(error);
-        return false;
+        return false
     }
 }
 
-module.exports ={
-    getAllUsers,
-    getUserById
+const postUser = async (usuario) => {
+
+    try {
+        const result = await conexaoKnex.conexao.raw(`
+       Insert into tbl_usuario(
+       )
+        nome,
+        email,
+        cpf,
+        data_nascimento,
+        senha
+        )
+        values(
+            ?,
+            ?,
+            ?,
+            ?,
+            ?
+        )
+        `, [
+            usuario.nome,
+            usuario.email,
+            usuario.cpf,
+            usuario.data_nascimento,
+            usuario.senha
+        ]);
+
+        if (result[0]) {
+            return true
+        }
+
+
+    } catch (error) {
+
+        return false
+    }
+
+}
+
+const putUser = async () => {
+    try {
+        const result = await conexaoKnex.conexao.raw(`
+          Update tbl_usuario
+          set nome = ?,
+          email = ?,
+          cpf = ?,
+          senha = ?,
+          foto_usuario = ?     
+        where id = ?`, [
+            usuario.nome,
+            usuario.email,
+            usuario.cpf,
+            usuario.senha,
+            usuario.foto_usuario,
+            usuario.id
+        ])
+
+    } catch (error) {
+        return false
+    }
+}
+
+const deleteUser = async () => {
+
+    try {
+        const result = await conexaoKnex.conexao.raw(`
+            Update tbl_usuario
+            set is_ativo = ?
+            `,
+            0)
+    } catch (error) {
+        return false
+
+    }
+}
+
+const getUserByEmail = async () =>{
+    
+}
+
+module.exports = {
+    getUserById,
+    postUser,
+    putUser,
+    deleteUser,
+    getSelectLastId
 }
 
