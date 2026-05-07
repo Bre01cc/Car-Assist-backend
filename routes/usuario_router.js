@@ -17,8 +17,8 @@ const router = express.Router()
  * @swagger
  * /v1/car-assist/usuario/{id}:
  *   put:
- *     summary: Atualiza um usuário pelo id.
- *     description: Atualiza um usuário  no sistema.
+ *     summary: Atualiza um Usuário pelo ID
+ *     description: Atualiza um Usuário no sistema
  *     tags:
  *       - Usuário
  *     parameters:
@@ -27,7 +27,7 @@ const router = express.Router()
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID do usuário
+ *         description: ID do Usuário
  *     requestBody:
  *       required: true
  *       content:
@@ -36,23 +36,23 @@ const router = express.Router()
  *             $ref: '#/components/schemas/UsuarioRequest'
  *     responses:
  *       200:
- *         description: Atualiza um usuário com sucesso
+ *         description: Usuário atualizado com sucesso
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/ResponseApi/SUCCESS_UPDATE_ITEM'
- *       500:
- *         description: Erro interno do servidor
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
- *      400:
- *         description: 
+ *       400:
+ *         description: Dados obrigatórios não informados ou inválidos
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
+ *       500:
+ *          description: Erro interno do servidor
+ *          content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  * 
  */
 
@@ -97,8 +97,8 @@ const router = express.Router()
  * @swagger
  * /v1/car-assist/usuario:
  *   post:
- *     summary: Cria um novo usuário
- *     description: Cadastra um novo usuário no sistema.
+ *     summary: Cria um novo Usuário
+ *     description: Cadastra um novo Usuário no sistema.
  *     tags:
  *       - Usuário
  *     requestBody:
@@ -121,15 +121,15 @@ const router = express.Router()
  * @swagger
  * /v1/car-assist/usuario/{id}:
  *   get:
- *     summary: Retorna um usuario pelo ID
- *     description: Obtém os dados de um usuário específico com base no ID informado.
+ *     summary: Retorna um Usuário pelo ID
+ *     description: Obtém os dados de um Usuário específico com base no ID informado.
  *     tags:
  *       - Usuário
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do usuário
+ *         description: ID do Usuário
  *         schema:
  *           type: integer
  *     responses:

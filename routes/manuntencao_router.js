@@ -13,24 +13,105 @@ const bodyParserJSON = bodyParser.json()
 
 const router = express.Router()
 
+
 /**
  * @swagger
  * /v1/car-assist/manutencao/{id}:
- *   delete:
- *     summary: Deleta uma manutenção pelo ID
- *     description: Deleta uma manuntenção pelo ID.
+ *   put:
+ *     summary: Atualiza uma Manutenção pelo ID
+ *     description: Atualiza uma Manutenção no sistema
  *     tags:
  *       - Manuntenção
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID da manuntenção
+ *         schema:
+ *           type: integer
+ *         description: ID da Manutenção
+ *     requestBody:
+ *       required: true
+ *       content:
+ *        multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/VeiculoRequest'
+ *     responses:
+ *       200:
+ *         description: Manutenção atualizada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_UPDATE_ITEM'
+ *       400:
+ *         description: Dados obrigatórios não informados ou inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
+ *       500:
+ *          description: Erro interno do servidor
+ *          content:  
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ * 
+ */
+
+/**
+ * @swagger
+ * /v1/car-assist/manutencao:
+ *   post:
+ *     summary: Cria uma nova Manutenção
+ *     description: Cadastra uma nova Manutenção no sistema.
+ *     tags:
+ *       - Manuntenção
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/VeiculoRequest'
+ *     responses:
+ *       201:
+ *         description: Manutenção criada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_CREATED_ITEM'
+ *       400:
+ *         description: Dados obrigatórios não informados ou inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
+ *       500: 
+ *         description: Erro interno do servidor
+ *         content:  
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ * 
+ *  
+ */
+
+/**
+ * @swagger
+ * /v1/car-assist/manutencao/{id}:
+ *   delete:
+ *     summary: Deleta uma Manutenção pelo ID
+ *     description: Deleta uma Manuntenção pelo ID.
+ *     tags:
+ *       - Manuntenção
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID da Manuntenção
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Manutenção deletado com sucesso
+ *         description: Manutenção deletada com sucesso
  *         content:
  *           application/json:
  *             schema:
@@ -53,15 +134,15 @@ const router = express.Router()
  * @swagger
  * /v1/car-assist/manuntencao/{id}:
  *   get:
- *     summary: Retorna uma manutenção pelo ID
- *     description: Obtém os dados de um manutenção específico com base no ID informado.
+ *     summary: Retorna uma Manutenção pelo ID
+ *     description: Obtém os dados de um Manutenção específico com base no ID informado.
  *     tags:
  *       - Manuntenção
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID da manuntenção
+ *         description: ID da Manuntenção
  *         schema:
  *           type: integer
  *     responses:
@@ -72,7 +153,7 @@ const router = express.Router()
  *             schema:
  *               $ref: '#/components/schemas/ManutencaoResponse'
  *       404:
- *         description: Veículo não encontrado
+ *         description: Manutenção não encontrado
  *         content:
  *           application/json:
  *              schema:

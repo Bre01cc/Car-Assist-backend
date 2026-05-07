@@ -1,48 +1,55 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pelo CRUD de dados no MySQL referente ao veiculo
- * Data: 10/04/2026
+ * Objetivo: Arquivo responsável pelos dados no MySQL referente categoria de gastos
+ * Data: 06/05/2026
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
 
+
 //Import do knex
 const conexaoKnex = require('../../knex/index.js');
 
-//Busca um veículo pelo id
-const getVehicleById = async (id) => {
+//Busca uma categoria pelo id
+const getCategoryTypeById = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_veiculo WHERE id = ?',
-            [id]
+            'select * from tbl_categoria_gasto where id = ?', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
-            return result[0];
+            return result[0]
         }
 
-        return false;
+        return false
 
     } catch (error) {
-        console.error(error);
-        return false;
+        return false
     }
 }
 
-//Busca todos os veículos
-const getAllVehicles = async () => {
+//Busca todos as categorias de gastos
+const getAllcategoryTypes = async () => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_veiculo ORDER BY id'
+            'select * from tbl_categoria_gasto order by id'
         );
 
         if (result && result[0] && result[0].length > 0) {
-            return result[0];
+            return result[0]
         }
 
-        return false;
+        return false
+
 
     } catch (error) {
-        console.error(error);
-        return false;
+        return false
     }
+}
+
+
+
+//Exports das funções
+module.exports={
+    getAllcategoryTypes,
+    getCategoryTypeById,
 }

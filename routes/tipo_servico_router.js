@@ -16,26 +16,26 @@ const router = express.Router()
  * @swagger
  * /v1/car-assist/tipo-servico/{id}:
  *   get:
- *     summary: Retorna um tipo d+  pelo ID
- *     description: Obtém os dados de um veículo específico com base no ID informado.
+ *     summary: Retorna um Tipo de serviço pelo ID
+ *     description: Obtém os dados de um Tipo de serviço específico com base no ID informado.
  *     tags:
- *       - Veículos
+ *       - Tipo serviço
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do veículo
+ *         description: ID do Tipo do serviço
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Veículo encontrado com sucesso
+ *         description: Tipo de serviço encontrado com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/VeiculoResponse'
+ *               $ref: '#/components/schemas/TipoServicoResponse'
  *       404:
- *         description: Veículo não encontrado
+ *         description: Tipo de serviço não encontrado
  *         content:
  *           application/json:
  *              schema:

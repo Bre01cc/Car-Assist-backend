@@ -1,18 +1,17 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pelo CRUD de dados no MySQL referente ao veiculo
+ * Objetivo: Arquivo responsável pelo CRUD de dados no MySQL referente ao usuário
  * Data: 10/04/2026
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
 
-//Import do knex
 const conexaoKnex = require('../../knex/index.js');
 
-//Busca um veículo pelo id
-const getVehicleById = async (id) => {
+//Busca um usuario pelo id
+const getUserById = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_veiculo WHERE id = ?',
+            'SELECT * FROM tbl_usuario WHERE id = ?',
             [id]
         );
 
@@ -23,16 +22,16 @@ const getVehicleById = async (id) => {
         return false;
 
     } catch (error) {
-        console.error(error);
+      
         return false;
     }
 }
 
-//Busca todos os veículos
-const getAllVehicles = async () => {
+//Retorna todos os usuários
+const getAllUsers = async () => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_veiculo ORDER BY id'
+            'SELECT * FROM tbl_usuario ORDER BY id'
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -46,3 +45,9 @@ const getAllVehicles = async () => {
         return false;
     }
 }
+
+module.exports ={
+    getAllUsers,
+    getUserById
+}
+

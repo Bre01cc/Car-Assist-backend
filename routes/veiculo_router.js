@@ -10,14 +10,109 @@ const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
 
+
+
 const router = express.Router()
+
+// const upload = multer({})
+
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb)=>{
+//         const
+//     }
+// })
+
+// router.post('/v1/car-assist/veiculo', cors(), async function (request, response) {
+//     if(!request.files) return response.status(400).json({message:'Arquivo invalido'})
+// });
+
+
+/**
+ * @swagger
+ * /v1/car-assist/veiculo/{id}:
+ *   put:
+ *     summary: Atualiza um Veículo pelo ID
+ *     description: Atualiza um Veículo no sistema
+ *     tags:
+ *       - Veículos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do Veículo
+ *     requestBody:
+ *       required: true
+ *       content:
+ *        multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/VeiculoRequest'
+ *     responses:
+ *       200:
+ *         description: Usuário atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_UPDATE_ITEM'
+ *       400:
+ *         description: Dados obrigatórios não informados ou inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
+ *       500:
+ *          description: Erro interno do servidor
+ *          content:  
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ * 
+ */
+
+/**
+ * @swagger
+ * /v1/car-assist/veiculo:
+ *   post:
+ *     summary: Cria um novo Veículo
+ *     description: Cadastra um novo Veículo no sistema.
+ *     tags:
+ *       - Veículos
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/VeiculoRequest'
+ *     responses:
+ *       201:
+ *         description: Veículo criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_CREATED_ITEM'
+ *       400:
+ *         description: Dados obrigatórios não informados ou inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
+ *       500: 
+ *         description: Erro interno do servidor
+ *         content:  
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ * 
+ *  
+ */
 
 /**
  * @swagger
  * /v1/car-assist/veiculo/{id}:
  *   delete:
- *     summary: Deleta um veículo pelo ID
- *     description: Deleta um veículo pelo ID.
+ *     summary: Deleta um Veículo pelo ID
+ *     description: Deleta um Veículo pelo ID.
  *     tags:
  *       - Veículos
  *     parameters:
@@ -52,8 +147,8 @@ const router = express.Router()
  * @swagger
  * /v1/car-assist/veiculo/{id}:
  *   get:
- *     summary: Retorna um veículo pelo ID
- *     description: Obtém os dados de um veículo específico com base no ID informado.
+ *     summary: Retorna um Veículo pelo ID
+ *     description: Obtém os dados de um Veículo específico com base no ID informado.
  *     tags:
  *       - Veículos
  *     parameters:

@@ -14,32 +14,63 @@ const router = express.Router()
 
 /**
  * @swagger
- * /v1/car-assist/veiculo/{id}:
+ * /v1/car-assist/tipo-manutencao/{id}:
  *   get:
- *     summary: Retorna um veículo pelo ID
- *     description: Obtém os dados de um veículo específico com base no ID informado.
+ *     summary: Retorna um Tipo de manutenção pelo ID
+ *     description: Obtém os dados de um Tipo de manutenção específico com base no ID informado.
  *     tags:
- *       - Veículos
+ *       - Tipo manutenção
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do veículo
+ *         description: ID do Tipo de manutenção
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Veículo encontrado com sucesso
+ *         description: Tipo de manutenção encontrado com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/VeiculoResponse'
+ *               $ref: '#/components/schemas/TipoManutencaoResponse'
  *       404:
- *         description: Veículo não encontrado
+ *         description: Tipo de manutenção não encontrado
  *         content:
  *           application/json:
  *              schema:
  *                   $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ *         
+ */
+
+/**
+ * @swagger
+ * /v1/car-assist/tipo-manutencao/:
+ *   get:
+ *     summary: Retorna todos os Tipos de manutenção.
+ *     description: Obtém os dados de todos os tipos de manutenção específico com base no ID informado.
+ *     tags:
+ *       - Tipo manutenção
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID do Tipo de manutenção
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Tipo de manutenção encontrado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TipoManutencaoResponse'
  *       500:
  *         description: Erro interno do servidor
  *         content:

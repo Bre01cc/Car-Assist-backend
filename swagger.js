@@ -26,6 +26,10 @@ const options = {
             {
                 name: 'Manuntenção',
                 description: 'Operações relacionadas a manuntenção'
+            },
+            {
+                name: 'Tipo manutenção',
+                description: 'Operações relacionadas a tipo de manutenção'
             }
             ,
             {
@@ -33,7 +37,7 @@ const options = {
                 description: 'Operações relacionadas a gastos'
             },
             {
-                name: 'Categoria_gastos',
+                name: 'Categoria gastos',
                 description: 'Operações relacionadas a categoria de gastos'
             },
             {
@@ -41,7 +45,7 @@ const options = {
                 description: 'Operações relacionadas a serviço'
             },
             {
-                name: 'Tipo_Serviço',
+                name: 'Tipo serviço',
                 description: 'Operações relacionadas ao tipo do serviço'
             },
             {
@@ -59,47 +63,113 @@ const options = {
         ],
         components: {
             schemas: {
-                UsuarioResponse: {
+                BaseResponse: {
                     type: 'object',
                     properties: {
-                        id: {
-                            type: 'integer',
-                            description: 'ID do usuário',
-                            example: 1
+                        meta: {
+                            type: 'object',
+                            properties: {
+                                development: {
+                                    type: 'string',
+                                    example: 'Breno Oliveira Assis Reis'
+                                },
+                                api_description: {
+                                    type: 'string',
+                                    example: 'API da Car Assist'
+                                },
+                                request_date: {
+                                    type: 'string',
+                                    example: new Date().toISOString()
+                                }
+                            }
                         },
-                        nome: {
-                            type: 'string',
-                            description: 'Nome do usuário',
-                            example: 'João da Silva'
-                        },
-                        email: {
-                            type: 'string',
-                            description: 'Email do usuário',
-                            example: 'joao@email.com'
-                        },
-                        cpf: {
-                            type: 'string',
-                            description: 'CPF do usuário',
-                            example: '12345678901'
-                        },
-                        data_nascimento: {
-                            type: 'string',
-                            format: 'date',
-                            description: 'Data de nascimento do usuário',
-                            example: '2000-05-20'
-                        },
-                        is_ativo: {
+                        status: {
                             type: 'boolean',
-                            description: 'Indica se o usuário está ativo',
                             example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        data: {
+                            type: 'object'
                         }
                     },
                     required: [
-                        'id',
-                        'nome',
-                        'email',
-                        'cpf'
+                        'meta',
+                        'status',
+                        'status_code',
+                        'data'
                     ]
+                },
+                UsuarioResponse: {
+                    allOf: [
+                        {
+                            $ref: '#/components/schemas/BaseResponse'
+                        },
+                        {
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'object',
+                                    properties: {
+                                        usuario: {
+                                            type: 'array',
+                                            items: {
+
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        description: 'ID do usuário',
+                                                        example: 1
+                                                    },
+                                                    nome: {
+                                                        type: 'string',
+                                                        description: 'Nome do usuário',
+                                                        example: 'João da Silva'
+                                                    },
+                                                    email: {
+                                                        type: 'string',
+                                                        description: 'Email do usuário',
+                                                        example: 'joao@email.com'
+                                                    },
+                                                    cpf: {
+                                                        type: 'string',
+                                                        description: 'CPF do usuário',
+                                                        example: '12345678901'
+                                                    },
+                                                    data_nascimento: {
+                                                        type: 'string',
+                                                        format: 'date',
+                                                        description: 'Data de nascimento do usuário',
+                                                        example: '2000-05-20'
+                                                    },
+                                                    foto_usuario: {
+                                                        type: 'string',
+                                                        nullable: true,
+                                                        description: 'URL da foto do usuário',
+                                                        example: 'https://meusite.com/fotos/usuario1.jpg'
+                                                    },
+                                                    is_ativo: {
+                                                        type: 'boolean',
+                                                        description: 'Indica se o usuário está ativo',
+                                                        example: true
+                                                    }
+                                                },
+                                                required: [
+                                                    'id',
+                                                    'nome',
+                                                    'email',
+                                                    'cpf'
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
                 },
                 UsuarioRequest: {
                     type: 'object',
@@ -139,41 +209,81 @@ const options = {
                     ]
                 },
                 VeiculoResponse: {
-                    type: 'object',
-                    properties: {
-                        id: { type: 'integer', description: 'id', example: 3 },
-                        modelo: { type: 'string', description: 'modelo', example: 'lancer 1995' },
-                        score: { type: 'integer', description: 'score', example: 86 },
-                        ano: { type: 'integer', description: 'ano', example: 2018 },
-                        is_ativo: { type: 'boolean', description: 'is_ativo', example: true },
-                        cor: {
-                            type: 'string',
-                            description: 'Cor do veículo',
-                            example: 'PRETO',
-                            enum: [
-                                'AMARELO',
-                                'AZUL',
-                                'BRANCO',
-                                'CINZA',
-                                'DOURADO',
-                                'LARANJA',
-                                'MARROM',
-                                'PRATA',
-                                'PRETO',
-                                'ROSA',
-                                'ROXO',
-                                'VERDE',
-                                'VERMELHO',
-                                'FANTASIA'
-                            ]
+                    allOf: [
+                        {
+                            $ref: '#/components/schemas/BaseResponse'
+                        },
+                        {
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'object',
+                                    properties: {
+                                        veiculo: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        description: 'id',
+                                                        example: 3
+                                                    },
+                                                    modelo: {
+                                                        type: 'string',
+                                                        description: 'modelo',
+                                                        example: 'lancer 1995'
+                                                    },
+                                                    score: {
+                                                        type: 'integer',
+                                                        description: 'score',
+                                                        example: 86
+                                                    },
+                                                    ano: {
+                                                        type: 'integer',
+                                                        description: 'ano',
+                                                        example: 2018
+                                                    },
+                                                    is_ativo: {
+                                                        type: 'boolean',
+                                                        description: 'is_ativo',
+                                                        example: true
+                                                    },
+                                                    cor: {
+                                                        type: 'string',
+                                                        description: 'Cor do veículo',
+                                                        example: 'PRETO',
+                                                        enum: [
+                                                            'AMARELO',
+                                                            'AZUL',
+                                                            'BRANCO',
+                                                            'CINZA',
+                                                            'DOURADO',
+                                                            'LARANJA',
+                                                            'MARROM',
+                                                            'PRATA',
+                                                            'PRETO',
+                                                            'ROSA',
+                                                            'ROXO',
+                                                            'VERDE',
+                                                            'VERMELHO',
+                                                            'FANTASIA'
+                                                        ]
+                                                    }
+                                                },
+                                                required: [
+                                                    'id',
+                                                    'modelo',
+                                                    'score',
+                                                    'ano',
+                                                    'cor'
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    },
-                    required: [
-                        'id',
-                        'modelo',
-                        'score',
-                        'ano',
-                        'cor'
                     ]
                 },
                 VeiculoRequest: {
@@ -383,6 +493,36 @@ const options = {
                         'fk_id_tipo_manutencao',
                         'fk_id_usuario',
                         'fk_id_veiculo'
+                    ]
+                },
+                TipoManutencaoResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'integer',
+                            description: 'ID do tipo de manutenção',
+                            example: 1
+                        },
+                        nome: {
+                            type: 'string',
+                            description: 'Nome do tipo de manutenção',
+                            example: 'Troca de óleo'
+                        },
+                        valor_score: {
+                            type: 'integer',
+                            description: 'Valor que impacta no score do veículo',
+                            example: 10
+                        },
+                        descricao: {
+                            type: 'string',
+                            description: 'Descrição do tipo de manutenção',
+                            example: 'Manutenção preventiva para troca de óleo do motor'
+                        }
+                    },
+                    required: [
+                        'id',
+                        'nome',
+                        'valor_score'
                     ]
                 },
                 GastosResponse: {
@@ -757,9 +897,71 @@ const options = {
                         'status',
                         'fk_id_veiculo'
                     ]
+                },
+                ChatbotResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'integer',
+                            description: 'ID da interação do chatbot',
+                            example: 1
+                        },
+                        pergunta: {
+                            type: 'string',
+                            description: 'Pergunta feita pelo usuário',
+                            example: 'Quando devo trocar o óleo do carro?'
+                        },
+                        resposta: {
+                            type: 'string',
+                            description: 'Resposta gerada pelo chatbot',
+                            example: 'Recomenda-se trocar o óleo a cada 10.000 km.'
+                        },
+                        data_interacao: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Data e hora da interação',
+                            example: '2026-05-06T14:30:00Z'
+                        },
+                        fk_id_usuario: {
+                            type: 'integer',
+                            description: 'ID do usuário que fez a pergunta',
+                            example: 2
+                        }
+                    },
+                    required: [
+                        'id',
+                        'pergunta',
+                        'resposta',
+                        'data_interacao',
+                        'fk_id_usuario'
+                    ]
+                },
+                ChatbotRequest: {
+                    type: 'object',
+                    properties: {
+                        pergunta: {
+                            type: 'string',
+                            description: 'Pergunta feita pelo usuário',
+                            example: 'Quando devo trocar o óleo do carro?'
+                        },
+                        resposta: {
+                            type: 'string',
+                            description: 'Resposta gerada pelo chatbot',
+                            example: 'Recomenda-se trocar o óleo a cada 10.000 km.'
+                        },
+                        fk_id_usuario: {
+                            type: 'integer',
+                            description: 'ID do usuário',
+                            example: 2
+                        }
+                    },
+                    required: [
+                        'pergunta',
+                        'resposta',
+                        'fk_id_usuario'
+                    ]
                 }
             },
-
             ResponseApi: {
                 ERROR_NOT_FOUND: {
                     type: 'object',

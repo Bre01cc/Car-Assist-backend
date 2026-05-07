@@ -31,7 +31,7 @@ app.use((request, response, next) => {
 
 const veiculoRouter = require('./routes/veiculo_router.js')
 
-app.use('/v1/car-assist/veiculo', veiculoRouter)
+
 
 // Documentação do swagger
 const swaggerUi = require('swagger-ui-express');
@@ -39,6 +39,11 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.js');
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+//Imports 
+const categoriaGastos = require('./routes/categoria_gasto_route.js')
+
+app.use(categoriaGastos)
 
 app.listen(PORT, () => {
     console.log('API aguardando requisições na porta ' + PORT)
