@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pelas rotas referente ao veículo
- * Data: 10/04/2026
+ * Objetivo: Arquivo responsável pelas rotas referente ao seviço
+ * Data: 06/05/2026
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
@@ -10,47 +10,33 @@ const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
 
-
-
 const router = express.Router()
-
-// const upload = multer({})
-
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb)=>{
-//         const
-//     }
-// })
-
-// router.post('/v1/car-assist/veiculo', cors(), async function (request, response) {
-//     if(!request.files) return response.status(400).json({message:'Arquivo invalido'})
-// });
 
 
 /**
  * @swagger
- * /v1/car-assist/veiculo/{id}:
+ * /v1/car-assist/servico/{id}:
  *   put:
- *     summary: Atualiza um Veículo pelo ID
- *     description: Atualiza um Veículo no sistema
+ *     summary: Atualiza um Serviço pelo ID
+ *     description: Atualiza um Serviço no sistema
  *     tags:
- *       - Veículos
+ *       - Serviço
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID do Veículo
+ *         description: ID do Serviço
  *     requestBody:
  *       required: true
  *       content:
  *        multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
+ *             $ref: '#/components/schemas/ServicoRequest'
  *     responses:
  *       200:
- *         description: Usuário atualizado com sucesso
+ *         description: Serviço atualizado com sucesso
  *         content:
  *           application/json:
  *             schema:
@@ -72,21 +58,21 @@ const router = express.Router()
 
 /**
  * @swagger
- * /v1/car-assist/veiculo:
+ * /v1/car-assist/servico:
  *   post:
- *     summary: Cria um novo Veículo
- *     description: Cadastra um novo Veículo no sistema.
+ *     summary: Cria um novo Serviço
+ *     description: Cadastra um novo Serviço no sistema.
  *     tags:
- *       - Veículos
+ *       - Serviço
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
+ *             $ref: '#/components/schemas/ServicoRequest'
  *     responses:
  *       201:
- *         description: Veículo criado com sucesso
+ *         description: Serviço criado com sucesso
  *         content:
  *           application/json:
  *             schema:
@@ -109,28 +95,28 @@ const router = express.Router()
 
 /**
  * @swagger
- * /v1/car-assist/veiculo/{id}:
+ * /v1/car-assist/servico/{id}:
  *   delete:
- *     summary: Deleta um Veículo pelo ID
- *     description: Deleta um Veículo pelo ID.
+ *     summary: Deleta um Serviço pelo ID
+ *     description: Deleta um Serviço pelo ID.
  *     tags:
- *       - Veículos
+ *       - Serviço
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do veículo
+ *         description: ID do Serviço
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Veículo deletado com sucesso
+ *         description: Serviço deletado com sucesso
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
  *       404:
- *         description: Veículo não encontrado
+ *         description: Serviço não encontrado
  *         content:
  *           application/json:
  *             schema:
@@ -142,43 +128,5 @@ const router = express.Router()
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
-
-/**
- * @swagger
- * /v1/car-assist/veiculo/{id}:
- *   get:
- *     summary: Retorna um Veículo pelo ID
- *     description: Obtém os dados de um Veículo específico com base no ID informado.
- *     tags:
- *       - Veículos
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID do veículo
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Veículo encontrado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/VeiculoResponse'
- *       404:
- *         description: Veículo não encontrado
- *         content:
- *           application/json:
- *              schema:
- *                   $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
- *       500:
- *         description: Erro interno do servidor
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
- *         
- */
-
 
 module.exports = router

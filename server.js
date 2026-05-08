@@ -17,19 +17,36 @@ const bodyParserJSON = bodyParser.json()
 
 const app = express()
 
-const PORT = process.PORT || 8080
+const PORT = process.env.PORT || 8080
 //Controle de acesso
 app.use((request, response, next) => {
     response.header('Access-Control-Allow-Origin', '*')
     response.header('Access-Control-Allow-Methods', '*')
-    
-    app.use(cors())
 
     next()
 })
 
+  app.use(cors())
+  app.use(express.json())
+
+const veiculoRouter = require('./routes/veiculo_router.js')
+
+
+
 // Documentação do swagger
 const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./swagger');
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+const swaggerDocument = require('./swagger.js');
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+//Imports 
+const categoriaGastos = require('./routes/categoria_gasto_route.js');
+const usuario = require('./routes/usuario_router.js');
+
+app.use(categoriaGastos)
+app.use(usuario)
+
+app.listen(PORT, () => {
+    console.log('API aguardando requisições na porta ' + PORT)
+});

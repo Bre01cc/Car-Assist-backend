@@ -1,47 +1,34 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pelas rotas referente ao veículo
- * Data: 10/04/2026
+ * Objetivo: Arquivo responsável pelas rotas referente a manutenção
+ * Data: 05/05/2026
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
-const express = require('express')
-const cors = require('cors')
+
+const express =    require('express')
+const cors =       require('cors') 
 const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
 
-
-
 const router = express.Router()
-
-// const upload = multer({})
-
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb)=>{
-//         const
-//     }
-// })
-
-// router.post('/v1/car-assist/veiculo', cors(), async function (request, response) {
-//     if(!request.files) return response.status(400).json({message:'Arquivo invalido'})
-// });
 
 
 /**
  * @swagger
- * /v1/car-assist/veiculo/{id}:
+ * /v1/car-assist/manutencao/{id}:
  *   put:
- *     summary: Atualiza um Veículo pelo ID
- *     description: Atualiza um Veículo no sistema
+ *     summary: Atualiza uma Manutenção pelo ID
+ *     description: Atualiza uma Manutenção no sistema
  *     tags:
- *       - Veículos
+ *       - Manuntenção
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID do Veículo
+ *         description: ID da Manutenção
  *     requestBody:
  *       required: true
  *       content:
@@ -50,7 +37,7 @@ const router = express.Router()
  *             $ref: '#/components/schemas/VeiculoRequest'
  *     responses:
  *       200:
- *         description: Usuário atualizado com sucesso
+ *         description: Manutenção atualizada com sucesso
  *         content:
  *           application/json:
  *             schema:
@@ -72,12 +59,12 @@ const router = express.Router()
 
 /**
  * @swagger
- * /v1/car-assist/veiculo:
+ * /v1/car-assist/manutencao:
  *   post:
- *     summary: Cria um novo Veículo
- *     description: Cadastra um novo Veículo no sistema.
+ *     summary: Cria uma nova Manutenção
+ *     description: Cadastra uma nova Manutenção no sistema.
  *     tags:
- *       - Veículos
+ *       - Manuntenção
  *     requestBody:
  *       required: true
  *       content:
@@ -86,7 +73,7 @@ const router = express.Router()
  *             $ref: '#/components/schemas/VeiculoRequest'
  *     responses:
  *       201:
- *         description: Veículo criado com sucesso
+ *         description: Manutenção criada com sucesso
  *         content:
  *           application/json:
  *             schema:
@@ -109,28 +96,28 @@ const router = express.Router()
 
 /**
  * @swagger
- * /v1/car-assist/veiculo/{id}:
+ * /v1/car-assist/manutencao/{id}:
  *   delete:
- *     summary: Deleta um Veículo pelo ID
- *     description: Deleta um Veículo pelo ID.
+ *     summary: Deleta uma Manutenção pelo ID
+ *     description: Deleta uma Manuntenção pelo ID.
  *     tags:
- *       - Veículos
+ *       - Manuntenção
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do veículo
+ *         description: ID da Manuntenção
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Veículo deletado com sucesso
+ *         description: Manutenção deletada com sucesso
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
  *       404:
- *         description: Veículo não encontrado
+ *         description: Manutenção não encontrado
  *         content:
  *           application/json:
  *             schema:
@@ -145,28 +132,28 @@ const router = express.Router()
 
 /**
  * @swagger
- * /v1/car-assist/veiculo/{id}:
+ * /v1/car-assist/manuntencao/{id}:
  *   get:
- *     summary: Retorna um Veículo pelo ID
- *     description: Obtém os dados de um Veículo específico com base no ID informado.
+ *     summary: Retorna uma Manutenção pelo ID
+ *     description: Obtém os dados de um Manutenção específico com base no ID informado.
  *     tags:
- *       - Veículos
+ *       - Manuntenção
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do veículo
+ *         description: ID da Manuntenção
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Veículo encontrado com sucesso
+ *         description: Manuntenção encontrado com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/VeiculoResponse'
+ *               $ref: '#/components/schemas/ManutencaoResponse'
  *       404:
- *         description: Veículo não encontrado
+ *         description: Manutenção não encontrado
  *         content:
  *           application/json:
  *              schema:
@@ -177,8 +164,6 @@ const router = express.Router()
  *           application/json:
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
- *         
  */
-
 
 module.exports = router
