@@ -71,7 +71,7 @@ const getSelectLastId = async () => {
     }
 }
 
-const getUserByEmail = async (email, senha) => {
+const getUserByEmailAndPassword = async (email, senha) => {
     try {
         const result = await conexaoKnex.conexao.raw(
             'SELECT * FROM tbl_usuario WHERE email = ? and senha = ?',
