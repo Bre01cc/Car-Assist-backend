@@ -95,6 +95,14 @@ usuario.is_ativo
 from tbl_usuario usuario join left 
 
 
+create view vw_usuario as select 
+usuario.id,
+usuario.nome,
+usuario.cpf,
+usuario.data_nascimento,
+usuario.foto_usuario,
+usuario.is_ativo from tbl_usuario usuario;
+
 select * from vw_gastos;
 select * from vw_servicos;
 

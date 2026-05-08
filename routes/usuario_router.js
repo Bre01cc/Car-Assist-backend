@@ -4,13 +4,15 @@
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
-const express =    require('express')
-const cors =       require('cors') 
+const express = require('express')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
 
 const router = express.Router()
+
+const controllerUsuario = require('../controller/usuario/usuario_controller.js')
 
 
 /**
@@ -56,6 +58,20 @@ const router = express.Router()
  * 
  */
 
+router.put('/v1/car-assist/usuario/:id', cors(), bodyParserJSON, async function (request, response) {
+
+    let dadosBody = request.body;
+
+    let idUsuario = request.params.id;
+
+    let contentType = request.headers['content-type'];
+
+    let usuario = await controllerUsuario.atualizarUsuario(dadosBody, idUsuario, contentType);
+
+    response.status(usuario.status_code).json(usuario);
+});
+
+
 /**
  * @swagger
  * /v1/car-assist/usuario/{id}:
@@ -92,6 +108,12 @@ const router = express.Router()
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
 
+router.delete('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
+    let idUsuario = req.params.id;
+    let usuario = await controllerUsuario.deletarUsuarioId(idUsuario)
+    res.status(usuario.status_code).json(usuario);
+});
+
 
 /**
  * @swagger
@@ -116,6 +138,13 @@ const router = express.Router()
  *               $ref: '#/components/ResponseApi/SUCCESS_CREATED_ITEM'
  *  
  */
+
+router.post('/v1/car-assist/usuario', cors(), bodyParserJSON, async function (request, response) {
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type'];
+    let usuario = await controllerUsuario.inserirUsuario(dadosBody, contentType);
+    response.status(usuario.status_code).json(usuario);
+});
 
 /**
  * @swagger
@@ -152,6 +181,34 @@ const router = express.Router()
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
+
+router.get('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
+    let idUsuario = req.params.id;
+    let usuario = await controllerUsuario.buscarUsuarioId(idUsuario)
+    res.status(usuario.status_code).json(usuario);
+});
+
+router.get('/v1/car-assist/usuario/:email/:senha', cors(), async (req, res) => {
+    let emailUsuario = req.params.email;
+    let emailSenha = req.params.senha;
+    let usuario = await controllerUsuario.buscarUsuarioEmailComSenha(emailUsuario,emailSenha)
+    res.status(usuario.status_code).json(usuario);
+});
+
+router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
+    let idUsuario = req.query.id;
+    let status = req.query.status
+    let usuario = await controllerUsuario.buscarUsuarioAtivo(idUsuario,status)
+  
+    res.status(usuario.status_code).json(usuario);
+});
+
+// router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
+//     let idUsuario = req.query.id;
+//     let usuario = await controllerUsuario.buscarUsuarioId(idUsuario)
+  
+//     res.status(usuario.status_code).json(usuario);
+// });
 
 
 module.exports = router
