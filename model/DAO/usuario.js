@@ -134,9 +134,10 @@ const getUserByCPF = async (cpf) => {
 const postUser = async (usuario) => {
 
     try {
-        const resultCpf = ''
-        const resultEmail = ''
+        const resultCpf = await getUserByCPF()
+        const resultEmail = await getUserByEmail()
 
+    
         const result = await conexaoKnex.conexao.raw(`
        Insert into tbl_usuario(
         nome,

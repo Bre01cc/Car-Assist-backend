@@ -107,3 +107,10 @@ select * from vw_gastos;
 select * from vw_servicos;
 
 
+create view vw_evidencia as select 
+evidencia.id,
+evidencia.url,
+manutencao.id,
+manutencao.oficina,
+manutencao.data_manutencao data
+from tbl_evidencia
