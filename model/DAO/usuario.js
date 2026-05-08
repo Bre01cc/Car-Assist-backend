@@ -28,11 +28,26 @@ const getUserById = async (id) => {
 }
 
 const getUserByAtivo = async (id) => {
+    try {
+        const result = await conexaoKnex.conexao.raw(
+            'SELECT * FROM tbl_usuario WHERE id = ? and is_ativo = true',
+            [id]
+        );
 
+        if (result && result[0] && result[0].length > 0) {
+            return result[0];
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+
+        return false;
+    }
 }
 
 const getUserAndVehicle = () => {
-
+    
 }
 
 const getSelectLastId = async () => {
@@ -56,11 +71,11 @@ const getSelectLastId = async () => {
     }
 }
 
-const getUserByEmail = async (email) => {
+const getUserByEmail = async (email, senha) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_usuario WHERE email = ?',
-            [email]
+            'SELECT * FROM tbl_usuario WHERE email = ? and senha = ?',
+            [email, senha]
         );
         console.log(result)
 
@@ -99,7 +114,7 @@ const postUser = async (usuario) => {
 
     try {
 
-    const result = await conexaoKnex.conexao.raw(`
+        const result = await conexaoKnex.conexao.raw(`
        Insert into tbl_usuario(
         nome,
         email,
