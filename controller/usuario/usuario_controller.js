@@ -50,32 +50,45 @@ const buscarUsuarioId = async (id) => {
 
 }
 
-//Retorna um usuário pelo email
-const buscarUsuarioEmail = async (email) => {
+//Retorna um usuário pelo email e senha
+const buscarUsuarioEmailComSenha = async (email, senha) => {
 
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     try {
-       
+
+        console.log(email, senha)
         //Validação da chegada do ID
-        if (email != undefined ||
-            email != null ||
-            email != '' ||
-            email.length < 100 ||
-            email.includes('@')) {
+        if (email != undefined &&
+            email != null &&
+            email != '' &&
+            email.length < 100 &&
+            email.includes('@')
+            && senha != undefined &&
+            senha != null &&
+            senha != '' &&
+            senha.length < 255
+        ) {
 
-
-            let resultUsuario = await usuarioDAO.getUserByEmail(email)
+            let resultUsuario = await usuarioDAO.getUserByEmailAndPassword(email, senha)
 
             if (resultUsuario) {
 
                 if (resultUsuario.length > 0) {
 
-                    MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_REQUEST.status
-                    MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_REQUEST.status_code
-                    MENSSAGENS.DEFAULT_HEADER.data.usuario = resultUsuario
+                    const usuario = await usuarioDAO.getUserById(resultUsuario[0].id)
 
-                    return MENSSAGENS.DEFAULT_HEADER
+                    if (usuario) {
+
+                        MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_REQUEST.status
+                        MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_REQUEST.status_code
+                        MENSSAGENS.DEFAULT_HEADER.data.usuario = usuario
+
+                        return MENSSAGENS.DEFAULT_HEADER
+
+                    } else {
+                        return MENSSAGENS.ERROR_INTERNAL
+                    }
 
 
                 } else {
@@ -86,7 +99,58 @@ const buscarUsuarioEmail = async (email) => {
                 return MENSSAGENS.ERROR_NOT_FOUND
             }
         } else {
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Email incorreto]'
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Email incorreto] ou [Senha incorreta]'
+            return MENSSAGENS.ERROR_REQUIRED_FIELDS//400
+        }
+
+    } catch (error) {
+        return MENSSAGENS.ERROR_INTERNAL
+    }
+
+}
+
+//Retorna um usuário ativo pelo id 
+const buscarUsuarioAtivo = async (id, status) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        if (status == 0 || status == 1 || status == 'false' || status == 'true') {
+
+            if(status == 'false'){
+                status = 0
+            }else if(status == 'true'){
+                 status = 1
+            }
+            //Validação da chegada do ID
+            if (!isNaN(id) && id != null && id > 0) {
+                let resultUsuario = await usuarioDAO.getUserByAtivo(id,status)
+
+
+                if (resultUsuario) {
+
+                    if (resultUsuario.length > 0) {
+
+                        MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_REQUEST.status
+                        MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_REQUEST.status_code
+                        MENSSAGENS.DEFAULT_HEADER.data.usuario = resultUsuario
+
+                        return MENSSAGENS.DEFAULT_HEADER
+
+
+                    } else {
+                        return MENSSAGENS.ERROR_NOT_FOUND//404
+                    }
+
+                } else {
+                    return MENSSAGENS.ERROR_NOT_FOUND
+                }
+            } else {
+                MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+                return MENSSAGENS.ERROR_REQUIRED_FIELDS//400
+            }
+        }else{
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Status incorreto]'
             return MENSSAGENS.ERROR_REQUIRED_FIELDS//400
         }
 
@@ -262,7 +326,7 @@ const validarUsuario = (usuario, validar) => {
         usuario.senha == undefined ||
         usuario.senha == null ||
         usuario.senha == '' ||
-        usuario.senha.length < 6
+        usuario.senha.length < 6 && usuario.senha.length > 255
     ) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Senha incorreta]'
         return MENSSAGES.ERROR_REQUIRED_FIELDS
@@ -325,5 +389,6 @@ module.exports = {
     inserirUsuario,
     deletarUsuarioId,
     atualizarUsuario,
-    buscarUsuarioEmail
+    buscarUsuarioEmailComSenha,
+    buscarUsuarioAtivo
 }

@@ -11,7 +11,7 @@ const conexaoKnex = require('../../knex/index.js');
 const getUserById = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_usuario WHERE id = ?',
+            'SELECT * FROM vw_usuario WHERE id = ?',
             [id]
         );
 
@@ -27,11 +27,33 @@ const getUserById = async (id) => {
     }
 }
 
-const getUserByAtivo = async (id) => {
+//Busca um usuario pelo id
+
+const getUserByAtivo = async (id,status) => {
+    try {
+        console.log(id,status)
+        const result = await conexaoKnex.conexao.raw(
+            'SELECT * FROM vw_usuario WHERE id = ? and is_ativo = ?',
+            [id,status]
+        );
+
+        if (result && result[0] && result[0].length > 0) {
+            return result[0];
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+
+        return false;
+    }
+}
+
+const getUserByEmail = async (email) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_usuario WHERE id = ? and is_ativo = true',
-            [id]
+            'SELECT * FROM vw_usuario where email = ?',
+            [email]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -45,7 +67,6 @@ const getUserByAtivo = async (id) => {
         return false;
     }
 }
-
 const getUserAndVehicle = () => {
     
 }
@@ -77,7 +98,7 @@ const getUserByEmailAndPassword = async (email, senha) => {
             'SELECT * FROM tbl_usuario WHERE email = ? and senha = ?',
             [email, senha]
         );
-        console.log(result)
+      
 
         if (result && result[0] && result[0].length > 0) {
             return result[0];
@@ -113,6 +134,8 @@ const getUserByCPF = async (cpf) => {
 const postUser = async (usuario) => {
 
     try {
+        const resultCpf = ''
+        const resultEmail = ''
 
         const result = await conexaoKnex.conexao.raw(`
        Insert into tbl_usuario(
@@ -205,6 +228,7 @@ module.exports = {
     putUser,
     deleteUser,
     getSelectLastId,
-    getUserByEmail
+    getUserByEmailAndPassword,
+    getUserByAtivo
 }
 
