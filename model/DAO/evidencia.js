@@ -12,14 +12,14 @@ const conexaoKnex = require('../../knex/index.js');
 const getEvidenceById = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from tbl_categoria_gasto where id = ?', [id]
+            'select * from vw_evidencia where id = ?', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
             return result[0]
+        } else {
+            return false
         }
-
-        return false
 
     } catch (error) {
         return false
@@ -27,10 +27,10 @@ const getEvidenceById = async (id) => {
 }
 
 //Busca todos as categorias de gastos
-const getAllcategoryTypes = async () => {
+const getAllEvidences = async () => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from tbl_categoria_gasto order by id'
+            'select * from vw_evidencia order by id'
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -43,4 +43,87 @@ const getAllcategoryTypes = async () => {
     } catch (error) {
         return false
     }
+}
+
+const deleteEvidence = async (id) => {
+    try {
+        const result = await conexaoKnex.conexao.raw(
+            'delete from tbl_evidencia where id = ?', [id]
+        );
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
+
+const postEvidence = async (evidencia) => {
+    try {
+        const result = await conexaoKnex.conexao.raw(`
+            insert into tbl_evidencia(
+                url,
+                fk_id_manutencao
+            )
+            values(
+                ?,
+                ?
+                )`, [
+            evidencia.url,
+            evidencia.fk_id_manutencao
+        ]);
+        console.log(result[0])
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+
+        console.log(error)
+        return false
+
+    }
+}
+
+const putEvidence = async (evidencia) => {
+    try {
+
+        const result = await conexaoKnex.conexao.raw(`
+            update tbl_evidencia
+            set url = ?,
+                fk_id_manutencao = ?
+            where id = ?
+        `, [
+            evidencia.url,
+            evidencia.fk_id_manutencao,
+            evidencia.id
+        ])
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+
+        console.log(error)
+        return false
+
+    }
+}
+
+module.exports = {
+    getAllEvidences,
+    getEvidenceById,
+    deleteEvidence,
+    postEvidence,
+    putEvidence
 }

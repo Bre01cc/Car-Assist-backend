@@ -191,7 +191,7 @@ const putUser = async (usuario) => {
             usuario.id
         ])
 
-        if (result) {
+        if (result[0].affectedRows) {
             return true
         } else {
             return false

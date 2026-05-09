@@ -113,4 +113,5 @@ evidencia.url,
 manutencao.id,
 manutencao.oficina,
 manutencao.data_manutencao data
-from tbl_evidencia
+from tbl_evidencia evidencia join tbl_manutencao manutencao on
+evidencia.id = manutencao.id;
