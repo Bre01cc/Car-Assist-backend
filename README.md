@@ -61,12 +61,6 @@ Contém os arquivos DAO (Data Access Object), responsáveis pela comunicação d
 ### routes
 Armazena os arquivos de rotas da aplicação. Define os endpoints disponíveis e direciona cada requisição para seu respectivo controller.
 
-### doc
- -  #### components:
- -  #### internal:
-
-### server
-
 
 ## Autores
 - [@Breno Reis](https://github.com/Bre01cc)
