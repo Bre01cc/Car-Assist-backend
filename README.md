@@ -45,7 +45,7 @@ npm install
 ```
 node server.js
 ```
-
+---
 ## Estrutura do Projeto
 
 - 📁 `assets/`
