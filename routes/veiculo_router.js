@@ -1,7 +1,7 @@
 /***********************************************************************************************************************
  * Objetivo: Arquivo responsável pelas rotas referente ao veículo
  * Data: 10/04/2026
- * Autor: Breno Oliveira Assis Reis
+ * Autor: Breno Oliveira Assis Reis, Guilherme Moreira de Souza
  * Versão: 1.0
  ***********************************************************************************************************************/
 const express = require('express')
@@ -13,6 +13,8 @@ const bodyParserJSON = bodyParser.json()
 
 
 const router = express.Router()
+
+const controllerVeiculo = require('../controller/veiculo/veiculo_controller.js')
 
 // const upload = multer({})
 
@@ -180,5 +182,32 @@ const router = express.Router()
  *         
  */
 
+//Busca veiculo pelo ID
+router.get('/v1/car-assist/veiculo/:id', cors(), async function(request, response){
+
+    let idVeiculo = request.params.id
+
+    let veiculo = await controllerVeiculo.buscarVeiculoId(idVeiculo)
+    response.status(veiculo.status_code)
+    response.json(veiculo)
+})
+
+//Buscar todos os veiculos
+router.get('/v1/car-assist/veiculos', cors(), async function(request, response){
+
+    let veiculo = await controllerVeiculo.listarVeiculos()
+    response.status(veiculo.status_code)
+    response.json(veiculo)
+})
+
+//Insere um veiculo
+router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, async function(request, response){
+    let dadosBody = request.body
+    let contentType = request.headers['content-type']
+
+    let veiculo = await controllerVeiculo.inserirVeiculo(dadosBody, contentType)
+    response.status(veiculo.status_code)
+    response.json(veiculo)
+})
 
 module.exports = router
