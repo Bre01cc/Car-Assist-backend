@@ -30,7 +30,7 @@ const bodyParserJSON = bodyParser.json()
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
+ *             $ref: '#/components/schemas/LembretesResponse'
  *     responses:
  *       200:
  *         description: Atualiza um Lembrete com sucesso
@@ -66,7 +66,7 @@ const bodyParserJSON = bodyParser.json()
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
+ *             $ref: '#/components/schemas/LembretesResponse'
  *     responses:
  *       201:
  *         description: Lembrete atualizado com sucesso

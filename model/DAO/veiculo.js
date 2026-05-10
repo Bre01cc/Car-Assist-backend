@@ -47,7 +47,7 @@ const getVehicleById = async (id) => {
     }
 }
 
-//Busca veiculo com o ultimo ID
+//Busca veículo com o ultimo ID
 const getSelectLastId = async function () {
     try {
 
@@ -87,10 +87,74 @@ const setInsertVehicle = async function (veiculo) {
     }
 }
 
+// Atualiza um veículo
+const putVeiculo = async (veiculo) => {
+    try {
+
+        const result = await conexaoKnex.conexao.raw(`
+            UPDATE tbl_veiculo
+            SET placa = ?,
+                modelo = ?,
+                marca = ?,
+                cor = ?,
+                score = ?,
+                ano = ?,
+                foto_veiculo = ?,
+                is_ativo = ?
+            WHERE id = ?
+        `, [
+            veiculo.placa,
+            veiculo.modelo,
+            veiculo.marca,
+            veiculo.cor,
+            veiculo.score,
+            veiculo.ano,
+            veiculo.foto_veiculo,
+            veiculo.is_ativo,
+            veiculo.id
+        ])
+
+        if (result[0].affectedRows) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
+
+// Desativa um veículo
+const deleteVeiculo = async (id) => {
+    try {
+
+        const result = await conexaoKnex.conexao.raw(`
+            UPDATE tbl_veiculo
+            SET is_ativo = ?
+            WHERE id = ?
+        `, [
+            0,
+            id
+        ])
+
+        if (result[0].affectedRows) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
+
 
 module.exports = {
     getAllVehicles,
     getVehicleById,
     getSelectLastId,
-    setInsertVehicle
+    setInsertVehicle,
+    putVeiculo,
+    deleteVeiculo
 }

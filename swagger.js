@@ -30,8 +30,11 @@ const options = {
             {
                 name: 'Tipo manutenção',
                 description: 'Operações relacionadas a tipo de manutenção'
-            }
-            ,
+            },
+              {
+                name: 'Evidência',
+                description: 'Operações relacionadas a evidência de uma manutenção'
+            },
             {
                 name: 'Gastos',
                 description: 'Operações relacionadas a gastos'
@@ -350,79 +353,99 @@ const options = {
                     ]
                 },
                 ManutencaoResponse: {
-                    type: 'object',
-                    properties: {
-                        id: {
-                            type: 'integer',
-                            description: 'ID da manutenção',
-                            example: 10
+                    allOf: [
+                        {
+                            $ref: '#/components/schemas/BaseResponse'
                         },
-                        evidencias: {
-                            type: 'string',
-                            description: 'Evidências da manutenção',
-                            example: 'https://img.com/foto1.jpg'
-                        },
-                        data_manutencao: {
-                            type: 'string',
-                            format: 'date-time',
-                            description: 'Data e hora da manutenção',
-                            example: '2026-05-05T14:30:00Z'
-                        },
-                        custo: {
-                            type: 'number',
-                            format: 'float',
-                            description: 'Custo da manutenção',
-                            example: 350.75
-                        },
-                        quilometragem: {
-                            type: 'integer',
-                            description: 'Quilometragem registrada',
-                            example: 85000
-                        },
-                        pecas: {
-                            type: 'string',
-                            description: 'Peças utilizadas',
-                            example: 'Filtro de óleo, pastilha de freio'
-                        },
-                        oficina: {
-                            type: 'string',
-                            description: 'Oficina responsável',
-                            example: 'Oficina do João'
-                        },
-                        observacoes: {
-                            type: 'string',
-                            description: 'Observações',
-                            example: 'Troca preventiva realizada'
-                        },
-                        is_ativo: {
-                            type: 'boolean',
-                            description: 'Status da manutenção',
-                            example: true
-                        },
-                        fk_id_tipo_manutencao: {
-                            type: 'integer',
-                            description: 'ID do tipo de manutenção',
-                            example: 1
-                        },
-                        fk_id_usuario: {
-                            type: 'integer',
-                            description: 'ID do usuário',
-                            example: 2
-                        },
-                        fk_id_veiculo: {
-                            type: 'integer',
-                            description: 'ID do veículo',
-                            example: 3
+                        {
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'object',
+                                    properties: {
+                                        manutencao: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        description: 'ID da manutenção',
+                                                        example: 10
+                                                    },
+                                                    evidencias: {
+                                                        type: 'string',
+                                                        description: 'Evidências da manutenção',
+                                                        example: 'https://img.com/foto1.jpg'
+                                                    },
+                                                    data_manutencao: {
+                                                        type: 'string',
+                                                        format: 'date-time',
+                                                        description: 'Data e hora da manutenção',
+                                                        example: '2026-05-05T14:30:00Z'
+                                                    },
+                                                    custo: {
+                                                        type: 'number',
+                                                        format: 'float',
+                                                        description: 'Custo da manutenção',
+                                                        example: 350.75
+                                                    },
+                                                    quilometragem: {
+                                                        type: 'integer',
+                                                        description: 'Quilometragem registrada',
+                                                        example: 85000
+                                                    },
+                                                    pecas: {
+                                                        type: 'string',
+                                                        description: 'Peças utilizadas',
+                                                        example: 'Filtro de óleo, pastilha de freio'
+                                                    },
+                                                    oficina: {
+                                                        type: 'string',
+                                                        description: 'Oficina responsável',
+                                                        example: 'Oficina do João'
+                                                    },
+                                                    observacoes: {
+                                                        type: 'string',
+                                                        description: 'Observações',
+                                                        example: 'Troca preventiva realizada'
+                                                    },
+                                                    is_ativo: {
+                                                        type: 'boolean',
+                                                        description: 'Status da manutenção',
+                                                        example: true
+                                                    },
+                                                    fk_id_tipo_manutencao: {
+                                                        type: 'integer',
+                                                        description: 'ID do tipo de manutenção',
+                                                        example: 1
+                                                    },
+                                                    fk_id_usuario: {
+                                                        type: 'integer',
+                                                        description: 'ID do usuário',
+                                                        example: 2
+                                                    },
+                                                    fk_id_veiculo: {
+                                                        type: 'integer',
+                                                        description: 'ID do veículo',
+                                                        example: 3
+                                                    }
+                                                },
+                                                required: [
+                                                    'id',
+                                                    'data_manutencao',
+                                                    'custo',
+                                                    'quilometragem',
+                                                    'fk_id_tipo_manutencao',
+                                                    'fk_id_usuario',
+                                                    'fk_id_veiculo'
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    },
-                    required: [
-                        'id',
-                        'data_manutencao',
-                        'custo',
-                        'quilometragem',
-                        'fk_id_tipo_manutencao',
-                        'fk_id_usuario',
-                        'fk_id_veiculo'
                     ]
                 },
                 ManutencaoRequest: {
@@ -496,83 +519,123 @@ const options = {
                     ]
                 },
                 TipoManutencaoResponse: {
-                    type: 'object',
-                    properties: {
-                        id: {
-                            type: 'integer',
-                            description: 'ID do tipo de manutenção',
-                            example: 1
+                    allOf: [
+                        {
+                            $ref: '#/components/schemas/BaseResponse'
                         },
-                        nome: {
-                            type: 'string',
-                            description: 'Nome do tipo de manutenção',
-                            example: 'Troca de óleo'
-                        },
-                        valor_score: {
-                            type: 'integer',
-                            description: 'Valor que impacta no score do veículo',
-                            example: 10
-                        },
-                        descricao: {
-                            type: 'string',
-                            description: 'Descrição do tipo de manutenção',
-                            example: 'Manutenção preventiva para troca de óleo do motor'
+                        {
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'object',
+                                    properties: {
+                                        tipo_manutencao: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        description: 'ID do tipo de manutenção',
+                                                        example: 1
+                                                    },
+                                                    nome: {
+                                                        type: 'string',
+                                                        description: 'Nome do tipo de manutenção',
+                                                        example: 'Troca de óleo'
+                                                    },
+                                                    valor_score: {
+                                                        type: 'integer',
+                                                        description: 'Valor que impacta no score do veículo',
+                                                        example: 10
+                                                    },
+                                                    descricao: {
+                                                        type: 'string',
+                                                        description: 'Descrição do tipo de manutenção',
+                                                        example: 'Manutenção preventiva para troca de óleo do motor'
+                                                    }
+                                                },
+                                                required: [
+                                                    'id',
+                                                    'nome',
+                                                    'valor_score'
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    },
-                    required: [
-                        'id',
-                        'nome',
-                        'valor_score'
                     ]
                 },
                 GastosResponse: {
-                    type: 'object',
-                    properties: {
-                        id: {
-                            type: 'integer',
-                            description: 'ID do gasto',
-                            example: 1
+                    allOf: [
+                        {
+                            $ref: '#/components/schemas/BaseResponse'
                         },
-                        tipo_gasto: {
-                            type: 'string',
-                            description: 'Tipo do gasto',
-                            example: 'Combustível'
-                        },
-                        data_gasto: {
-                            type: 'string',
-                            format: 'date',
-                            description: 'Data do gasto',
-                            example: '2026-05-05'
-                        },
-                        valor: {
-                            type: 'number',
-                            format: 'float',
-                            description: 'Valor do gasto',
-                            example: 150.75
-                        },
-                        fk_id_veiculo: {
-                            type: 'integer',
-                            description: 'ID do veículo',
-                            example: 3
-                        },
-                        fk_id_categoria: {
-                            type: 'integer',
-                            description: 'ID da categoria do gasto',
-                            example: 2
-                        },
-                        is_ativo: {
-                            type: 'boolean',
-                            description: 'Indica se o gasto está ativo',
-                            example: true
+                        {
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'object',
+                                    properties: {
+                                        gastos: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        description: 'ID do gasto',
+                                                        example: 1
+                                                    },
+                                                    tipo_gasto: {
+                                                        type: 'string',
+                                                        description: 'Tipo do gasto',
+                                                        example: 'Combustível'
+                                                    },
+                                                    data_gasto: {
+                                                        type: 'string',
+                                                        format: 'date',
+                                                        description: 'Data do gasto',
+                                                        example: '2026-05-05'
+                                                    },
+                                                    valor: {
+                                                        type: 'number',
+                                                        format: 'float',
+                                                        description: 'Valor do gasto',
+                                                        example: 150.75
+                                                    },
+                                                    fk_id_veiculo: {
+                                                        type: 'integer',
+                                                        description: 'ID do veículo',
+                                                        example: 3
+                                                    },
+                                                    fk_id_categoria: {
+                                                        type: 'integer',
+                                                        description: 'ID da categoria do gasto',
+                                                        example: 2
+                                                    },
+                                                    is_ativo: {
+                                                        type: 'boolean',
+                                                        description: 'Indica se o gasto está ativo',
+                                                        example: true
+                                                    }
+                                                },
+                                                required: [
+                                                    'id',
+                                                    'tipo_gasto',
+                                                    'data_gasto',
+                                                    'valor',
+                                                    'fk_id_veiculo',
+                                                    'fk_id_categoria'
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    },
-                    required: [
-                        'id',
-                        'tipo_gasto',
-                        'data_gasto',
-                        'valor',
-                        'fk_id_veiculo',
-                        'fk_id_categoria'
                     ]
                 },
                 GastosRequest: {
@@ -620,68 +683,107 @@ const options = {
                     ]
                 },
                 CategoriaGastoResponse: {
-                    type: 'object',
-                    properties: {
-                        id: {
-                            type: 'integer',
-                            description: 'ID da categoria de gasto',
-                            example: 1
+                    allOf: [
+                        {
+                            $ref: '#/components/schemas/BaseResponse'
                         },
-                        nome_categoria: {
-                            type: 'string',
-                            description: 'Nome da categoria',
-                            example: 'Combustível'
+                        {
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'object',
+                                    properties: {
+                                        categoria_gasto: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        description: 'ID da categoria de gasto',
+                                                        example: 1
+                                                    },
+                                                    nome_categoria: {
+                                                        type: 'string',
+                                                        description: 'Nome da categoria',
+                                                        example: 'Combustível'
+                                                    }
+                                                },
+                                                required: [
+                                                    'id',
+                                                    'nome_categoria'
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    },
-                    required: [
-                        'id',
-                        'nome_categoria'
                     ]
                 },
                 ServicosResponse: {
-                    type: 'object',
-                    properties: {
-                        id: {
-                            type: 'integer',
-                            description: 'ID do serviço',
-                            example: 1
+                    allOf: [
+                        {
+                            $ref: '#/components/schemas/BaseResponse'
                         },
-                        nome_local: {
-                            type: 'string',
-                            description: 'Nome do local',
-                            example: 'Auto Mecânica Silva'
-                        },
-                        tipo_estabelecimento: {
-                            type: 'string',
-                            description: 'Tipo do estabelecimento',
-                            example: 'Oficina'
-                        },
-                        latitude: {
-                            type: 'number',
-                            format: 'double',
-                            description: 'Latitude do local',
-                            example: -23.550520
-                        },
-                        longitude: {
-                            type: 'number',
-                            format: 'double',
-                            description: 'Longitude do local',
-                            example: -46.633308
-                        },
-                        fk_id_tipo_servico: {
-                            type: 'integer',
-                            description: 'ID do tipo de serviço',
-                            example: 2
+                        {
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'object',
+                                    properties: {
+                                        servico: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        description: 'ID do serviço',
+                                                        example: 1
+                                                    },
+                                                    nome_local: {
+                                                        type: 'string',
+                                                        description: 'Nome do local',
+                                                        example: 'Auto Mecânica Silva'
+                                                    },
+                                                    tipo_estabelecimento: {
+                                                        type: 'string',
+                                                        description: 'Tipo do estabelecimento',
+                                                        example: 'Oficina'
+                                                    },
+                                                    latitude: {
+                                                        type: 'number',
+                                                        format: 'double',
+                                                        description: 'Latitude do local',
+                                                        example: -23.550520
+                                                    },
+                                                    longitude: {
+                                                        type: 'number',
+                                                        format: 'double',
+                                                        description: 'Longitude do local',
+                                                        example: -46.633308
+                                                    },
+                                                    fk_id_tipo_servico: {
+                                                        type: 'integer',
+                                                        description: 'ID do tipo de serviço',
+                                                        example: 2
+                                                    }
+                                                },
+                                                required: [
+                                                    'id',
+                                                    'nome_local',
+                                                    'tipo_estabelecimento',
+                                                    'latitude',
+                                                    'longitude',
+                                                    'fk_id_tipo_servico'
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    },
-                    required: [
-                        'id',
-                        'nome_local',
-                        'tipo_estabelecimento',
-                        'endereco',
-                        'latitude',
-                        'longitude',
-                        'fk_id_tipo_servico'
                     ]
                 },
                 ServicosRequest: {
@@ -718,65 +820,104 @@ const options = {
                     required: [
                         'nome_local',
                         'tipo_estabelecimento',
-                        'endereco',
                         'latitude',
                         'longitude',
                         'fk_id_tipo_servico'
                     ]
                 },
                 TipoServicoResponse: {
-                    type: 'object',
-                    properties: {
-                        id: {
-                            type: 'integer',
-                            description: 'ID do tipo de serviço',
-                            example: 1
+                    allOf: [
+                        {
+                            $ref: '#/components/schemas/BaseResponse'
                         },
-                        nome: {
-                            type: 'string',
-                            description: 'Nome do tipo de serviço',
-                            example: 'Oficina'
+                        {
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'object',
+                                    properties: {
+                                        tipo_servico: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        description: 'ID do tipo de serviço',
+                                                        example: 1
+                                                    },
+                                                    nome: {
+                                                        type: 'string',
+                                                        description: 'Nome do tipo de serviço',
+                                                        example: 'Oficina'
+                                                    }
+                                                },
+                                                required: [
+                                                    'id',
+                                                    'nome'
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    },
-                    required: [
-                        'id',
-                        'nome'
                     ]
                 },
                 EnderecosResponse: {
-                    type: 'object',
-                    properties: {
-                        id: {
-                            type: 'integer',
-                            description: 'ID do endereço',
-                            example: 1
+                    allOf: [
+                        {
+                            $ref: '#/components/schemas/BaseResponse'
                         },
-                        logradouro: {
-                            type: 'string',
-                            description: 'Logradouro (rua, avenida, etc.)',
-                            example: 'Rua das Flores, 123'
-                        },
-                        cep: {
-                            type: 'string',
-                            description: 'CEP do endereço',
-                            example: '06600-000'
-                        },
-                        complemento: {
-                            type: 'string',
-                            description: 'Complemento do endereço',
-                            example: 'Apto 12B'
-                        },
-                        fk_id_servico: {
-                            type: 'integer',
-                            description: 'ID do serviço relacionado',
-                            example: 5
+                        {
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'object',
+                                    properties: {
+                                        endereco: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        description: 'ID do endereço',
+                                                        example: 1
+                                                    },
+                                                    logradouro: {
+                                                        type: 'string',
+                                                        description: 'Logradouro (rua, avenida, etc.)',
+                                                        example: 'Rua das Flores, 123'
+                                                    },
+                                                    cep: {
+                                                        type: 'string',
+                                                        description: 'CEP do endereço',
+                                                        example: '06600-000'
+                                                    },
+                                                    complemento: {
+                                                        type: 'string',
+                                                        description: 'Complemento do endereço',
+                                                        example: 'Apto 12B'
+                                                    },
+                                                    fk_id_servico: {
+                                                        type: 'integer',
+                                                        description: 'ID do serviço relacionado',
+                                                        example: 5
+                                                    }
+                                                },
+                                                required: [
+                                                    'id',
+                                                    'logradouro',
+                                                    'cep',
+                                                    'fk_id_servico'
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    },
-                    required: [
-                        'id',
-                        'logradouro',
-                        'cep',
-                        'fk_id_servico'
                     ]
                 },
                 EnderecosRequest: {
@@ -810,54 +951,74 @@ const options = {
                     ]
                 },
                 LembretesResponse: {
-                    type: 'object',
-                    properties: {
-                        id: {
-                            type: 'integer',
-                            description: 'ID do lembrete',
-                            example: 1
+                    allOf: [
+                        {
+                            $ref: '#/components/schemas/BaseResponse'
                         },
-                        titulo: {
-                            type: 'string',
-                            description: 'Título do lembrete',
-                            example: 'Trocar óleo'
-                        },
-                        descricao: {
-                            type: 'string',
-                            description: 'Descrição do lembrete',
-                            example: 'Realizar troca de óleo do motor'
-                        },
-                        data_criacao: {
-                            type: 'string',
-                            format: 'date-time',
-                            description: 'Data de criação do lembrete',
-                            example: '2026-05-06T10:00:00Z'
-                        },
-                        data_vencimento: {
-                            type: 'string',
-                            format: 'date-time',
-                            description: 'Data de vencimento',
-                            example: '2026-06-01T12:00:00Z'
-                        },
-                        status: {
-                            type: 'string',
-                            description: 'Status do lembrete',
-                            example: 'PENDENTE'
-                        },
-                        fk_id_veiculo: {
-                            type: 'integer',
-                            description: 'ID do veículo',
-                            example: 3
+                        {
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'object',
+                                    properties: {
+                                        lembrete: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        description: 'ID do lembrete',
+                                                        example: 1
+                                                    },
+                                                    titulo: {
+                                                        type: 'string',
+                                                        description: 'Título do lembrete',
+                                                        example: 'Trocar óleo'
+                                                    },
+                                                    descricao: {
+                                                        type: 'string',
+                                                        description: 'Descrição do lembrete',
+                                                        example: 'Realizar troca de óleo do motor'
+                                                    },
+                                                    data_criacao: {
+                                                        type: 'string',
+                                                        format: 'date-time',
+                                                        description: 'Data de criação do lembrete',
+                                                        example: '2026-05-06T10:00:00Z'
+                                                    },
+                                                    data_vencimento: {
+                                                        type: 'string',
+                                                        format: 'date-time',
+                                                        description: 'Data de vencimento',
+                                                        example: '2026-06-01T12:00:00Z'
+                                                    },
+                                                    status: {
+                                                        type: 'string',
+                                                        description: 'Status do lembrete',
+                                                        example: 'PENDENTE'
+                                                    },
+                                                    fk_id_veiculo: {
+                                                        type: 'integer',
+                                                        description: 'ID do veículo',
+                                                        example: 3
+                                                    }
+                                                },
+                                                required: [
+                                                    'id',
+                                                    'titulo',
+                                                    'descricao',
+                                                    'data_criacao',
+                                                    'data_vencimento',
+                                                    'status',
+                                                    'fk_id_veiculo'
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    },
-                    required: [
-                        'id',
-                        'titulo',
-                        'descricao',
-                        'data_criacao',
-                        'data_vencimento',
-                        'status',
-                        'fk_id_veiculo'
                     ]
                 },
                 LembretesRequest: {
@@ -899,41 +1060,61 @@ const options = {
                     ]
                 },
                 ChatbotResponse: {
-                    type: 'object',
-                    properties: {
-                        id: {
-                            type: 'integer',
-                            description: 'ID da interação do chatbot',
-                            example: 1
+                    allOf: [
+                        {
+                            $ref: '#/components/schemas/BaseResponse'
                         },
-                        pergunta: {
-                            type: 'string',
-                            description: 'Pergunta feita pelo usuário',
-                            example: 'Quando devo trocar o óleo do carro?'
-                        },
-                        resposta: {
-                            type: 'string',
-                            description: 'Resposta gerada pelo chatbot',
-                            example: 'Recomenda-se trocar o óleo a cada 10.000 km.'
-                        },
-                        data_interacao: {
-                            type: 'string',
-                            format: 'date-time',
-                            description: 'Data e hora da interação',
-                            example: '2026-05-06T14:30:00Z'
-                        },
-                        fk_id_usuario: {
-                            type: 'integer',
-                            description: 'ID do usuário que fez a pergunta',
-                            example: 2
+                        {
+                            type: 'object',
+                            properties: {
+                                data: {
+                                    type: 'object',
+                                    properties: {
+                                        chatbot: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        description: 'ID da interação do chatbot',
+                                                        example: 1
+                                                    },
+                                                    pergunta: {
+                                                        type: 'string',
+                                                        description: 'Pergunta feita pelo usuário',
+                                                        example: 'Quando devo trocar o óleo do carro?'
+                                                    },
+                                                    resposta: {
+                                                        type: 'string',
+                                                        description: 'Resposta gerada pelo chatbot',
+                                                        example: 'Recomenda-se trocar o óleo a cada 10.000 km.'
+                                                    },
+                                                    data_interacao: {
+                                                        type: 'string',
+                                                        format: 'date-time',
+                                                        description: 'Data e hora da interação',
+                                                        example: '2026-05-06T14:30:00Z'
+                                                    },
+                                                    fk_id_usuario: {
+                                                        type: 'integer',
+                                                        description: 'ID do usuário que fez a pergunta',
+                                                        example: 2
+                                                    }
+                                                },
+                                                required: [
+                                                    'id',
+                                                    'pergunta',
+                                                    'resposta',
+                                                    'data_interacao',
+                                                    'fk_id_usuario'
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    },
-                    required: [
-                        'id',
-                        'pergunta',
-                        'resposta',
-                        'data_interacao',
-                        'fk_id_usuario'
                     ]
                 },
                 ChatbotRequest: {
@@ -964,155 +1145,120 @@ const options = {
             },
             ResponseApi: {
                 ERROR_NOT_FOUND: {
-                    type: 'object',
-                    properties: {
-                        status: {
-                            type: 'boolean',
-                            example: false
-                        },
-                        status_code: {
-                            type: 'integer',
-                            example: 404
-                        },
-                        message: {
-                            type: 'string',
-                            example: 'Não foram encontrados dados de retorno!!!'
+                    allOf: [
+                        { $ref: '#/components/schemas/BaseResponse' },
+                        {
+                            type: 'object',
+                            properties: {
+                                status: { type: 'boolean', example: false },
+                                status_code: { type: 'integer', example: 404 },
+                                message: { type: 'string', example: 'Não foram encontrados dados de retorno!!!' },
+                                data: { type: 'object', nullable: true, example: null }
+                            }
                         }
-                    },
-                    required: ['status', 'status_code', 'message']
+                    ]
                 },
                 ERROR_INTERNAL_SERVER: {
-                    type: 'object',
-                    properties: {
-                        status: {
-                            type: 'boolean',
-                            example: false
-                        },
-                        status_code: {
-                            type: 'integer',
-                            example: 500
-                        },
-                        message: {
-                            type: 'string',
-                            example: 'Não foi possível devido a erros internos no servidor!!!'
+                    allOf: [
+                        { $ref: '#/components/schemas/BaseResponse' },
+                        {
+                            type: 'object',
+                            properties: {
+                                status: { type: 'boolean', example: false },
+                                status_code: { type: 'integer', example: 500 },
+                                message: { type: 'string', example: 'Não foi possível devido a erros internos no servidor!!!' },
+                                data: { type: 'object', nullable: true, example: null }
+                            }
                         }
-                    },
-                    required: ['status', 'status_code', 'message']
+                    ]
                 },
                 ERROR_REQUIRED_FIELDS: {
-                    type: 'object',
-                    properties: {
-                        status: {
-                            type: 'boolean',
-                            example: false
-                        },
-                        status_code: {
-                            type: 'integer',
-                            example: 400
-                        },
-                        message: {
-                            type: 'string',
-                            example: 'Não foi possível processar pois existem campos obrigatórios que devem ser encaminhados e atendidos conforme o desejado!!!'
+                    allOf: [
+                        { $ref: '#/components/schemas/BaseResponse' },
+                        {
+                            type: 'object',
+                            properties: {
+                                status: { type: 'boolean', example: false },
+                                status_code: { type: 'integer', example: 400 },
+                                message: { type: 'string', example: 'Não foi possível processar pois existem campos obrigatórios!!!' },
+                                data: { type: 'object', nullable: true, example: null }
+                            }
                         }
-                    },
-                    required: ['status', 'status_code', 'message']
+                    ]
                 },
                 ERROR_CONTENT_TYPE: {
-                    type: 'object',
-                    properties: {
-                        status: {
-                            type: 'boolean',
-                            example: false
-                        },
-                        status_code: {
-                            type: 'integer',
-                            example: 415
-                        },
-                        message: {
-                            type: 'string',
-                            example: 'Não foi possível processar a requisição o tipo de dados enviados no corpo deve ser JSON!!!'
+                    allOf: [
+                        { $ref: '#/components/schemas/BaseResponse' },
+                        {
+                            type: 'object',
+                            properties: {
+                                status: { type: 'boolean', example: false },
+                                status_code: { type: 'integer', example: 415 },
+                                message: { type: 'string', example: 'Não foi possível processar a requisição o tipo de dados deve ser JSON!!!' },
+                                data: { type: 'object', nullable: true, example: null }
+                            }
                         }
-                    },
-                    required: ['status', 'status_code', 'message']
+                    ]
                 },
                 SUCCESS_REQUEST: {
-                    type: 'object',
-                    properties: {
-                        status: {
-                            type: 'boolean',
-                            example: true
-                        },
-                        status_code: {
-                            type: 'integer',
-                            example: 200
-                        },
-                        message: {
-                            type: 'string',
-                            example: 'Requisição bem sucedida!!!'
+                    allOf: [
+                        { $ref: '#/components/schemas/BaseResponse' },
+                        {
+                            type: 'object',
+                            properties: {
+                                status: { type: 'boolean', example: true },
+                                status_code: { type: 'integer', example: 200 },
+                                message: { type: 'string', example: 'Requisição bem sucedida!!!' },
+                                data: { type: 'object', nullable: true, example: null }
+                            }
                         }
-                    },
-                    required: ['status', 'status_code', 'message']
+                    ]
                 },
                 SUCCESS_DELETE: {
-                    type: 'object',
-                    properties: {
-                        status: {
-                            type: 'boolean',
-                            example: true
-                        },
-                        status_code: {
-                            type: 'integer',
-                            example: 200
-                        },
-                        message: {
-                            type: 'string',
-                            example: 'Delete realizado com sucesso!!!'
+                    allOf: [
+                        { $ref: '#/components/schemas/BaseResponse' },
+                        {
+                            type: 'object',
+                            properties: {
+                                status: { type: 'boolean', example: true },
+                                status_code: { type: 'integer', example: 200 },
+                                message: { type: 'string', example: 'Delete realizado com sucesso!!!' },
+                                data: { type: 'object', nullable: true, example: null }
+                            }
                         }
-                    },
-                    required: ['status', 'status_code', 'message']
+                    ]
                 },
                 SUCCESS_UPDATE_ITEM: {
-                    type: 'object',
-                    properties: {
-                        status: {
-                            type: 'boolean',
-                            example: true
-                        },
-                        status_code: {
-                            type: 'integer',
-                            example: 200
-                        },
-                        message: {
-                            type: 'string',
-                            example: 'Item atualizado com sucesso!!!'
+                    allOf: [
+                        { $ref: '#/components/schemas/BaseResponse' },
+                        {
+                            type: 'object',
+                            properties: {
+                                status: { type: 'boolean', example: true },
+                                status_code: { type: 'integer', example: 200 },
+                                message: { type: 'string', example: 'Item atualizado com sucesso!!!' },
+                                data: { type: 'object', nullable: true, example: null }
+                            }
                         }
-                    },
-                    required: ['status', 'status_code', 'message']
+                    ]
                 },
                 SUCCESS_CREATED_ITEM: {
-                    type: 'object',
-                    properties: {
-                        status: {
-                            type: 'boolean',
-                            example: true
-                        },
-                        status_code: {
-                            type: 'integer',
-                            example: 201
-                        },
-                        message: {
-                            type: 'string',
-                            example: 'Item criado com sucesso!!!'
+                    allOf: [
+                        { $ref: '#/components/schemas/BaseResponse' },
+                        {
+                            type: 'object',
+                            properties: {
+                                status: { type: 'boolean', example: true },
+                                status_code: { type: 'integer', example: 201 },
+                                message: { type: 'string', example: 'Item criado com sucesso!!!' },
+                                data: { type: 'object', nullable: true, example: null }
+                            }
                         }
-                    },
-                    required: ['status', 'status_code', 'message']
+                    ]
                 }
-
             }
-
         },
     },
-
 
     apis: ['./routes/*.js']
 };

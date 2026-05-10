@@ -29,6 +29,7 @@ const controllerVeiculo = require('../controller/veiculo/veiculo_controller.js')
 // });
 
 
+
 /**
  * @swagger
  * /v1/car-assist/veiculo/{id}:
@@ -83,7 +84,7 @@ const controllerVeiculo = require('../controller/veiculo/veiculo_controller.js')
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *        multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/VeiculoRequest'
  *     responses:
@@ -183,31 +184,39 @@ const controllerVeiculo = require('../controller/veiculo/veiculo_controller.js')
  */
 
 //Busca veiculo pelo ID
-router.get('/v1/car-assist/veiculo/:id', cors(), async function(request, response){
+router.get('/v1/car-assist/veiculo/:id', cors(), async function (request, response) {
 
-    let idVeiculo = request.params.id
+    let idVeiculo = request.params.id;
 
-    let veiculo = await controllerVeiculo.buscarVeiculoId(idVeiculo)
-    response.status(veiculo.status_code)
-    response.json(veiculo)
+    let veiculo = await controllerVeiculo.buscarVeiculoId(idVeiculo);
+
+    response.status(veiculo.status_code);
+
+    response.json(veiculo);
 })
 
 //Buscar todos os veiculos
-router.get('/v1/car-assist/veiculos', cors(), async function(request, response){
+router.get('/v1/car-assist/veiculos', cors(), async function (request, response) {
 
-    let veiculo = await controllerVeiculo.listarVeiculos()
-    response.status(veiculo.status_code)
-    response.json(veiculo)
-})
+    let veiculo = await controllerVeiculo.listarVeiculos();
+
+    response.status(veiculo.status_code);
+
+    response.json(veiculo);
+});
 
 //Insere um veiculo
-router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, async function(request, response){
-    let dadosBody = request.body
-    let contentType = request.headers['content-type']
+router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, async function (request, response) {
 
-    let veiculo = await controllerVeiculo.inserirVeiculo(dadosBody, contentType)
-    response.status(veiculo.status_code)
-    response.json(veiculo)
-})
+    let dadosBody = request.body;
+
+    let contentType = request.headers['content-type'];
+
+    let veiculo = await controllerVeiculo.inserirVeiculo(dadosBody, contentType);
+
+    response.status(veiculo.status_code);
+
+    response.json(veiculo);
+});
 
 module.exports = router

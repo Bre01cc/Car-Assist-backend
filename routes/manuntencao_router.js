@@ -32,9 +32,9 @@ const router = express.Router()
  *     requestBody:
  *       required: true
  *       content:
- *        multipart/form-data:
+ *       multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
+ *             $ref: '#/components/schemas/ManutencaoRequest'
  *     responses:
  *       200:
  *         description: Manutenção atualizada com sucesso
@@ -68,9 +68,9 @@ const router = express.Router()
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *        multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
+ *             $ref: '#/components/schemas/ManutencaoRequest'
  *     responses:
  *       201:
  *         description: Manutenção criada com sucesso

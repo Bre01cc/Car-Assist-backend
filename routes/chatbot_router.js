@@ -10,6 +10,7 @@ const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
 
+
 /**
  * @swagger
  * /v1/car-assist/chatbot:
@@ -82,6 +83,5 @@ const bodyParserJSON = bodyParser.json()
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
-
 
 const router = express.Router()

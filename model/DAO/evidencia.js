@@ -26,6 +26,23 @@ const getEvidenceById = async (id) => {
     }
 }
 
+const getEvidenceByIdMaintenance = async (id) => {
+    try {
+        const result = await conexaoKnex.conexao.raw(
+            'select * from vw_evidencia where id_manutencao = ?', [id]
+        );
+
+        if (result && result[0] && result[0].length > 0) {
+            return result[0]
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
+
 //Busca todos as categorias de gastos
 const getAllEvidences = async () => {
     try {
@@ -39,6 +56,23 @@ const getAllEvidences = async () => {
 
         return false
 
+
+    } catch (error) {
+        return false
+    }
+}
+
+const getEvidenceByIdNotMaintenance = async()=>{
+ try {
+        const result = await conexaoKnex.conexao.raw(
+            'select * from vw_evidencia_data where id = ?', [id]
+        );
+
+        if (result && result[0] && result[0].length > 0) {
+            return result[0]
+        } else {
+            return false
+        }
 
     } catch (error) {
         return false
@@ -125,5 +159,7 @@ module.exports = {
     getEvidenceById,
     deleteEvidence,
     postEvidence,
-    putEvidence
+    putEvidence,
+    getEvidenceByIdMaintenance,
+    getEvidenceByIdNotMaintenance
 }
