@@ -105,7 +105,6 @@ const buscarUsuarioEmailComSenha = async (email, senha) => {
 
     try {
 
-        console.log(email, senha)
         //Validação da chegada do ID
         if (email != undefined &&
             email != null &&

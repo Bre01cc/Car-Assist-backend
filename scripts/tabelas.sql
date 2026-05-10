@@ -121,6 +121,7 @@ url VARCHAR(255) NOT NULL,
 fk_id_manutencao INT NOT NULL,
 CONSTRAINT FK_evid_manuten FOREIGN KEY (fk_id_manutencao) REFERENCES tbl_manutencao (id) ON DELETE CASCADE
 );
+
 CREATE TABLE tbl_chatbot (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     pergunta TEXT NOT NULL,

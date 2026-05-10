@@ -120,7 +120,10 @@ const buscarEvidenciaIdMaintenance = async (id) => {
             if (resultEvidencia) {
 
                 if (resultEvidencia.length > 0) {
-                    let evidenciaFormatada = await formatarEvidencia(resultEvidencia[0])
+                    console.log(resultEvidencia)
+                    let evidenciaFormatada = resultEvidencia.map(
+                        evidencia => formatarEvidencia(evidencia)
+                    )
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSSAGENS.SUCCESS_REQUEST,
                         { evidencia: evidenciaFormatada }
@@ -155,62 +158,139 @@ const buscarEvidenciaIdMaintenance = async (id) => {
 
 }
 
-//Retorna um evidencia pelo id da manutenção
-const buscarEvidenciaIdNotMaintenance = async (id) => {
+// Cadastra uma evidência no banco de dados
+const inserirEvidencia = async (evidencia, contentType) => {
 
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     try {
-        //Validação da chegada do ID
-        if (!isNaN(id) && id != null && id > 0) {
-            let resultEvidencia = await evidenciaDAO.getEvidenceByIdNotMaintenance(id)
+
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            // Validação dos dados da evidência
+            let validar = await validarEvidencia(evidencia)
 
 
-            if (resultEvidencia) {
+            if (!validar) {
 
-                if (resultEvidencia.length > 0) {
-                    let evidenciaFormatada = await formatarEvidencia(resultEvidencia[0])
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_REQUEST,
-                        { evidencia: evidenciaFormatada }
-                    )
+                let resultEvidencia = await evidenciaDAO.postEvidence(evidencia)
+                console.log(resultEvidencia)
 
+                if (resultEvidencia) {
+
+                    let ultimoId = await evidenciaDAO.getSelectLastId()
+                    console.log(ultimoId)
+
+                    if (ultimoId) {
+
+                        let evidenciaFormatada = formatarEvidencia(ultimoId[0])
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.SUCCESS_CREATED_ITEM,
+                            evidenciaFormatada
+                        )
+
+                    } else {
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.ERROR_INTERNAL
+                        )
+
+                    }
 
                 } else {
-
                     return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_NOT_FOUND
-                    )//404
+                        MENSSAGENS.ERROR_INTERNAL
+                    )
+
                 }
 
             } else {
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
-                )//404
+                return validar
             }
+
         } else {
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
             return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_REQUIRED_FIELDS
+                MENSSAGENS.ERROR_CONTENT_TYPE
             )
+
+        }
+
+    } catch (error) {
+
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+
+    }
+}
+
+// Atualiza uma evidência pelo id
+const atualizarEvidencia = async (evidencia, id, contentType) => {
+
+    let MENSSAGES = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+
+        // Validação do content-type
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            // Chama a função para validar os dados da evidência
+            let validar = await validarEvidencia(evidencia)
+
+            if (!validar) {
+
+                // Verifica se o ID existe no banco
+                let validarId = await buscarEvidenciaId(id)
+
+                if (validarId.status_code == 200) {
+
+                    // Adiciona o ID no objeto
+                    evidencia.id = Number(id)
+
+                    // Chama a DAO para atualizar
+                    let resultEvidencia = await evidenciaDAO.putEvidence(evidencia)
+
+                    if (resultEvidencia) {
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGES.SUCCESS_UPDATE_ITEM,
+                            { evidencia: evidencia }
+                        )
+
+                    } else {
+                        return MENSSAGES.ERROR_INTERNAL
+                    }
+
+                } else {
+                    return validarId
+                }
+
+            } else {
+                return validar
+            }
+
+        } else {
+            return MENSSAGES.ERROR_CONTENT_TYPE
         }
 
     } catch (error) {
 
         return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL
+            MENSSAGENS.ERROR_INTERNAL_SERVER
         )
-    }
 
+    }
 }
 
 //Desativa um usuário pelo id
-const deletarUsuarioId = async (id) => {
+const deletarEvidenciad = async (id) => {
 
     let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     try {
-        let validarId = await buscarUsuarioId(id)
+        let validarId = await buscarEvidenciaId(id)
+
         if (validarId.status_code == 200) {
 
             let deletarEvidencia = await evidenciaDAO.deleteEvidence(id)
@@ -218,12 +298,12 @@ const deletarUsuarioId = async (id) => {
             if (deletarEvidencia) {
 
                 return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.SUCCESS_DELETE
+                    MENSAGENS.SUCCESS_DELETE
                 )
             }
             else {
                 return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_INTERNAL_SERVER
+                    MENSAGENS.ERROR_INTERNAL_SERVER
                 )
             }
 
@@ -233,7 +313,7 @@ const deletarUsuarioId = async (id) => {
     } catch (error) {
 
         return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+            MENSAGENS.ERROR_INTERNAL_SERVER
         )
     }
 }
@@ -251,10 +331,49 @@ const formatarEvidencia = (evidencia) => {
     }
 }
 
+//Validas os dados da evidência
+const validarEvidencia = async (evidencia) => {
+
+    let MENSSAGES = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    // Validação da URL
+    if (
+        evidencia.url == undefined ||
+        evidencia.url == null ||
+        evidencia.url == '' ||
+        evidencia.url.length > 255
+    ) {
+
+        MENSSAGES.ERROR_REQUIRED_FIELDS.message += '[URL da evidência inválida]'
+        return MENSSAGES.ERROR_REQUIRED_FIELDS
+
+    }
+
+    // Validação da FK manutenção
+    else if (
+        evidencia.fk_id_manutencao <= 0 ||
+        isNaN(evidencia.fk_id_manutencao) ||
+        evidencia.fk_id_manutencao == undefined ||
+        evidencia.fk_id_manutencao == null ||
+        evidencia.fk_id_manutencao == ''
+    ) {
+
+        MENSSAGES.ERROR_REQUIRED_FIELDS.message += '[Id da manutenção incorreto]'
+        return MENSSAGES.ERROR_REQUIRED_FIELDS
+
+    }
+
+    else {
+        return false
+    }
+}
+
+//Exports das funções 
 module.exports = {
     buscarEvidenciaId,
     listarEvidencia,
     buscarEvidenciaIdMaintenance,
-    buscarEvidenciaIdNotMaintenance,
-    deletarUsuarioId
+    deletarEvidenciad,
+    inserirEvidencia,
+    atualizarEvidencia
 }

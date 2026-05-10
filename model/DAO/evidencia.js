@@ -26,6 +26,23 @@ const getEvidenceById = async (id) => {
     }
 }
 
+const getSelectLastId = async () => {
+    try {
+        const result = await conexaoKnex.conexao.raw(
+            'select * from vw_evidencia order by id desc '
+        );
+
+        if (result && result[0] && result[0].length > 0) {
+            return result[0]
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
+
 const getEvidenceByIdMaintenance = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
@@ -62,8 +79,8 @@ const getAllEvidences = async () => {
     }
 }
 
-const getEvidenceByIdNotMaintenance = async()=>{
- try {
+const getEvidenceByIdNotMaintenance = async (id) => {
+    try {
         const result = await conexaoKnex.conexao.raw(
             'select * from vw_evidencia_data where id = ?', [id]
         );
@@ -75,6 +92,7 @@ const getEvidenceByIdNotMaintenance = async()=>{
         }
 
     } catch (error) {
+        
         return false
     }
 }
@@ -161,5 +179,6 @@ module.exports = {
     postEvidence,
     putEvidence,
     getEvidenceByIdMaintenance,
-    getEvidenceByIdNotMaintenance
+    getEvidenceByIdNotMaintenance,
+    getSelectLastId
 }
