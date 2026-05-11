@@ -98,7 +98,7 @@ const getSelectLastId = async () => {
             .orderBy('id', 'desc')
             .limit(1)
 
-        if (result[0]) {
+        if (result[0].length > 0) {
             return Number(result[0].id)
         } else {
             return false
@@ -155,9 +155,6 @@ const getUserByCPF = async (cpf) => {
 const postUser = async (usuario) => {
 
     try {
-        const resultCpf = await getUserByCPF()
-        const resultEmail = await getUserByEmail()
-
 
         const result = await conexaoKnex.conexao.raw(`
        Insert into tbl_usuario(
@@ -184,6 +181,8 @@ const postUser = async (usuario) => {
 
         if (result[0]) {
             return true
+        }else{
+            return false
         }
 
 
@@ -213,7 +212,7 @@ const putUser = async (usuario) => {
             usuario.id
         ])
 
-        if (result[0].affectedRows) {
+        if (result[0].affectedRows>0) {
             return true
         } else {
             return false

@@ -179,7 +179,7 @@ router.post('/v1/car-assist/usuario', cors(), bodyParserJSON, async function (re
 router.delete('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
     let idUsuario = req.params.id;
     let usuario = await controllerUsuario.deletarUsuarioId(idUsuario)
-    console.log(usuario)
+    
     res.status(usuario.status_code).json(usuario);
 });
 
@@ -193,7 +193,7 @@ router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
 router.get('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
     let idUsuario = req.params.id;
     let usuario = await controllerUsuario.buscarUsuarioId(idUsuario)
-    console.log(usuario)
+  
     res.status(usuario.status_code).json(usuario);
 });
 

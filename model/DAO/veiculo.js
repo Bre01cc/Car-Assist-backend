@@ -48,20 +48,28 @@ const getVehicleById = async (id) => {
 }
 
 //Busca veículo com o ultimo ID
-const getSelectLastId = async function () {
+const getSelectLastId = async () => {
     try {
 
         const result = await conexaoKnex.conexao('tbl_veiculo')
             .select('id')
             .orderBy('id', 'desc')
             .limit(1)
+        if (result[0].length > 0) {
 
+        }else{
+            return false
+        }
         return Number(result[0].id)
 
     } catch (error) {
-        console.log(error)
+       
         return false
     }
+}
+
+const getVehicleByPlate = async (placa) => {
+
 }
 
 //Insere um veiculo
@@ -113,6 +121,7 @@ const putVeiculo = async (veiculo) => {
             veiculo.is_ativo,
             veiculo.id
         ])
+        console.log(result)
 
         if (result[0].affectedRows) {
             return true
@@ -121,6 +130,7 @@ const putVeiculo = async (veiculo) => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }

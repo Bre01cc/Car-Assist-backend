@@ -325,7 +325,9 @@ const atualizarUsuario = async (usuario, id, contentType) => {
 
 
                     } else {
-                        return MENSSAGES.ERROR_INTERNAL // 500 model
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGES.ERROR_INTERNAL
+                        ) // 500 model
                     }
 
                 } else {
@@ -336,7 +338,9 @@ const atualizarUsuario = async (usuario, id, contentType) => {
             }
 
         } else {
-            return MENSSAGES.ERROR_CONTENT_TYPE // 415
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGES.ERROR_CONTENT_TYPE
+            ) // 415
         }
 
     } catch (error) {

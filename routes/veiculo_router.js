@@ -196,13 +196,20 @@ router.get('/v1/car-assist/veiculo/:id', cors(), async function (request, respon
 })
 
 //Buscar todos os veiculos
-router.get('/v1/car-assist/veiculos', cors(), async function (request, response) {
+router.get('/v1/car-assist/veiculo', cors(), async function (request, response) {
 
     let veiculo = await controllerVeiculo.listarVeiculos();
 
     response.status(veiculo.status_code);
 
     response.json(veiculo);
+});
+
+router.delete('/v1/car-assist/veiculo/:id', cors(), async (req, res) => {
+    let idVeiculo = req.params.id;
+    let veiculo = await controllerVeiculo.deletarVeiculoId(idVeiculo)
+    
+    res.status(veiculo.status_code).json(veiculo);
 });
 
 //Insere um veiculo
@@ -217,6 +224,19 @@ router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, async function (re
     response.status(veiculo.status_code);
 
     response.json(veiculo);
+});
+
+router.put('/v1/car-assist/veiculo/:id', cors(), bodyParserJSON, async function (request, response) {
+
+    let dadosBody = request.body;
+
+    let idVeiculo = request.params.id;
+
+    let contentType = request.headers['content-type'];
+
+    let veiculo = await controllerVeiculo.atualizarVeiculo(dadosBody, idVeiculo, contentType);
+
+    response.status(veiculo.status_code).json(veiculo);
 });
 
 module.exports = router
