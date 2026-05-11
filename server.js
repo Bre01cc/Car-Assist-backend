@@ -45,13 +45,15 @@ const categoriaGastos = require('./routes/categoria_gasto_route.js');
 const veiculo = require('./routes/veiculo_router.js');
 const usuario = require('./routes/usuario_router.js');
 const evidencia = require('./routes/evidencia_route.js');
-const tipoServico = require('./routes/tipo_servico_router.js')
+const tipoServico = require('./routes/tipo_servico_router.js');
+const servico = require('./routes/servico_router.js');
 
 app.use(categoriaGastos);
 app.use(veiculo);
 app.use(usuario);
 app.use(evidencia);
-app.use(tipoServico)
+app.use(tipoServico);
+app.use(servico)
 
 app.listen(PORT, () => {
     console.log('API aguardando requisições na porta ' + PORT)
