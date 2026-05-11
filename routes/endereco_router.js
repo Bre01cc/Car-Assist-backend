@@ -66,7 +66,7 @@ const bodyParserJSON = bodyParser.json()
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
+ *             $ref: '#/components/schemas/EnderecoRequest'
  *     responses:
  *       201:
  *         description: Endereço criado com sucesso

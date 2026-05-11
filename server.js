@@ -42,10 +42,14 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Imports 
 const categoriaGastos = require('./routes/categoria_gasto_route.js');
+const veiculo = require('./routes/veiculo_router.js');
 const usuario = require('./routes/usuario_router.js');
+const evidencia = require('./routes/evidencia_route.js');
 
-app.use(categoriaGastos)
-app.use(usuario)
+app.use(categoriaGastos);
+app.use(veiculo);
+app.use(usuario);
+app.use(evidencia);
 
 app.listen(PORT, () => {
     console.log('API aguardando requisições na porta ' + PORT)

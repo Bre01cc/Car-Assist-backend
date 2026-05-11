@@ -10,6 +10,46 @@ const usuarioDAO = require('../../model/DAO/usuario.js')
 const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
 
 
+//Retorna todos os usuários
+const listarUsuarios = async () => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+
+        let resultUsuario = await usuarioDAO.getAllUsers()
+
+
+        if (resultUsuario) {
+
+            if (resultUsuario.length > 0) {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.SUCCESS_REQUEST,
+                    { usuarioss: resultUsuario }
+                )
+
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )//404
+            }
+
+        } else {
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_NOT_FOUND
+            )//404
+        }
+
+
+    } catch (error) {
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL
+        )
+    }
+}
 //Retorna um usuário pelo id
 const buscarUsuarioId = async (id) => {
 
@@ -24,28 +64,36 @@ const buscarUsuarioId = async (id) => {
             if (resultUsuario) {
 
                 if (resultUsuario.length > 0) {
-
-                    MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_REQUEST.status
-                    MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_REQUEST.status_code
-                    MENSSAGENS.DEFAULT_HEADER.data.usuario = resultUsuario
-
-                    return MENSSAGENS.DEFAULT_HEADER
-
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.SUCCESS_REQUEST,
+                        { usuario: resultUsuario }
+                    )
 
                 } else {
-                    return MENSSAGENS.ERROR_NOT_FOUND//404
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
                 }
 
             } else {
-                return MENSSAGENS.ERROR_NOT_FOUND
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
             }
         } else {
             MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
-            return MENSSAGENS.ERROR_REQUIRED_FIELDS//400
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
         }
 
     } catch (error) {
-        return MENSSAGENS.ERROR_INTERNAL
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
     }
 
 }
@@ -57,7 +105,6 @@ const buscarUsuarioEmailComSenha = async (email, senha) => {
 
     try {
 
-        console.log(email, senha)
         //Validação da chegada do ID
         if (email != undefined &&
             email != null &&
@@ -80,31 +127,42 @@ const buscarUsuarioEmailComSenha = async (email, senha) => {
 
                     if (usuario) {
 
-                        MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_REQUEST.status
-                        MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_REQUEST.status_code
-                        MENSSAGENS.DEFAULT_HEADER.data.usuario = usuario
-
-                        return MENSSAGENS.DEFAULT_HEADER
+                        DEFAULT_MENSAGENS.criarResposta(SUCCESS_REQUEST,
+                            { usuario: resultUsuario }
+                        )
 
                     } else {
-                        return MENSSAGENS.ERROR_INTERNAL
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.ERROR_NOT_FOUND
+                        )
+
                     }
 
 
                 } else {
-                    return MENSSAGENS.ERROR_NOT_FOUND//404
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
                 }
 
             } else {
-                return MENSSAGENS.ERROR_NOT_FOUND
+                return criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
             }
         } else {
             MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Email incorreto] ou [Senha incorreta]'
-            return MENSSAGENS.ERROR_REQUIRED_FIELDS//400
+
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+
         }
 
     } catch (error) {
-        return MENSSAGENS.ERROR_INTERNAL
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
     }
 
 }
@@ -117,45 +175,56 @@ const buscarUsuarioAtivo = async (id, status) => {
     try {
         if (status == 0 || status == 1 || status == 'false' || status == 'true') {
 
-            if(status == 'false'){
+            if (status == 'false') {
                 status = 0
-            }else if(status == 'true'){
-                 status = 1
+            } else if (status == 'true') {
+                status = 1
             }
             //Validação da chegada do ID
             if (!isNaN(id) && id != null && id > 0) {
-                let resultUsuario = await usuarioDAO.getUserByAtivo(id,status)
+                let resultUsuario = await usuarioDAO.getUserByAtivo(id, status)
 
 
                 if (resultUsuario) {
 
                     if (resultUsuario.length > 0) {
 
-                        MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_REQUEST.status
-                        MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_REQUEST.status_code
-                        MENSSAGENS.DEFAULT_HEADER.data.usuario = resultUsuario
-
-                        return MENSSAGENS.DEFAULT_HEADER
-
+                        return criarResposta(
+                            MENSSAGENS.SUCCESS_REQUEST,
+                            { usuario: resultUsuario }
+                        );
 
                     } else {
-                        return MENSSAGENS.ERROR_NOT_FOUND//404
+                        return criarResposta(
+                            MENSSAGENS.ERROR_NOT_FOUND
+                        )
                     }
 
                 } else {
-                    return MENSSAGENS.ERROR_NOT_FOUND
+                    return criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    );
                 }
             } else {
-                MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
-                return MENSSAGENS.ERROR_REQUIRED_FIELDS//400
+
+                MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]';
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_REQUIRED_FIELDS
+                );
             }
-        }else{
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Status incorreto]'
-            return MENSSAGENS.ERROR_REQUIRED_FIELDS//400
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Status incorreto]';
+
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            );
         }
 
     } catch (error) {
-        return MENSSAGENS.ERROR_INTERNAL
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
     }
 
 }
@@ -186,20 +255,23 @@ const inserirUsuario = async (usuario, contentType) => {
 
                         usuario.id = ultimoId
 
-                        MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_CREATED_ITEM.status
-                        MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_CREATED_ITEM.status_code
-                        MENSSAGENS.DEFAULT_HEADER.message = MENSSAGENS.SUCCESS_CREATED_ITEM.message
-
-                        MENSSAGENS.DEFAULT_HEADER.data = usuario
-
-                        return MENSSAGENS.DEFAULT_HEADER
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.SUCCESS_CREATED_ITEM, usuario
+                        )
 
                     } else {
-                        return MENSSAGENS.ERROR_INTERNAL
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.ERROR_INTERNAL
+                        )
+
                     }
 
                 } else {
-                    return MENSSAGENS.ERROR_INTERNAL
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_INTERNAL
+                    )
                 }
 
             } else {
@@ -207,11 +279,15 @@ const inserirUsuario = async (usuario, contentType) => {
             }
 
         } else {
-            return MENSSAGENS.ERROR_CONTENT_TYPE
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_CONTENT_TYPE
+            )
         }
 
     } catch (error) {
-        return MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
     }
 }
 
@@ -242,13 +318,11 @@ const atualizarUsuario = async (usuario, id, contentType) => {
 
                     if (resultUsuario) {
 
-                        MENSSAGES.DEFAULT_HEADER.status = MENSSAGES.SUCCESS_UPDATE_ITEM.status
-                        MENSSAGES.DEFAULT_HEADER.status_code = MENSSAGES.SUCCESS_UPDATE_ITEM.status_code
-                        MENSSAGES.DEFAULT_HEADER.message = MENSSAGES.SUCCESS_UPDATE_ITEM.message
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGES.SUCCESS_UPDATE_ITEM,
+                            { usuario: usuario }
+                        )
 
-                        MENSSAGES.DEFAULT_HEADER.data.usuario = usuario
-
-                        return MENSSAGES.DEFAULT_HEADER // 200
 
                     } else {
                         return MENSSAGES.ERROR_INTERNAL // 500 model
@@ -266,7 +340,9 @@ const atualizarUsuario = async (usuario, id, contentType) => {
         }
 
     } catch (error) {
-        return MENSSAGES.ERROR_INTERNAL_SERVER
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
     }
 }
 
@@ -283,7 +359,9 @@ const validarUsuario = (usuario, validar) => {
         usuario.nome.length > 100
     ) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Nome incorreto]'
-        return MENSSAGES.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGES.ERROR_REQUIRED_FIELDS
+        )
     }
 
     // Validação do email
@@ -295,7 +373,9 @@ const validarUsuario = (usuario, validar) => {
         !usuario.email.includes('@')
     ) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Email incorreto]'
-        return MENSSAGES.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGES.ERROR_REQUIRED_FIELDS
+        )
     }
 
     // Validação do CPF
@@ -307,7 +387,9 @@ const validarUsuario = (usuario, validar) => {
         isNaN(usuario.cpf)
     ) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [CPF incorreto]'
-        return MENSSAGES.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGES.ERROR_REQUIRED_FIELDS
+        )
     }
 
     // Validação da data de nascimento (opcional)
@@ -318,7 +400,9 @@ const validarUsuario = (usuario, validar) => {
         usuario.data_nascimento.length != 10
     ) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Data de nascimento incorreta]'
-        return MENSSAGES.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGES.ERROR_REQUIRED_FIELDS
+        )
     }
 
     // Validação da senha
@@ -329,7 +413,10 @@ const validarUsuario = (usuario, validar) => {
         usuario.senha.length < 6 && usuario.senha.length > 255
     ) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Senha incorreta]'
-        return MENSSAGES.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGES.ERROR_REQUIRED_FIELDS
+        )
+
     }
 
     // Validação da foto (opcional)
@@ -341,7 +428,10 @@ const validarUsuario = (usuario, validar) => {
             usuario.foto_usuario.length > 255
         ) {
             MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Foto inválida]'
-            return MENSSAGES.ERROR_REQUIRED_FIELDS
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGES.ERROR_REQUIRED_FIELDS
+            )
+
         }
     }
 
@@ -363,15 +453,14 @@ const deletarUsuarioId = async (id) => {
 
             if (deletarUsuario) {
 
-                MENSAGENS.DEFAULT_HEADER.status = MENSAGENS.SUCCESS_REQUEST.status
-                MENSAGENS.DEFAULT_HEADER.status_code = MENSAGENS.SUCCESS_REQUEST.status_code
-                MENSAGENS.DEFAULT_HEADER.message = MENSAGENS.SUCCESS_DELETE.message
-                delete MENSAGENS.DEFAULT_HEADER.data
-
-                return MENSAGENS.DEFAULT_HEADER
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.SUCCESS_DELETE
+                )
             }
             else {
-                return MENSAGENS.ERROR_INTERNAL
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_INTERNAL_SERVER
+                )
             }
 
         } else {
@@ -379,7 +468,9 @@ const deletarUsuarioId = async (id) => {
         }
     } catch (error) {
 
-        return MENSAGENS.ERROR_INTERNAL_SERVER_CONTRLOLLER
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
     }
 }
 
@@ -390,5 +481,6 @@ module.exports = {
     deletarUsuarioId,
     atualizarUsuario,
     buscarUsuarioEmailComSenha,
-    buscarUsuarioAtivo
+    buscarUsuarioAtivo,
+    listarUsuarios
 }

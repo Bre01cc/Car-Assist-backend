@@ -7,7 +7,24 @@
 
 const conexaoKnex = require('../../knex/index.js');
 
-//Busca um usuario pelo id
+//Busca todos os usuários
+const getAllUsers = async () => {
+    try {
+        const result = await conexaoKnex.conexao.raw(
+            'SELECT * FROM vw_usuario'
+        )
+        if (result && result[0] && result[0].length > 0) {
+            return result[0];
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+        return false
+    }
+}
+
+//Busca um usuário pelo id
 const getUserById = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
@@ -27,14 +44,13 @@ const getUserById = async (id) => {
     }
 }
 
-//Busca um usuario pelo id
-
-const getUserByAtivo = async (id,status) => {
+//Busca um usuário pelo id e status
+const getUserByAtivo = async (id, status) => {
     try {
-        console.log(id,status)
+        console.log(id, status)
         const result = await conexaoKnex.conexao.raw(
             'SELECT * FROM vw_usuario WHERE id = ? and is_ativo = ?',
-            [id,status]
+            [id, status]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -49,6 +65,7 @@ const getUserByAtivo = async (id,status) => {
     }
 }
 
+//Busca usuário pelo email
 const getUserByEmail = async (email) => {
     try {
         const result = await conexaoKnex.conexao.raw(
@@ -68,9 +85,10 @@ const getUserByEmail = async (email) => {
     }
 }
 const getUserAndVehicle = () => {
-    
+
 }
 
+//Busca o último id de usuário
 const getSelectLastId = async () => {
     try {
 
@@ -92,13 +110,14 @@ const getSelectLastId = async () => {
     }
 }
 
+//Busca usuário pelo email e senha
 const getUserByEmailAndPassword = async (email, senha) => {
     try {
         const result = await conexaoKnex.conexao.raw(
             'SELECT * FROM tbl_usuario WHERE email = ? and senha = ?',
             [email, senha]
         );
-      
+
 
         if (result && result[0] && result[0].length > 0) {
             return result[0];
@@ -112,6 +131,7 @@ const getUserByEmailAndPassword = async (email, senha) => {
     }
 }
 
+//Busca usuário pelo CPF
 const getUserByCPF = async (cpf) => {
     try {
         const result = await conexaoKnex.conexao.raw(
@@ -131,11 +151,13 @@ const getUserByCPF = async (cpf) => {
     }
 }
 
+//Inserir um usuário
 const postUser = async (usuario) => {
 
     try {
-        const resultCpf = ''
-        const resultEmail = ''
+        const resultCpf = await getUserByCPF()
+        const resultEmail = await getUserByEmail()
+
 
         const result = await conexaoKnex.conexao.raw(`
        Insert into tbl_usuario(
@@ -172,6 +194,7 @@ const postUser = async (usuario) => {
 
 }
 
+//Atualiza um usuário
 const putUser = async (usuario) => {
     try {
         const result = await conexaoKnex.conexao.raw(`
@@ -190,7 +213,7 @@ const putUser = async (usuario) => {
             usuario.id
         ])
 
-        if (result) {
+        if (result[0].affectedRows) {
             return true
         } else {
             return false
@@ -201,6 +224,7 @@ const putUser = async (usuario) => {
     }
 }
 
+//Desativa um usuário
 const deleteUser = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(`
@@ -213,7 +237,7 @@ const deleteUser = async (id) => {
         if (result) {
             return true
         } else {
-            return true
+            return false
         }
     } catch (error) {
         return false
@@ -221,7 +245,7 @@ const deleteUser = async (id) => {
     }
 }
 
-
+//Exports das funções
 module.exports = {
     getUserById,
     postUser,
@@ -229,6 +253,7 @@ module.exports = {
     deleteUser,
     getSelectLastId,
     getUserByEmailAndPassword,
-    getUserByAtivo
+    getUserByAtivo,
+    getAllUsers
 }
 

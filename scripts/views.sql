@@ -103,7 +103,19 @@ usuario.data_nascimento,
 usuario.foto_usuario,
 usuario.is_ativo from tbl_usuario usuario;
 
+create view vw_evidencia_data as select
+evidencia.id,
+evidencia.url from tbl_evidencia evidencia;
+
 select * from vw_gastos;
 select * from vw_servicos;
 
 
+create view vw_evidencia as select 
+evidencia.id,
+evidencia.url,
+manutencao.id,
+manutencao.oficina,
+manutencao.data_manutencao data
+from tbl_evidencia evidencia join tbl_manutencao manutencao on
+evidencia.id = manutencao.id;

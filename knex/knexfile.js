@@ -33,7 +33,7 @@ module.exports = {
     connection: {
       database: 'car_assist_database',
       user:     'root',
-      password: '12345678'
+      password: ''
     },
     pool: {
       min: 2,
