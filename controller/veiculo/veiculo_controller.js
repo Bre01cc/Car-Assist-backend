@@ -22,20 +22,24 @@ const listarVeiculos = async () => {
 
         if (resultVeiculo) {
             if (resultVeiculo.length > 0) {
-                MESSAGES.DEFAULT_HEADER.meta.development = 'Guilherme Moreira'
-                MESSAGES.DEFAULT_HEADER.status = MESSAGES.SUCCESS_REQUEST.status
-                MESSAGES.DEFAULT_HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                MESSAGES.DEFAULT_HEADER.data.veiculos = resultVeiculo
-
-                return MESSAGES.DEFAULT_HEADER //200
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_REQUEST,
+                    { veiculos: resultVeiculo }
+                )
             } else {
-                return MESSAGES.ERROR_NOT_FOUND //404
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
+                ) //404
             }
         } else {
-            return MESSAGES.ERROR_INTERNAL_SERVER_MODEL //500
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_INTERNAL_SERVER_MODEL
+            ) //500
         }
     } catch (error) {
-        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL
+        )
     }
 }
 
@@ -50,26 +54,31 @@ const buscarVeiculoId = async (id) => {
 
             if (resultVeiculo) {
                 if (resultVeiculo.length > 0) {
-                    MESSAGES.DEFAULT_HEADER.meta.development = 'Guilherme Moreira'
-                    MESSAGES.DEFAULT_HEADER.status = MESSAGES.SUCCESS_REQUEST.status
-                    MESSAGES.DEFAULT_HEADER.status_code = MESSAGES.SUCCESS_REQUEST.status_code
-                    MESSAGES.DEFAULT_HEADER.data.veiculo = resultVeiculo
-
-                    return MESSAGES.DEFAULT_HEADER //200
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
+                        { veiculo: resultVeiculo }
+                    ) //200
                 } else {
-                    return MESSAGES.ERROR_NOT_FOUND //404
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
+                    ) //404
                 }
             } else {
-                return MESSAGES.ERROR_INTERNAL
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_INTERNAL
+                )
             }
         } else {
             MESSAGES.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
-            return MESSAGES.ERROR_REQUIRED_FIELDS
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
+            )
         }
 
     } catch (error) {
-        console.log(error)
-        return MESSAGES.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
+        )
     }
 }
 
@@ -85,35 +94,136 @@ const inserirVeiculo = async (veiculo, contentType) => {
                 let resultVeiculo = await veiculoDAO.setInsertVehicle(veiculo)
 
                 if (resultVeiculo) {
-                    
+
                     let lastId = await veiculoDAO.getSelectLastId()
                     if (lastId) {
                         veiculo.id = lastId
-                        MESSAGES.DEFAULT_HEADER.meta.development = 'Guilherme Moreira'
-                        MESSAGES.DEFAULT_HEADER.status = MESSAGES.SUCCESS_CREATED_ITEM.status
-                        MESSAGES.DEFAULT_HEADER.status_code = MESSAGES.SUCCESS_CREATED_ITEM.status_code
-                        MESSAGES.DEFAULT_HEADER.message = MESSAGES.SUCCESS_CREATED_ITEM.message
-                        MESSAGES.DEFAULT_HEADER.data = veiculo
 
-                        return MESSAGES.DEFAULT_HEADER //201
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.SUCCESS_CREATED_ITEM,
+                            { veiculo: veiculo }
+                        )//201
                     } else {
-                        return MESSAGES.ERROR_INTERNAL_SERVER//500
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
+                        )//500
                     }
 
                 } else {
-                    return MESSAGES.ERROR_INTERNAL_SERVER //500
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_INTERNAL_SERVER
+                    ) //500
                 }
 
             } else {
                 return validar //400
             }
         } else {
-            return MESSAGES.ERROR_CONTENT_TYPE //415
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
+            ) //415
         }
 
     } catch (error) {
-        console.log(error)
-        return MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER
+        )
+    }
+}
+
+// Atualiza um veículo pelo id
+const atualizarVeiculo = async (veiculo, id, contentType) => {
+
+    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+
+        // Validação do content-type
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            // Chama a função para validar os dados do veículo
+            let validar = await validarDadosVeiculo(veiculo, true)
+
+            if (!validar) {
+
+                // Verifica se o ID existe no banco
+                let validarId = await buscarVeiculoId(id)
+                
+                if (validarId.status_code == 200) {
+
+                    // Adiciona o ID no objeto
+                    veiculo.id = Number(id)
+
+                    // Chama a DAO para atualizar
+                    let resultVeiculo = await veiculoDAO.putVeiculo(veiculo)
+                   
+                    if (resultVeiculo) {
+
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MENSAGENS.SUCCESS_UPDATE_ITEM,
+                            { veiculo: veiculo }
+                        )
+
+                    } else {
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MENSAGENS.ERROR_INTERNAL
+                        )
+                    }
+
+                } else {
+                    return validarId // retorna erro 400, 404 ou 500
+                }
+
+            } else {
+                return validar // erro de validação
+            }
+
+        } else {
+            return DEFAULT_MESSAGES.criarResposta(
+                MENSAGENS.ERROR_CONTENT_TYPE
+            ) // 415
+        }
+
+    } catch (error) {
+       
+        return DEFAULT_MESSAGES.criarResposta(
+            MENSAGENS.ERROR_INTERNAL_SERVER
+        )
+
+    }
+}
+
+//Desativa um usuário pelo id
+const deletarVeiculoId = async (id) => {
+
+    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+        let validarId = await buscarVeiculoId(id)
+        if (validarId.status_code == 200) {
+
+            let deletarVeiculo = await veiculoDAO.deleteVeiculo(id)
+
+            if (deletarVeiculo) {
+
+                return DEFAULT_MESSAGES.criarResposta(
+                    MENSAGENS.SUCCESS_DELETE
+                )
+            }
+            else {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MENSAGENS.ERROR_INTERNAL_SERVER
+                )
+            }
+
+        } else {
+            return validarId
+        }
+    } catch (error) {
+       
+        return DEFAULT_MESSAGES.criarResposta(
+            MENSAGENS.ERROR_INTERNAL_SERVER
+        )
     }
 }
 
@@ -143,7 +253,9 @@ const validarDadosVeiculo = async function (veiculo) {
     ) {
 
         MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Placa incorreta]'
-        return MESSAGES.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
 
     } else if (
         veiculo.modelo == '' ||
@@ -153,7 +265,9 @@ const validarDadosVeiculo = async function (veiculo) {
     ) {
 
         MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Modelo incorreto]'
-        return MESSAGES.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
 
     } else if (
         veiculo.marca == '' ||
@@ -163,7 +277,9 @@ const validarDadosVeiculo = async function (veiculo) {
     ) {
 
         MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Marca incorreta]'
-        return MESSAGES.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
 
     } else if (
         veiculo.cor == '' ||
@@ -172,12 +288,16 @@ const validarDadosVeiculo = async function (veiculo) {
     ) {
 
         MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Cor incorreta]'
-        return MESSAGES.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
 
     } else if (!coresPermitidas.includes(veiculo.cor)) {
 
         MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Cor inválida]'
-        return MESSAGES.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
 
     } else if (
         veiculo.ano == '' ||
@@ -187,7 +307,9 @@ const validarDadosVeiculo = async function (veiculo) {
     ) {
 
         MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Ano incorreto]'
-        return MESSAGES.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
 
     } else {
         return false
@@ -197,5 +319,7 @@ const validarDadosVeiculo = async function (veiculo) {
 module.exports = {
     listarVeiculos,
     buscarVeiculoId,
-    inserirVeiculo
+    inserirVeiculo,
+    deletarVeiculoId,
+    atualizarVeiculo
 }
