@@ -152,6 +152,215 @@ const buscarServicosIdTipo = async (id) => {
 
 }
 
+// Cadastra um serviço no banco de dados
+const inserirServico = async (servico, contentType) => {
+
+    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            // Validação dos dados do serviço
+            let validar = validarServico(servico)
+
+            if (!validar) {
+
+                let resultServico = await servicoDAO.postServico(servico)
+
+                if (resultServico) {
+
+                    let ultimoId = await servicoDAO.getSelectLastId()
+                  
+                    if (ultimoId) {
+
+                        servico.id = ultimoId[0].id
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSAGENS.SUCCESS_CREATED_ITEM,
+                            servico
+                        )
+
+                    } else {
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSAGENS.ERROR_INTERNAL
+                        )
+
+                    }
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSAGENS.ERROR_INTERNAL
+                    )
+
+                }
+
+            } else {
+                return validar
+            }
+
+        } else {
+
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSAGENS.ERROR_CONTENT_TYPE
+            )
+
+        }
+
+    } catch (error) {
+       
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSAGENS.ERROR_INTERNAL_SERVER
+        )
+
+    }
+
+}
+
+// Atualiza um serviço pelo id
+const atualizarServico = async (servico, id, contentType) => {
+
+    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+
+        // Validação do content-type
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            // Chama a função para validar os dados do serviço
+            let validar = await validarServico(servico)
+
+            if (!validar) {
+
+                // Verifica se o ID existe no banco
+                let validarId = await buscarServicosId(id)
+
+                if (validarId.status_code == 200) {
+
+                    // Adiciona o ID no objeto
+                    servico.id = Number(id)
+
+                    // Chama a DAO para atualizar
+                    let resultServico = await servicoDAO.putServico(servico)
+
+                    if (resultServico) {
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSAGENS.SUCCESS_UPDATE_ITEM,
+                            { servico: servico }
+                        )
+
+                    } else {
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSAGENS.ERROR_INTERNAL
+                        )
+
+                    }
+
+                } else {
+
+                    return validarId // retorna erro 400, 404 ou 500
+
+                }
+
+            } else {
+
+                return validar // erro de validação
+
+            }
+
+        } else {
+
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSAGENS.ERROR_CONTENT_TYPE
+            )
+
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSAGENS.ERROR_INTERNAL_SERVER
+        )
+
+    }
+
+}
+//Validar os dados do serviço
+const validarServico = (servico) => {
+
+    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    // Validação do nome do local
+    if (
+        servico.nome_local == undefined ||
+        servico.nome_local == null ||
+        servico.nome_local == '' ||
+        servico.nome_local.length > 100
+    ) {
+
+        MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Nome do local incorreto]'
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSAGENS.ERROR_REQUIRED_FIELDS
+        )
+
+    }
+
+    // Validação da latitude
+    else if (
+        servico.latitude == undefined ||
+        servico.latitude == null ||
+        servico.latitude == '' ||
+        isNaN(servico.latitude)
+    ) {
+
+        MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Latitude incorreta]'
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSAGENS.ERROR_REQUIRED_FIELDS
+        )
+
+    }
+
+    // Validação da longitude
+    else if (
+        servico.longitude == undefined ||
+        servico.longitude == null ||
+        servico.longitude == '' ||
+        isNaN(servico.longitude)
+    ) {
+
+        MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Longitude incorreta]'
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSAGENS.ERROR_REQUIRED_FIELDS
+        )
+
+    }
+
+    // Validação da FK do tipo de serviço
+    else if (
+        servico.fk_id_tipo_servico == undefined ||
+        servico.fk_id_tipo_servico == null ||
+        servico.fk_id_tipo_servico == '' ||
+        isNaN(servico.fk_id_tipo_servico)
+    ) {
+
+        MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Tipo de serviço incorreto]'
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSAGENS.ERROR_REQUIRED_FIELDS
+        )
+
+    }
+
+    return false
+}
+
 const formatarServico = (servico) => {
 
     return {
@@ -166,8 +375,54 @@ const formatarServico = (servico) => {
     }
 }
 
+// Deleta um serviço pelo id
+const deletarServicoId = async (id) => {
+
+    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+
+        let validarId = await buscarServicosId(id)
+
+        if (validarId.status_code == 200) {
+
+            let deletarServico = await servicoDAO.deleteServico(id)
+
+            if (deletarServico) {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSAGENS.SUCCESS_DELETE
+                )
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSAGENS.ERROR_INTERNAL_SERVER
+                )
+
+            }
+
+        } else {
+
+            return validarId
+
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSAGENS.ERROR_INTERNAL_SERVER
+        )
+
+    }
+
+}
+
 module.exports = {
     listarServicos,
     buscarServicosId,
-    buscarServicosIdTipo
+    buscarServicosIdTipo,
+    inserirServico,
+    atualizarServico,
+    deletarServicoId
 }

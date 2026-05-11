@@ -29,10 +29,10 @@ const getEvidenceById = async (id) => {
 const getSelectLastId = async () => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from vw_evidencia order by id desc '
+            'select * from vw_evidencia order by id desc LIMIT 1 '
         );
 
-        if (result && result[0] && result[0].length > 0) {
+        if (result[0].length > 0) {
             return result[0]
         } else {
             return false
