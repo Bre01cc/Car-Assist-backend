@@ -18,17 +18,34 @@ Empresa especializada no desenvolvimento de aplicações voltadas para o setor a
 Este repositório é destinado ao desenvolvimento do back-end da aplicação **Car Assist**. Nele estão concentrados o código-fonte da API, a documentação Swagger dos endpoints, a organização estrutural do projeto e as tarefas relacionadas à evolução do sistema.
 
 ## Pré-requisitos
+Antes de executar o projeto, é necessário possuir as seguintes ferramentas instaladas na máquina:
 
-## Instalação 
-
-## Tecnologias
+### Tecnologias utilizadas
 | Tecnologia | Versão |
 |------------|--------|
 | Node.js | 20.17.0 |
 | Express.js | 5.2.1 |
-| Knex.js | - |
+| Knex.js |  3.2.10 |
 | Swagger UI Express | 5.0.1 |
+|Git|--|
 
+
+## Instalação 
+Siga os passos abaixo para configurar e executar o projeto localmente:
+#### 1 - Clonar o repositório
+```
+git clone https://github.com/Bre01cc/Car-Assist-backend.git
+```
+#### 2 - instalar dependência 
+```
+npm install
+```
+
+## Executando a API
+```
+node server.js
+```
+---
 ## Estrutura do Projeto
 
 - 📁 `assets/`
@@ -60,12 +77,6 @@ Contém os arquivos DAO (Data Access Object), responsáveis pela comunicação d
 
 ### routes
 Armazena os arquivos de rotas da aplicação. Define os endpoints disponíveis e direciona cada requisição para seu respectivo controller.
-
-### doc
- -  #### components:
- -  #### internal:
-
-### server
 
 
 ## Autores
