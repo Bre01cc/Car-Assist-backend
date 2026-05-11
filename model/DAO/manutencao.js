@@ -12,7 +12,7 @@ const conexaoKnex = require('../../knex/index.js');
 const getMaintenanceById = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from tbl_manutencao where id = ?', [id]
+            'select * from vw_manutencao where id = ?', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -30,7 +30,7 @@ const getMaintenanceById = async (id) => {
 const getMaintenanceByIdType = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from tbl_manutencao where fk_id_tipo_manutencao = ?', [id]
+            'select * from vw_manutencao where id_tipo_manutencao = ?', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -48,7 +48,7 @@ const getMaintenanceByIdType = async (id) => {
 const getMaintenanceByIdUser = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from tbl_manutencao where fk_id_usuario = ?', [id]
+            'select * from vw_manutencao where id_usuario = ?', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -66,7 +66,7 @@ const getMaintenanceByIdUser = async (id) => {
 const getMaintenanceByIdVehicle = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from tbl_manutencao where fk_id_veiculo = ?', [id]
+            'select * from vw_manutencao where id_veiculo = ?', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -84,7 +84,7 @@ const getMaintenanceByIdVehicle = async (id) => {
 const getAllMaintenance = async () => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from tbl_manutencao order by id'
+            'select * from vw_manutencao order by id'
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -112,6 +112,28 @@ const deleteMaintenance = async (id) => {
         return false
     }
 }
+
+//Desativa um usuário
+const statusMaintenance = async (id, status) => {
+    try {
+        const result = await conexaoKnex.conexao.raw(`
+            Update tbl_manutencao
+            set is_ativo = ? where id = ?
+            `, [
+            status,
+            id
+        ])
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+
+    }
+}
+
 
 // Inserir uma manutenção
 const postManutencao = async (manutencao) => {
@@ -150,7 +172,8 @@ const postManutencao = async (manutencao) => {
             manutencao.fk_id_veiculo
         ])
 
-        if (result[0]) {
+        console.log(result)
+        if (result[0].affectedRows>0) {
             return true
         } else {
             return false
@@ -165,6 +188,68 @@ const postManutencao = async (manutencao) => {
 
 }
 
+//Atualiza uma manutenção
+const putManutencao = async (manutencao) => {
+    try {
+
+        const result = await conexaoKnex.conexao.raw(`
+            UPDATE tbl_manutencao
+            SET 
+                data_manutencao = ?,
+                custo = ?,
+                quilometragem = ?,
+                oficina = ?,
+                observacoes = ?,
+                is_ativo = ?,
+                fk_id_tipo_manutencao = ?,
+                fk_id_usuario = ?,
+                fk_id_veiculo = ?
+            WHERE id = ?
+        `, [
+            manutencao.data_manutencao,
+            manutencao.custo,
+            manutencao.quilometragem,
+            manutencao.oficina,
+            manutencao.observacoes,
+            manutencao.is_ativo,
+            manutencao.fk_id_tipo_manutencao,
+            manutencao.fk_id_usuario,
+            manutencao.fk_id_veiculo,
+            manutencao.id
+        ])
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
+
+//Busca o último id de manutenção
+const getSelectLastId = async () => {
+    try {
+
+        let result = await conexaoKnex.conexao
+            .select('id')
+            .from('tbl_manutencao')
+            .orderBy('id', 'desc')
+            .limit(1)
+
+        if (result.length > 0) {
+            return Number(result[0].id)
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
 
 //Exports das funções
 module.exports = {
@@ -173,5 +258,9 @@ module.exports = {
     getMaintenanceByIdType,
     getMaintenanceByIdUser,
     getMaintenanceByIdVehicle,
-    deleteMaintenance
+    deleteMaintenance,
+    statusMaintenance,
+    postManutencao,
+    putManutencao,
+    getSelectLastId
 }

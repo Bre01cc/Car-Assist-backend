@@ -5,8 +5,8 @@
  * Versão: 1.0
  ***********************************************************************************************************************/
 
-const express =    require('express')
-const cors =       require('cors') 
+const express = require('express')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
@@ -168,6 +168,26 @@ const controllerManutencao = require('../controller/manutencao/manutencao_contro
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
 
+router.put('/v1/car-assist/manutencao/:id', cors(), bodyParserJSON, async function (request, response) {
+
+    let dadosBody = request.body;
+
+    let idManutencao = request.params.id;
+
+    let contentType = request.headers['content-type'];
+
+    let manutencao = await controllerManutencao.atualizarManutencao(dadosBody, idManutencao, contentType);
+
+    response.status(manutencao.status_code).json(manutencao);
+});
+
+router.post('/v1/car-assist/manutencao', cors(), bodyParserJSON, async function (request, response) {
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type'];
+    let manutencao = await controllerManutencao.inserirManutencao(dadosBody, contentType);
+    response.status(manutencao.status_code).json(manutencao);
+});
+
 router.get('/v1/car-assist/manutencao', cors(), async (req, res) => {
 
     let manutencao = await controllerManutencao.listarManutencao()
@@ -178,7 +198,28 @@ router.get('/v1/car-assist/manutencao', cors(), async (req, res) => {
 router.get('/v1/car-assist/manutencao/:id', cors(), async (req, res) => {
     let idManutencao = req.params.id;
     let manutencao = await controllerManutencao.buscarManutencaoId(idManutencao)
-  
+
+    res.status(manutencao.status_code).json(manutencao);
+});
+
+router.get('/v1/car-assist/manutencao-tipo/:id', cors(), async (req, res) => {
+    let idTipoManutencao = req.params.id;
+    let manutencao = await controllerManutencao.buscarManutencaoIdTipo(idTipoManutencao)
+
+    res.status(manutencao.status_code).json(manutencao);
+});
+
+router.get('/v1/car-assist/manutencao-usuario/:id', cors(), async (req, res) => {
+    let idUsuario = req.params.id;
+    let manutencao = await controllerManutencao.buscarManutencaoIdUsuario(idUsuario)
+
+    res.status(manutencao.status_code).json(manutencao);
+});
+
+router.get('/v1/car-assist/manutencao-veiculo/:id', cors(), async (req, res) => {
+    let idVeiculo = req.params.id;
+    let manutencao = await controllerManutencao.buscarManutencaoIdVeiculo(idVeiculo)
+
     res.status(manutencao.status_code).json(manutencao);
 });
 

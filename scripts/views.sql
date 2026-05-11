@@ -51,7 +51,6 @@ SELECT
     manutencao.data_manutencao,
     manutencao.custo,
     manutencao.quilometragem,
-    manutencao.pecas,
     manutencao.oficina,
     manutencao.observacoes,
     manutencao.is_ativo,
@@ -66,7 +65,10 @@ SELECT
     veiculo.modelo,
     
     evidencia.id AS id_evidencia,
-    evidencia.url
+    evidencia.url,
+
+    peca.id AS id_peca,
+    peca.nome AS nome_peca
 
 FROM tbl_manutencao manutencao
 
@@ -80,7 +82,10 @@ JOIN tbl_veiculo veiculo
     ON manutencao.fk_id_veiculo = veiculo.id
 
 LEFT JOIN tbl_evidencia evidencia 
-    ON evidencia.fk_id_manutencao = manutencao.id;
+    ON evidencia.fk_id_manutencao = manutencao.id
+
+LEFT JOIN tbl_pecas peca
+    ON peca.fk_id_manutencao = manutencao.id;
 
 
 create view vw_usuario_veiculo as select
@@ -114,8 +119,8 @@ select * from vw_servicos;
 create view vw_evidencia as select 
 evidencia.id,
 evidencia.url,
-manutencao.id,
+manutencao.id id_manutencao,
 manutencao.oficina,
 manutencao.data_manutencao data
 from tbl_evidencia evidencia join tbl_manutencao manutencao on
-evidencia.id = manutencao.id;
+evidencia.fk_id_manutencao = manutencao.id;

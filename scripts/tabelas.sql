@@ -104,15 +104,9 @@ CREATE TABLE tbl_manutencao (
 
 CREATE TABLE tbl_pecas (
    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-   nome VARCHAR(200) not null
-);
-
-CREATE TABLE tbl_manutencao_peca (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    fk_id_manutencao INT NOT NULL,
-	fk_id_peca INT NOT NULL,
-    CONSTRAINT FK_manu_peca_manu FOREIGN KEY (fk_id_manutencao) REFERENCES tbl_manutencao (id)ON DELETE CASCADE,
-    CONSTRAINT FK_manu_peca_peca FOREIGN KEY (fk_id_peca) REFERENCES tbl_pecas (id)ON DELETE CASCADE
+   nome VARCHAR(200) not null,
+   fk_id_manutencao INT NOT NULL,
+   CONSTRAINT FK_manu_pecas_manu FOREIGN KEY (fk_id_manutencao) REFERENCES tbl_manutencao (id)ON DELETE CASCADE
 );
 
 CREATE TABLE tbl_evidencia (

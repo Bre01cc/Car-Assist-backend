@@ -21,10 +21,12 @@ const listarManutencao = async () => {
         if (resultManutencao) {
 
             if (resultManutencao.length > 0) {
-
+                const manutencaoFormatada = resultManutencao.map(
+                    manutencao => formatarManutencao(manutencao)
+                )
                 return DEFAULT_MENSAGENS.criarResposta(
                     MENSSAGENS.SUCCESS_REQUEST,
-                    { manutencoes: resultManutencao }
+                    { manutencoes: manutencaoFormatada }
                 )
 
 
@@ -63,9 +65,12 @@ const buscarManutencaoId = async (id) => {
             if (resultManutencao) {
 
                 if (resultManutencao.length > 0) {
+                    const manutencaoFormatada = resultManutencao.map(
+                        manutencao => formatarManutencao(manutencao)
+                    )
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSSAGENS.SUCCESS_REQUEST,
-                        { manutencao: resultManutencao }
+                        { manutencao: manutencaoFormatada }
                     )
 
                 } else {
@@ -97,6 +102,299 @@ const buscarManutencaoId = async (id) => {
 
 }
 
+//Retorna uma manutenção pelo id do tipo de manutenção
+const buscarManutencaoIdTipo = async (id) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        //Validação da chegada do ID
+        if (!isNaN(id) && id != null && id > 0) {
+            let resultManutencao = await manutencaoDAO.getMaintenanceByIdType(id)
+
+
+            if (resultManutencao) {
+
+                if (resultManutencao.length > 0) {
+                    const manutencaoFormatada = resultManutencao.map(
+                        manutencao => formatarManutencao(manutencao)
+                    )
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.SUCCESS_REQUEST,
+                        { manutencao: manutencaoFormatada }
+                    )
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
+                }
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
+            }
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+
+}
+
+//Retorna uma manutenção pelo id do usuário
+const buscarManutencaoIdUsuario = async (id) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        //Validação da chegada do ID
+        if (!isNaN(id) && id != null && id > 0) {
+            let resultManutencao = await manutencaoDAO.getMaintenanceByIdUser(id)
+
+
+            if (resultManutencao) {
+
+                if (resultManutencao.length > 0) {
+                    const manutencaoFormatada = resultManutencao.map(
+                        manutencao => formatarManutencao(manutencao)
+                    )
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.SUCCESS_REQUEST,
+                        { manutencao: manutencaoFormatada }
+                    )
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
+                }
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
+            }
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+
+}
+
+//Retorna uma manutenção pelo id do usuário
+const buscarManutencaoIdVeiculo = async (id) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        //Validação da chegada do ID
+        if (!isNaN(id) && id != null && id > 0) {
+            let resultManutencao = await manutencaoDAO.getMaintenanceByIdVehicle(id)
+
+
+            if (resultManutencao) {
+
+                if (resultManutencao.length > 0) {
+                    const manutencaoFormatada = resultManutencao.map(
+                        manutencao => formatarManutencao(manutencao)
+                    )
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.SUCCESS_REQUEST,
+                        { manutencao: manutencaoFormatada }
+                    )
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
+                }
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
+            }
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+
+}
+//Cadastra uma manutenção no banco de dados
+const inserirManutencao = async (manutencao, contentType) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            //Validação dos dados da manutenção
+            let validar = validarManutencao(manutencao)
+
+            if (!validar) {
+
+                let resultManutencao = await manutencaoDAO.postManutencao(manutencao)
+              
+                if (resultManutencao) {
+
+                    let ultimoId = await manutencaoDAO.getSelectLastId()
+                 
+
+                    if (ultimoId) {
+
+                        manutencao.id = ultimoId
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.SUCCESS_CREATED_ITEM,
+                            { manutencao: manutencao }
+                        )
+
+                    } else {
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.ERROR_INTERNAL
+                        )
+
+                    }
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_INTERNAL
+                    )
+
+                }
+
+            } else {
+
+                return validar
+
+            }
+
+        } else {
+
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_CONTENT_TYPE
+            )
+
+        }
+
+    } catch (error) {
+      
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+
+    }
+}
+
+
+//Atualiza uma manutenção pelo id
+const atualizarManutencao = async (manutencao, id, contentType) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+
+        //Validação do content-type
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            //Validação dos dados da manutenção
+            let validar = await validarManutencao(manutencao, true)
+
+            if (!validar) {
+
+                //Verifica se o ID existe
+                let validarId = await buscarManutencaoId(id)
+
+                if (validarId.status_code == 200) {
+
+                    //Adiciona o ID no objeto
+                    manutencao.id = Number(id)
+
+                    //Chama a DAO para atualizar
+                    let resultManutencao = await manutencaoDAO.putManutencao(manutencao)
+
+                    if (resultManutencao) {
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.SUCCESS_UPDATE_ITEM,
+                            { manutencao: manutencao }
+                        )
+
+                    } else {
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.ERROR_INTERNAL
+                        )
+
+                    }
+
+                } else {
+
+                    return validarId
+
+                }
+
+            } else {
+
+                return validar
+
+            }
+
+        } else {
+
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_CONTENT_TYPE
+            )
+
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+
+    }
+}
+
+//Valida os dados da manutenção
 const validarManutencao = (manutencao) => {
 
     let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
@@ -231,7 +529,42 @@ const validarManutencao = (manutencao) => {
     return false
 }
 
+//
+
+const formatarManutencao = (manutencao) => {
+    return {
+        id: manutencao.id,
+        data_manutencao: manutencao.data_manutencao,
+        custo: manutencao.custo,
+        quilometragem: manutencao.quilometragem,
+        oficina: manutencao.oficina,
+        observacoes: manutencao.observacoes,
+        is_ativo: manutencao.is_ativo,
+        tipo_manutencao: {
+            id: manutencao.id_manutencao,
+            nome: manutencao.nome_tipo_manutencao,
+        },
+        usuario: {
+            id: manutencao.id_usuario,
+            nome: manutencao.nome_usuario
+        },
+        veiculo: {
+            id: manutencao.id_veiculo,
+            modelo: manutencao.modelo
+        },
+        evidencia: {
+            id: manutencao.id_veiculo,
+            url: manutencao.url
+        }
+    }
+}
+
 module.exports = {
     listarManutencao,
-    buscarManutencaoId
+    buscarManutencaoId,
+    buscarManutencaoIdTipo,
+    buscarManutencaoIdUsuario,
+    buscarManutencaoIdVeiculo,
+    atualizarManutencao,
+    inserirManutencao
 }
