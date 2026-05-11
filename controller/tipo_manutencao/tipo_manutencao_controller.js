@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
  * Objetivo: Arquivo responsável pela manipulação de dados entre o APP e a MODEL do tipo de manutenção
- * Data: 10/05/2026
+ * Data: 11/05/2026
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
@@ -65,7 +65,7 @@ const buscarTipoManutencaoId = async (id) => {
                 if (resultTipoManutencao.length > 0) {
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSSAGENS.SUCCESS_REQUEST,
-                        { usuario: resultTipoManutencao }
+                        { tipos_manutencao: resultTipoManutencao }
                     )
 
                 } else {

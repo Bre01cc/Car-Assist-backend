@@ -13,6 +13,8 @@ const bodyParserJSON = bodyParser.json()
 
 const router = express.Router()
 
+const controllerManutencao = require('../controller/manutencao/manutencao_controller')
+
 
 /**
  * @swagger
@@ -165,5 +167,19 @@ const router = express.Router()
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
+
+router.get('/v1/car-assist/manutencao', cors(), async (req, res) => {
+
+    let manutencao = await controllerManutencao.listarManutencao()
+
+    res.status(manutencao.status_code).json(manutencao);
+});
+
+router.get('/v1/car-assist/manutencao/:id', cors(), async (req, res) => {
+    let idManutencao = req.params.id;
+    let manutencao = await controllerManutencao.buscarManutencaoId(idManutencao)
+  
+    res.status(manutencao.status_code).json(manutencao);
+});
 
 module.exports = router

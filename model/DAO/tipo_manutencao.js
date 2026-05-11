@@ -8,7 +8,7 @@
 //Import do knex
 const conexaoKnex = require('../../knex/index.js');
 
-//Busca uma tipo de serviço pelo id
+//Busca uma tipo de manutenção pelo id
 const getMaintenanceTypeById = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
@@ -26,7 +26,7 @@ const getMaintenanceTypeById = async (id) => {
     }
 }
 
-//Busca todos os tipos de serviços
+//Busca todos os tipos de manutenção
 const getAllMaintenanceType = async () => {
     try {
         const result = await conexaoKnex.conexao.raw(
