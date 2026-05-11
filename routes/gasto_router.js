@@ -9,7 +9,7 @@ const cors =       require('cors')
 const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
-
+const router =         express.Router()
 
 /**
  * @swagger
@@ -128,4 +128,45 @@ const bodyParserJSON = bodyParser.json()
  */
 
 
-const router = express.Router()
+const router = express.Router()/***********************************************************************************************************************
+ * Objetivo: Arquivo responsável pelas rotas referente ao gastos
+ * Data: 11/05/2026
+ * Autor: Breno Oliveira Assis Reis
+ * Versão: 1.0
+ ***********************************************************************************************************************/
+
+const controllerGasto = require('../controller/gasto/gasto_controller.js')
+
+router.get('/v1/car-assist/gastos', cors(), async (req, res) => {
+    let result = await controllerGasto.listarGastos()
+    res.status(result.status_code).json(result)
+})
+
+router.get('/v1/car-assist/gasto/:id', cors(), async (req, res) => {
+    let id = req.params.id
+    let result = await controllerGasto.buscarGastoId(id)
+    res.status(result.status_code).json(result)
+})
+
+router.post('/v1/car-assist/gasto', cors(), bodyParserJSON, async (req, res) => {
+    let dadosBody = req.body
+    let contentType = req.headers['content-type']
+    let result = await controllerGasto.inserirGasto(dadosBody, contentType)
+    res.status(result.status_code).json(result)
+})
+
+router.put('/v1/car-assist/gasto/:id', cors(), bodyParserJSON, async (req, res) => {
+    let id = req.params.id
+    let dadosBody = req.body
+    let contentType = req.headers['content-type']
+    let result = await controllerGasto.atualizarGasto(dadosBody, id, contentType)
+    res.status(result.status_code).json(result)
+})
+
+router.delete('/v1/car-assist/gasto/:id', cors(), async (req, res) => {
+    let id = req.params.id
+    let result = await controllerGasto.deletarGastoId(id)
+    res.status(result.status_code).json(result)
+})
+
+module.exports = router
