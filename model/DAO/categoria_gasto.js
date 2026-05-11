@@ -18,9 +18,9 @@ const getCategoryTypeById = async (id) => {
 
         if (result && result[0] && result[0].length > 0) {
             return result[0]
+        } else {
+            return false
         }
-
-        return false
 
     } catch (error) {
         return false
@@ -36,10 +36,9 @@ const getAllcategoryTypes = async () => {
 
         if (result && result[0] && result[0].length > 0) {
             return result[0]
+        } else {
+            return false
         }
-
-        return false
-
 
     } catch (error) {
         return false
@@ -49,7 +48,7 @@ const getAllcategoryTypes = async () => {
 
 
 //Exports das funções
-module.exports={
+module.exports = {
     getAllcategoryTypes,
     getCategoryTypeById,
 }

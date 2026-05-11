@@ -1,6 +1,325 @@
 /***********************************************************************************************************************
  * Objetivo: Arquivo responsável pela manipulação de dados entre o APP e a MODEL para o CRUD de carro
- * Data: 10/04/2026
- * Autor: Breno Oliveira Assis Reis
+ * Data: 07/05/2026
+ * Autor: Guilherme Moreira de Souza
  * Versão: 1.0
  ***********************************************************************************************************************/
+
+
+//Import da model do DAO do genero    
+const veiculoDAO = require('../../model/DAO/veiculo.js')
+
+//Import do arquivo de mensagens
+const DEFAULT_MESSAGES = require('../modulo/config_messages.js')
+
+const listarVeiculos = async () => {
+
+    //Criando um objeto novo para as mensagens
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+        let resultVeiculo = await veiculoDAO.getAllVehicles()
+
+        if (resultVeiculo) {
+            if (resultVeiculo.length > 0) {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_REQUEST,
+                    { veiculos: resultVeiculo }
+                )
+            } else {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
+                ) //404
+            }
+        } else {
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_INTERNAL_SERVER_MODEL
+            ) //500
+        }
+    } catch (error) {
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL
+        )
+    }
+}
+
+const buscarVeiculoId = async (id) => {
+    //Criando um objeto novo para as mensagens
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+        if (!isNaN(id) && id != '' && id != null && id > 0) {
+            let resultVeiculo = await veiculoDAO.getVehicleById(Number(id))
+
+
+            if (resultVeiculo) {
+                if (resultVeiculo.length > 0) {
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
+                        { veiculo: resultVeiculo }
+                    ) //200
+                } else {
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
+                    ) //404
+                }
+            } else {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_INTERNAL
+                )
+            }
+        } else {
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
+        )
+    }
+}
+
+const inserirVeiculo = async (veiculo, contentType) => {
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+        //validação do tipo de conteúdo
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+            let validar = await validarDadosVeiculo(veiculo)
+
+            if (!validar) {
+                let resultVeiculo = await veiculoDAO.setInsertVehicle(veiculo)
+
+                if (resultVeiculo) {
+
+                    let lastId = await veiculoDAO.getSelectLastId()
+                    if (lastId) {
+                        veiculo.id = lastId
+
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.SUCCESS_CREATED_ITEM,
+                            { veiculo: veiculo }
+                        )//201
+                    } else {
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
+                        )//500
+                    }
+
+                } else {
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_INTERNAL_SERVER
+                    ) //500
+                }
+
+            } else {
+                return validar //400
+            }
+        } else {
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
+            ) //415
+        }
+
+    } catch (error) {
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER
+        )
+    }
+}
+
+// Atualiza um veículo pelo id
+const atualizarVeiculo = async (veiculo, id, contentType) => {
+
+    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+
+        // Validação do content-type
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            // Chama a função para validar os dados do veículo
+            let validar = await validarDadosVeiculo(veiculo, true)
+
+            if (!validar) {
+
+                // Verifica se o ID existe no banco
+                let validarId = await buscarVeiculoId(id)
+                
+                if (validarId.status_code == 200) {
+
+                    // Adiciona o ID no objeto
+                    veiculo.id = Number(id)
+
+                    // Chama a DAO para atualizar
+                    let resultVeiculo = await veiculoDAO.putVeiculo(veiculo)
+                   
+                    if (resultVeiculo) {
+
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MENSAGENS.SUCCESS_UPDATE_ITEM,
+                            { veiculo: veiculo }
+                        )
+
+                    } else {
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MENSAGENS.ERROR_INTERNAL
+                        )
+                    }
+
+                } else {
+                    return validarId // retorna erro 400, 404 ou 500
+                }
+
+            } else {
+                return validar // erro de validação
+            }
+
+        } else {
+            return DEFAULT_MESSAGES.criarResposta(
+                MENSAGENS.ERROR_CONTENT_TYPE
+            ) // 415
+        }
+
+    } catch (error) {
+       
+        return DEFAULT_MESSAGES.criarResposta(
+            MENSAGENS.ERROR_INTERNAL_SERVER
+        )
+
+    }
+}
+
+//Desativa um usuário pelo id
+const deletarVeiculoId = async (id) => {
+
+    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+        let validarId = await buscarVeiculoId(id)
+        if (validarId.status_code == 200) {
+
+            let deletarVeiculo = await veiculoDAO.deleteVeiculo(id)
+
+            if (deletarVeiculo) {
+
+                return DEFAULT_MESSAGES.criarResposta(
+                    MENSAGENS.SUCCESS_DELETE
+                )
+            }
+            else {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MENSAGENS.ERROR_INTERNAL_SERVER
+                )
+            }
+
+        } else {
+            return validarId
+        }
+    } catch (error) {
+       
+        return DEFAULT_MESSAGES.criarResposta(
+            MENSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+}
+
+const validarDadosVeiculo = async function (veiculo) {
+
+    //Criando um objeto novo para as mensagens
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    // Deixa a cor em Upper Case
+    if (veiculo.cor) {
+        veiculo.cor = String(veiculo.cor).toUpperCase()
+    }
+
+    // Lista de cores permitidas
+    const coresPermitidas = [
+        'AMARELO', 'AZUL', 'BRANCO', 'CINZA', 'DOURADO',
+        'LARANJA', 'MARROM', 'PRATA', 'PRETO', 'ROSA',
+        'ROXO', 'VERDE', 'VERMELHO', 'FANTASIA'
+    ]
+
+    //Validação de todas as entradas de dados
+    if (
+        veiculo.placa == '' ||
+        veiculo.placa == undefined ||
+        veiculo.placa == null ||
+        veiculo.placa.length > 10
+    ) {
+
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Placa incorreta]'
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
+
+    } else if (
+        veiculo.modelo == '' ||
+        veiculo.modelo == undefined ||
+        veiculo.modelo == null ||
+        veiculo.modelo.length > 50
+    ) {
+
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Modelo incorreto]'
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
+
+    } else if (
+        veiculo.marca == '' ||
+        veiculo.marca == undefined ||
+        veiculo.marca == null ||
+        veiculo.marca.length > 50
+    ) {
+
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Marca incorreta]'
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
+
+    } else if (
+        veiculo.cor == '' ||
+        veiculo.cor == undefined ||
+        veiculo.cor == null
+    ) {
+
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Cor incorreta]'
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
+
+    } else if (!coresPermitidas.includes(veiculo.cor)) {
+
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Cor inválida]'
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
+
+    } else if (
+        veiculo.ano == '' ||
+        veiculo.ano == undefined ||
+        veiculo.ano == null ||
+        isNaN(veiculo.ano)
+    ) {
+
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Ano incorreto]'
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
+        )
+
+    } else {
+        return false
+    }
+}
+
+module.exports = {
+    listarVeiculos,
+    buscarVeiculoId,
+    inserirVeiculo,
+    deletarVeiculoId,
+    atualizarVeiculo
+}

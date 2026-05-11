@@ -40,7 +40,7 @@ const controllerCategoriaGasto = require('../controller/categoria_gasto/categori
  */
 
 router.get('/v1/car-assist/categoria-gasto', cors(), async (req, res) => {
-    let categoria_gasto = await controllerCategoriaGasto.listarTipoCategoria();
+    let categoria_gasto = await controllerCategoriaGasto.listarCategoriaGasto();
     res.status(categoria_gasto.status_code).json(categoria_gasto);
 });
 
@@ -83,7 +83,7 @@ router.get('/v1/car-assist/categoria-gasto', cors(), async (req, res) => {
 
 router.get('/v1/car-assist/categoria-gasto/:id', cors(), async(req,res)=>{
     let idCategoria_gasto = req.params.id;
-    let categoria_gasto = await controllerCategoriaGasto.buscarCategoriaId(idCategoria_gasto);
+    let categoria_gasto = await controllerCategoriaGasto.buscarCategoriaGastoId(idCategoria_gasto);
     res.status(categoria_gasto.status_code).json(categoria_gasto);
 });
 

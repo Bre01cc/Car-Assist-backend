@@ -12,37 +12,41 @@ const tipoCategoria = require('../../model/DAO/categoria_gasto.js')
 const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
 
 //Retorna todas as categorias de gastos
-const listarTipoCategoria = async () => {
+const listarCategoriaGasto = async () => {
 
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
-    
+
     try {
 
         let resultTipoCategoria = await tipoCategoria.getAllcategoryTypes()
 
         if (resultTipoCategoria) {
             if (resultTipoCategoria.length > 0) {
-                MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_REQUEST.status
-                MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_REQUEST.status_code
-                MENSSAGENS.DEFAULT_HEADER.data.tipo_categoria = resultTipoCategoria
 
-                return MENSSAGENS.DEFAULT_HEADER
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.SUCCESS_REQUEST,
+                    { tipo_categoria: resultTipoCategoria }
+                )
 
             }
 
         } else {
-            return MENSSAGENS.ERROR_INTERNAL_SERVER
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_INTERNAL_SERVER
+            )
         }
 
     } catch (error) {
-        return MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
     }
 }
 
 //Retorna uma categoria de gastos
-const buscarCategoriaId = async (id) => {
+const buscarCategoriaGastoId = async (id) => {
 
-     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     try {
         if (!isNaN(id) && id != null && id > 0) {
@@ -50,31 +54,36 @@ const buscarCategoriaId = async (id) => {
             let resultTipoCategoria = await tipoCategoria.getCategoryTypeById(id)
             console.log(resultTipoCategoria)
 
-            if(resultTipoCategoria){
+            if (resultTipoCategoria) {
 
-                MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_REQUEST.status
-                MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_REQUEST.status_code
-                MENSSAGENS.DEFAULT_HEADER.data.tipo_categoria = resultTipoCategoria
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.SUCCESS_REQUEST,
+                    {tipo_categoria: resultTipoCategoria[0]}
+                )
 
-                return MENSSAGENS.DEFAULT_HEADER
-
-            }else{
-                return MENSSAGENS.ERROR_INTERNAL_SERVER
+            } else {
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_INTERNAL_SERVER
+                )
             }
 
-        }else{
+        } else {
             MENSSAGENS.ERROR_REQUIRED_FIELDS + "[ID incorreto]"
-            return MENSSAGENS.ERROR_REQUIRED_FIELDS
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
         }
 
     } catch (error) {
-         return MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
     }
 
 }
 
 //Exports da funções da controller
 module.exports = {
-    listarTipoCategoria,
-    buscarCategoriaId
+    listarCategoriaGasto,
+    buscarCategoriaGastoId
 }

@@ -1,44 +1,87 @@
 /***********************************************************************************************************************
  * Objetivo: Arquivo responsável pela manipulação de dados entre o APP e a MODEL do tipo de serviço
- * Data: 08/05/2026
- * Autor: Nikolas Fernandes Vieira
+ * Data: 10/05/2026
+ * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
 
-const tipoServicoDAO = require('../../model/DAO/tipo_servico.js')
+//Import da model 
+const tipoServico = require('../../model/DAO/tipo_servico.js')
+
+//Import do arquivo de menssagens
 const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
 
-const listarTodosTiposServicos = async () => {
+//Retorna todas as tipo de serviço
+const listarTipoServico = async () => {
 
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     try {
-        let resultTipos = await tipoServicoDAO.getAllTypes()
 
-        if (resultTipos) {
+        let resultTipoServico = await tipoServico.getAllService()
 
-            if (resultTipos.length > 0) {
+        if (resultTipoServico) {
+            if (resultTipoServico.length > 0) {
 
-                MENSSAGENS.DEFAULT_HEADER.status = MENSSAGENS.SUCCESS_REQUEST.status
-                MENSSAGENS.DEFAULT_HEADER.status_code = MENSSAGENS.SUCCESS_REQUEST.status_code
-                MENSSAGENS.DEFAULT_HEADER.data.tipos_servico = resultTipos
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.SUCCESS_REQUEST,
+                    { tipos_servicos: resultTipoServico }
+                )
 
-                return MENSSAGENS.DEFAULT_HEADER
-
-            } else {
-                return MENSSAGENS.ERROR_NOT_FOUND
             }
 
         } else {
-            return MENSSAGENS.ERROR_INTERNAL
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_INTERNAL_SERVER
+            )
         }
 
     } catch (error) {
-        return MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+}
+
+//Retorna um tipo de serviço
+const buscarTipoServicoId = async (id) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        if (!isNaN(id) && id != null && id > 0) {
+
+            let resultTipoServico = await tipoServico.getServiceById(id)
+
+            if (resultTipoServico) {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.SUCCESS_REQUEST,
+                    {tipos_servico: resultTipoServico[0]}
+                )
+
+            } else {
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_INTERNAL_SERVER
+                )
+            }
+
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS + "[ID incorreto]"
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
     }
 
 }
 
-module.exports = {
-    listarTodosTiposServicos
+module.exports ={
+    listarTipoServico,
+    buscarTipoServicoId
 }

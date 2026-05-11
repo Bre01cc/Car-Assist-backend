@@ -1,0 +1,120 @@
+/***********************************************************************************************************************
+ * Objetivo: Arquivo responsável pelo CRUD de dados no MySQL referente aos Lembretes
+ * Data: 11/05/2026
+ * Autor: Nikolas Fernandes Vieira
+ * Versão: 1.0
+ ***********************************************************************************************************************/
+
+// Import do knex
+const conexaoKnex = require('../../knex/index.js');
+
+// Selecionar todos os lembretes
+const getAllReminders = async () => {
+    try {
+        let sql = 'select * from tbl_lembretes order by id desc';
+        
+        let result = await conexaoKnex.raw(sql);
+
+        if (result[0].length > 0)
+            return result[0];
+        else
+            return false;
+
+    } catch (error) {
+        return false;
+    }
+}
+
+// Selecionar um lembrete pelo ID
+const getReminderById = async (id) => {
+    try {
+        let sql = `select * from tbl_lembretes where id = ${id}`;
+        
+        let result = await conexaoKnex.raw(sql);
+
+        if (result[0].length > 0)
+            return result[0];
+        else
+            return false;
+
+    } catch (error) {
+        return false;
+    }
+}
+
+// Inserir um novo lembrete
+const insertReminder = async (dados) => {
+    try {
+        let sql = `insert into tbl_lembretes (
+                        titulo, 
+                        descricao, 
+                        data_vencimento, 
+                        status, 
+                        fk_id_veiculo
+                    ) values (
+                        '${dados.titulo}', 
+                        '${dados.descricao}', 
+                        '${dados.data_vencimento}', 
+                        '${dados.status}', 
+                        ${dados.fk_id_veiculo}
+                    )`;
+
+        let result = await conexaoKnex.raw(sql);
+
+        if (result)
+            return true;
+        else
+            return false;
+
+    } catch (error) {
+        return false;
+    }
+}
+
+// Atualizar um lembrete
+const updateReminder = async (id, dados) => {
+    try {
+        let sql = `update tbl_lembretes set 
+                        titulo = '${dados.titulo}', 
+                        descricao = '${dados.descricao}', 
+                        data_vencimento = '${dados.data_vencimento}', 
+                        status = '${dados.status}', 
+                        fk_id_veiculo = ${dados.fk_id_veiculo}
+                    where id = ${id}`;
+
+        let result = await conexaoKnex.raw(sql);
+
+        if (result)
+            return true;
+        else
+            return false;
+
+    } catch (error) {
+        return false;
+    }
+}
+
+// Excluir um lembrete
+const deleteReminder = async (id) => {
+    try {
+        let sql = `delete from tbl_lembretes where id = ${id}`;
+        
+        let result = await conexaoKnex.raw(sql);
+
+        if (result)
+            return true;
+        else
+            return false;
+
+    } catch (error) {
+        return false;
+    }
+}
+
+module.exports = {
+    getAllReminders,
+    getReminderById,
+    insertReminder,
+    updateReminder,
+    deleteReminder
+}

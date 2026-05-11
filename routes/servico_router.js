@@ -12,6 +12,8 @@ const bodyParserJSON = bodyParser.json()
 
 const router = express.Router()
 
+const controllerServico = require('../controller/servico/servico_controller.js')
+
 
 /**
  * @swagger
@@ -128,5 +130,53 @@ const router = express.Router()
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
+
+router.put('/v1/car-assist/servico/:id', cors(), bodyParserJSON, async function (request, response) {
+
+    let dadosBody = request.body;
+
+    let idServico = request.params.id;
+
+    let contentType = request.headers['content-type'];
+
+    let servico = await controllerServico.atualizarServico(dadosBody, idServico, contentType);
+
+    response.status(servico.status_code).json(servico);
+});
+
+router.post('/v1/car-assist/servico', cors(), bodyParserJSON, async function (request, response) {
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type'];
+    let servico = await controllerServico.inserirServico(dadosBody, contentType);
+    response.status(servico.status_code).json(servico);
+});
+
+router.delete('/v1/car-assist/servico/:id', cors(), async (req, res) => {
+    let idServico = req.params.id;
+    let servico = await controllerServico.deletarServicoId(idServico)
+    
+    res.status(servico.status_code).json(servico);
+});
+
+router.get('/v1/car-assist/servico', cors(), async (req, res) => {
+
+    let servico = await controllerServico.listarServicos()
+
+    res.status(servico.status_code).json(servico);
+});
+
+router.get('/v1/car-assist/servico/:id', cors(), async (req, res) => {
+    let idServico = req.params.id;
+    let servico = await controllerServico.buscarServicosId(idServico)
+  
+    res.status(servico.status_code).json(servico);
+});
+
+router.get('/v1/car-assist/servico-tipo/:id', cors(), async (req, res) => {
+    let idServico = req.params.id;
+    let servico = await controllerServico.buscarServicosIdTipo(idServico)
+  
+    res.status(servico.status_code).json(servico);
+});
 
 module.exports = router

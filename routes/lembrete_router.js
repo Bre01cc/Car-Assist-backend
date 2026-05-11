@@ -1,14 +1,16 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pelas rotas referente ao lembrete
- * Data: 05/05/2026
- * Autor: Breno Oliveira Assis Reis
+ * Objetivo: Arquivo responsável pelas rotas referente aos Lembretes
+ * Data: 11/05/2026
+ * Autor: Nikolas Fernandes Vieira
  * Versão: 1.0
  ***********************************************************************************************************************/
+
 const express =    require('express')
 const cors =       require('cors') 
 const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
+const router = express.Router()
 
 /**
  * @swagger
@@ -30,7 +32,7 @@ const bodyParserJSON = bodyParser.json()
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
+ *             $ref: '#/components/schemas/LembretesResponse'
  *     responses:
  *       200:
  *         description: Atualiza um Lembrete com sucesso
@@ -66,7 +68,7 @@ const bodyParserJSON = bodyParser.json()
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
+ *             $ref: '#/components/schemas/LembretesResponse'
  *     responses:
  *       201:
  *         description: Lembrete atualizado com sucesso
@@ -126,4 +128,49 @@ const bodyParserJSON = bodyParser.json()
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
 
+
 const router = express.Router()
+
+// Import da Controller de Lembretes
+const controllerLembretes = require('../controller/lembrete/lembrete_controller.js')
+
+// Rota para listar todos os lembretes
+router.get('/v1/car-assist/lembretes', cors(), async (req, res) => {
+    let result = await controllerLembretes.listarLembretes()
+    res.status(result.status_code).json(result)
+})
+
+// Rota para buscar um lembrete pelo ID
+router.get('/v1/car-assist/lembrete/:id', cors(), async (req, res) => {
+    let id = req.params.id
+    let result = await controllerLembretes.buscarLembreteId(id)
+    res.status(result.status_code).json(result)
+})
+
+// Rota para inserir um novo lembrete
+router.post('/v1/car-assist/lembrete', cors(), bodyParserJSON, async (req, res) => {
+    let dadosBody = req.body
+    let contentType = req.headers['content-type']
+    
+    let result = await controllerLembretes.inserirLembrete(dadosBody, contentType)
+    res.status(result.status_code).json(result)
+})
+
+// Rota para atualizar um lembrete pelo ID
+router.put('/v1/car-assist/lembrete/:id', cors(), bodyParserJSON, async (req, res) => {
+    let id = req.params.id
+    let dadosBody = req.body
+    let contentType = req.headers['content-type']
+
+    let result = await controllerLembretes.atualizarLembrete(dadosBody, id, contentType)
+    res.status(result.status_code).json(result)
+})
+
+// Rota para deletar um lembrete pelo ID
+router.delete('/v1/car-assist/lembrete/:id', cors(), async (req, res) => {
+    let id = req.params.id
+    let result = await controllerLembretes.deletarLembreteId(id)
+    res.status(result.status_code).json(result)
+})
+
+module.exports = router
