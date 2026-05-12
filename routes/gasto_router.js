@@ -9,7 +9,7 @@ const cors =       require('cors')
 const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
-const router =         express.Router()
+const router = express.Router()
 
 /**
  * @swagger
@@ -128,12 +128,7 @@ const router =         express.Router()
  */
 
 
-const router = express.Router()/***********************************************************************************************************************
- * Objetivo: Arquivo responsável pelas rotas referente ao gastos
- * Data: 11/05/2026
- * Autor: Breno Oliveira Assis Reis
- * Versão: 1.0
- ***********************************************************************************************************************/
+
 
 const controllerGasto = require('../controller/gasto/gasto_controller.js')
 

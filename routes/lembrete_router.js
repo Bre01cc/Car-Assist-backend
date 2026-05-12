@@ -128,9 +128,6 @@ const router = express.Router()
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
 
-
-const router = express.Router()
-
 // Import da Controller de Lembretes
 const controllerLembretes = require('../controller/lembrete/lembrete_controller.js')
 

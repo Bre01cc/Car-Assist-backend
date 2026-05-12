@@ -18,19 +18,20 @@ const listarLembretes = async () => {
         if (resultLembretes) {
             if (resultLembretes.length > 0) {
                 let lembretesFormatados = resultLembretes.map(lembrete => formatarLembrete(lembrete))
-                
+
                 return DEFAULT_MENSAGENS.criarResposta(
                     MENSSAGENS.SUCCESS_REQUEST,
-                    { lembretes: lembretesFormatados }
+                    { lembretes: lembretesFormatados },
+                    'Nikolas Fernandes'
                 )
             } else {
-                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND)
+                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
             }
         } else {
-            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND)
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
         }
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER)
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
     }
 }
 
@@ -50,17 +51,17 @@ const buscarLembreteId = async (id) => {
                         { lembrete: lembreteFormatado }
                     )
                 } else {
-                    return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND)
+                    return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
                 }
             } else {
-                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND)
+                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
             }
         } else {
             MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
-            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_REQUIRED_FIELDS)
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
         }
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER)
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
     }
 }
 
@@ -79,19 +80,20 @@ const inserirLembrete = async (lembrete, contentType) => {
                     // Nota: se você tiver a função getSelectLastId na DAO de lembretes, use-a aqui
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSAGENS.SUCCESS_CREATED_ITEM,
-                        lembrete
+                        lembrete,
+                        'Nikolas Fernandes'
                     )
                 } else {
-                    return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL)
+                    return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL, null, 'Nikolas Fernandes')
                 }
             } else {
                 return validar
             }
         } else {
-            return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_CONTENT_TYPE)
+            return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_CONTENT_TYPE, null, 'Nikolas Fernandes')
         }
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL_SERVER)
+        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
     }
 }
 
@@ -113,10 +115,11 @@ const atualizarLembrete = async (lembrete, id, contentType) => {
                     if (resultLembrete) {
                         return DEFAULT_MENSAGENS.criarResposta(
                             MENSAGENS.SUCCESS_UPDATE_ITEM,
-                            { lembrete: lembrete }
+                            { lembrete: lembrete },
+                            'Nikolas Fernandes'
                         )
                     } else {
-                        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL)
+                        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL, null, 'Nikolas Fernandes')
                     }
                 } else {
                     return validarId
@@ -125,10 +128,10 @@ const atualizarLembrete = async (lembrete, id, contentType) => {
                 return validar
             }
         } else {
-            return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_CONTENT_TYPE)
+            return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_CONTENT_TYPE, null, 'Nikolas Fernandes')
         }
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL_SERVER)
+        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
     }
 }
 
@@ -143,15 +146,15 @@ const deletarLembreteId = async (id) => {
             let deletarLembrete = await lembreteDAO.deleteReminder(id)
 
             if (deletarLembrete) {
-                return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.SUCCESS_DELETE)
+                return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.SUCCESS_DELETE, null, 'Nikolas Fernandes')
             } else {
-                return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL_SERVER)
+                return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
             }
         } else {
             return validarId
         }
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL_SERVER)
+        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
     }
 }
 
@@ -160,27 +163,39 @@ const validarLembrete = (lembrete) => {
     let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     if (!lembrete.titulo || lembrete.titulo.length > 100) {
+
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Título incorreto]'
-        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_REQUIRED_FIELDS)
-    } 
+        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
+
+    }
     else if (!lembrete.descricao || lembrete.descricao.length > 255) {
+
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Descrição incorreta]'
-        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_REQUIRED_FIELDS)
+        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
+
     }
     else if (!lembrete.data_vencimento) {
+
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Data de vencimento incorreta]'
-        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_REQUIRED_FIELDS)
+        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
+
     }
     else if (!['ativo', 'inativo', 'pendente'].includes(lembrete.status)) {
+
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Status incorreto]'
-        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_REQUIRED_FIELDS)
+        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
+
     }
     else if (!lembrete.fk_id_veiculo || isNaN(lembrete.fk_id_veiculo)) {
+
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Veículo incorreto]'
-        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_REQUIRED_FIELDS)
+        return DEFAULT_MENSAGENS.criarResposta(MENSAGENS.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
+
+    } else {
+        return false
     }
 
-    return false
+
 }
 
 // Formatar a saída do lembrete

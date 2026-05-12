@@ -14,7 +14,6 @@ const router = express.Router()
 
 const controllerTipoServico = require('../controller/tipo_servico/tipo_servico_controller.js')
 
-const controllerTipoServico = require('../controller/tipo_servico_controller.js')
 
 router.get('/v1/car-assist/tipo-servico', cors(), async function (request, response) {
 

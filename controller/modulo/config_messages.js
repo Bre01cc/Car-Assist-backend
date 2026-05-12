@@ -82,10 +82,14 @@ const SUCCESS_CREATED_ITEM = {
     message: "Item criado com sucesso!!!"
 }
 
-const criarResposta = (mensagem, data = null) => {
-    console.log(mensagem)
+const criarResposta = (mensagem, data = null, development = 'Breno Oliveira Assis Reis') => {
+
     return {
-        meta: DEFAULT_HEADER.meta,
+        meta: {
+            api_description: 'API da Car Assist',
+            request_date: new Date().toISOString(),
+            development: DEFAULT_HEADER.meta.development = development
+        },
         status: mensagem.status,
         status_code: mensagem.status_code,
         message: mensagem.message,

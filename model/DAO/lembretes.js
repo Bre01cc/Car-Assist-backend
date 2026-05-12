@@ -13,7 +13,7 @@ const getAllReminders = async () => {
     try {
         let sql = 'select * from tbl_lembretes order by id desc';
         
-        let result = await conexaoKnex.raw(sql);
+        let result = await conexaoKnex.conexao.raw(sql);
 
         if (result[0].length > 0)
             return result[0];
@@ -30,7 +30,7 @@ const getReminderById = async (id) => {
     try {
         let sql = `select * from tbl_lembretes where id = ${id}`;
         
-        let result = await conexaoKnex.raw(sql);
+        let result = await conexaoKnex.conexao.raw(sql);
 
         if (result[0].length > 0)
             return result[0];
@@ -59,9 +59,9 @@ const insertReminder = async (dados) => {
                         ${dados.fk_id_veiculo}
                     )`;
 
-        let result = await conexaoKnex.raw(sql);
+        let result = await conexaoKnex.conexao.raw(sql);
 
-        if (result)
+        if (result[0].affectedRows > 0)
             return true;
         else
             return false;
@@ -82,9 +82,9 @@ const updateReminder = async (id, dados) => {
                         fk_id_veiculo = ${dados.fk_id_veiculo}
                     where id = ${id}`;
 
-        let result = await conexaoKnex.raw(sql);
+        let result = await conexaoKnex.conexao.raw(sql);
 
-        if (result)
+        if (result[0].affectedRows > 0)
             return true;
         else
             return false;
@@ -101,7 +101,7 @@ const deleteReminder = async (id) => {
         
         let result = await conexaoKnex.raw(sql);
 
-        if (result)
+        if (result[0].affectedRows > 0)
             return true;
         else
             return false;

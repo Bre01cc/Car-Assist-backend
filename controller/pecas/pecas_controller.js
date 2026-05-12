@@ -382,5 +382,6 @@ module.exports = {
     listarPecas,
     buscarEvidenciaId,
     inserirPeca,
-    atualizarPeca
+    atualizarPeca,
+    deletarPeca
 }

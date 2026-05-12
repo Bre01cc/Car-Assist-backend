@@ -57,7 +57,8 @@ const buscarTipoServicoId = async (id) => {
 
                 return DEFAULT_MENSAGENS.criarResposta(
                     MENSSAGENS.SUCCESS_REQUEST,
-                    {tipos_servico: resultTipoServico[0]}
+                    {tipos_servico: resultTipoServico[0]},
+               
                 )
 
             } else {

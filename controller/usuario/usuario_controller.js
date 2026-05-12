@@ -52,7 +52,6 @@ const listarUsuarios = async () => {
 }
 //Retorna um usuário pelo id
 const buscarUsuarioId = async (id) => {
-
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     try {

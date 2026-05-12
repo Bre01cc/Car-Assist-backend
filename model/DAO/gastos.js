@@ -1,7 +1,7 @@
 /***********************************************************************************************************************
  * Objetivo: Arquivo responsável pelo CRUD de dados no MySQL referente aos gastos
  * Data: 11/05/2026
- * Autor: Breno Oliveira Assis Reis
+ * Autor: Nikolas Fernandes
  * Versão: 1.0
  ***********************************************************************************************************************/
 
@@ -10,13 +10,14 @@ const conexaoKnex = require('../../knex/index.js');
 const getAllExpenses = async () => {
     try {
         let sql = 'select * from tbl_gastos where is_ativo = true order by id desc';
-        let result = await conexaoKnex.raw(sql);
-
-        if (result.length > 0)
-            return result;
+        let result = await conexaoKnex.conexao.raw(sql);
+        console.log(result)
+        if (result[0].length > 0)
+            return result[0];
         else
             return false;
     } catch (error) {
+        console.log(error)
         return false;
     }
 }
@@ -24,10 +25,10 @@ const getAllExpenses = async () => {
 const getExpenseById = async (id) => {
     try {
         let sql = `select * from tbl_gastos where id = ${id}`;
-        let result = await conexaoKnex.raw(sql);
+        let result = await conexaoKnex.conexao.raw(sql);
 
-        if (result.length > 0)
-            return result;
+        if (result[0].length > 0)
+            return result[0];
         else
             return false;
     } catch (error) {
@@ -49,9 +50,9 @@ const postExpense = async (dados) => {
                         ${dados.fk_id_categoria}
                     )`;
 
-        let result = await conexaoKnex.raw(sql);
+        let result = await conexaoKnex.conexao.raw(sql);
 
-        if (result)
+        if (result[0].affectedRows > 0)
             return true;
         else
             return false;
@@ -70,9 +71,9 @@ const putExpense = async (id, dados) => {
                         is_ativo = ${dados.is_ativo}
                     where id = ${id}`;
 
-        let result = await conexaoKnex.raw(sql);
+        let result = await conexaoKnex.conexao.raw(sql);
 
-        if (result)
+        if (result[0].affectedRows > 0)
             return true;
         else
             return false;
@@ -84,9 +85,9 @@ const putExpense = async (id, dados) => {
 const deleteExpense = async (id) => {
     try {
         let sql = `update tbl_gastos set is_ativo = false where id = ${id}`;
-        let result = await conexaoKnex.raw(sql);
+        let result = await conexaoKnex.conexao.raw(sql);
 
-        if (result)
+        if (result[0].affectedRows > 0)
             return true;
         else
             return false;
@@ -98,9 +99,9 @@ const deleteExpense = async (id) => {
 const getSelectLastId = async () => {
     try {
         let sql = 'select cast(last_insert_id() as DECIMAL) as id from tbl_gastos limit 1';
-        let result = await conexaoKnex.raw(sql);
+        let result = await conexaoKnex.conexao.raw(sql);
 
-        if (result.length > 0)
+        if (result[0].length > 0)
             return result;
         else
             return false;
