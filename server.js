@@ -49,6 +49,7 @@ const tipoServico = require('./routes/tipo_servico_router.js');
 const servico = require('./routes/servico_router.js');
 const tipoManutencao = require('./routes/tipo_manutecao_router.js');
 const manutencao = require('./routes/manuntencao_router.js');
+const pecas = require('./routes/pecas_route.js')
 
 app.use(categoriaGastos);
 app.use(veiculo);
@@ -58,6 +59,7 @@ app.use(tipoServico);
 app.use(servico);
 app.use(tipoManutencao);
 app.use(manutencao);
+app.use(pecas);
 
 
 app.listen(PORT, () => {

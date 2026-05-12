@@ -88,16 +88,6 @@ LEFT JOIN tbl_pecas peca
     ON peca.fk_id_manutencao = manutencao.id;
 
 
-create view vw_usuario_veiculo as select
-usuario.id,
-usuario.nome,
-usuario.cpf,
-usuario.email,
-usuario.data_nascimento,
-usuario.senha,
-usario.foto_usuario,
-usuario.is_ativo
-from tbl_usuario usuario join left 
 
 
 create view vw_usuario as select 
@@ -124,3 +114,12 @@ manutencao.oficina,
 manutencao.data_manutencao data
 from tbl_evidencia evidencia join tbl_manutencao manutencao on
 evidencia.fk_id_manutencao = manutencao.id;
+
+create view vw_pecas as select 
+peca.id,
+peca.nome,
+manutencao.id id_manutencao,
+manutencao.data_manutencao data,
+manutencao.oficina
+from tbl_pecas peca join tbl_manutencao manutencao
+on peca.fk_id_manutencao = manutencao.id;
