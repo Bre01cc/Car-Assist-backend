@@ -1,7 +1,7 @@
 /***********************************************************************************************************************
  * Objetivo: Arquivo responsável pelas rotas referente a evidência
  * Data: 10/04/2026
- * Autor: Breno Oliveira Assis Reis, Guilherme Moreira de Souza
+ * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
 

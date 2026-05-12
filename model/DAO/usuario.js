@@ -98,7 +98,7 @@ const getSelectLastId = async () => {
             .orderBy('id', 'desc')
             .limit(1)
 
-        if (result[0].length > 0) {
+        if (result.length > 0) {
             return Number(result[0].id)
         } else {
             return false
@@ -233,7 +233,7 @@ const deleteUser = async (id) => {
             0,
             id
         ])
-        if (result) {
+        if (result[0].affectedRows>0) {
             return true
         } else {
             return false
