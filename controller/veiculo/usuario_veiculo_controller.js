@@ -1,244 +1,93 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pela manipulação de dados entre o APP e a MODEL para o CRUD de usuário e veículo
- * Data: 07/05/2026
- * Autor: Breno Oliveira Assis Reis
- * Versão: 1.0
+ * Objetivo: Arquivo responsável pela manipulação de dados entre o APP e a MODEL de Usuário-Veículo
+ * Data: 13/05/2026
+ * Autores: Nikolas Fernandes
+ * Versão: 1.1
  ***********************************************************************************************************************/
 
+const usuarioVeiculoDAO = require('../../model/DAO/usuario_veiculo.js')
+const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
 
-// Inserir vínculo usuário-serviço
-const inserirUsuarioServico = async (usuarioServico, contentType) => {
-
+// Retorna todos os vínculos
+const listarVinculos = async () => {
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
-
     try {
+        let result = await usuarioVeiculoDAO.getAllUserVehicles()
+        if (result) {
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_REQUEST, { vinculos: result }, 'Nikolas Fernandes')
+        } else {
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
+        }
+    } catch (error) {
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL, null, 'Nikolas Fernandes')
+    }
+}
 
+// Insere um novo vínculo (Proprietário/Editor/Visualizador)
+const inserirVinculo = async (dados, contentType) => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    try {
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
-
-            let validar = await validarUsuarioServico(usuarioServico)
-
+            let validar = validarVinculo(dados)
             if (!validar) {
-
-                let resultUsuarioServico = await usuarioServicoDAO.postUserService(usuarioServico)
-
-                if (resultUsuarioServico) {
-
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_CREATED_ITEM,
-                        {
-                            usuario_servico: usuarioServico
-                        }
-                    )
-
-                } else {
-
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_INTERNAL_SERVER
-                    )
+                let result = await usuarioVeiculoDAO.postUserVehicle(dados)
+                if (result) {
+                    return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_CREATED_ITEM, dados, 'Nikolas Fernandes')
                 }
-
+                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL, null, 'Nikolas Fernandes')
             } else {
-
                 return validar
             }
-
         } else {
-
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_CONTENT_TYPE
-            )
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_CONTENT_TYPE, null, 'Nikolas Fernandes')
         }
-
     } catch (error) {
-
-        console.log(error)
-
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
-        )
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
     }
 }
 
-// Atualizar vínculo usuário-serviço
-const atualizarUsuarioServico = async (usuarioServico, fk_id_usuario, fk_id_servico, contentType) => {
-
+// Deleta (Desativa) um vínculo pelo ID composto
+const deletarVinculo = async (idUsuario, idVeiculo) => {
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
-
     try {
-
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
-
-            let validar = await validarUsuarioServico(usuarioServico)
-
-            if (!validar) {
-
-                let validarRegistro = await buscarUsuarioServico(
-                    fk_id_usuario,
-                    fk_id_servico
-                )
-
-                if (validarRegistro.status_code == 200) {
-
-                    usuarioServico.fk_id_usuario = Number(fk_id_usuario)
-                    usuarioServico.fk_id_servico = Number(fk_id_servico)
-
-                    let resultUsuarioServico = await usuarioServicoDAO.putUserService(usuarioServico)
-
-                    if (resultUsuarioServico) {
-
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.SUCCESS_UPDATE_ITEM,
-                            {
-                                usuario_servico: usuarioServico
-                            }
-                        )
-
-                    } else {
-
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.ERROR_INTERNAL_SERVER
-                        )
-                    }
-
-                } else {
-
-                    return validarRegistro
-                }
-
-            } else {
-
-                return validar
+        if (!isNaN(idUsuario) && !isNaN(idVeiculo)) {
+            let result = await usuarioVeiculoDAO.deleteUserVehicle(idUsuario, idVeiculo)
+            if (result) {
+                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_DELETE, null, 'Nikolas Fernandes')
             }
-
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
         } else {
-
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_CONTENT_TYPE
-            )
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[IDs incorretos]'
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
         }
-
     } catch (error) {
-
-        console.log(error)
-
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
-        )
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
     }
 }
 
-// Deletar vínculo usuário-serviço
-const deletarUsuarioServico = async (fk_id_usuario, fk_id_servico) => {
+// Validação dos dados de vínculo
+const validarVinculo = (dados) => {
+    let MENSSAGES = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
-
-    try {
-
-        let validarRegistro = await buscarUsuarioServico(
-            fk_id_usuario,
-            fk_id_servico
-        )
-
-        if (validarRegistro.status_code == 200) {
-
-            let deletar = await usuarioServicoDAO.deleteUserServiceById(
-                fk_id_usuario,
-                fk_id_servico
-            )
-
-            if (deletar) {
-
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.SUCCESS_DELETE
-                )
-
-            } else {
-
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_INTERNAL_SERVER
-                )
-            }
-
-        } else {
-
-            return validarRegistro
-        }
-
-    } catch (error) {
-
-        console.log(error)
-
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
-        )
+    if (!dados.fk_id_usuario || isNaN(dados.fk_id_usuario)) {
+        MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Usuário incorreto]'
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
+    } 
+    else if (!dados.fk_id_veiculo || isNaN(dados.fk_id_veiculo)) {
+        MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Veículo incorreto]'
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
     }
-}
-
-// Formata objeto usuário-serviço
-const formatarUsuarioServico = (usuarioServico) => {
-
-    return {
-        fk_id_usuario: usuarioServico.fk_id_usuario,
-        fk_id_servico: usuarioServico.fk_id_servico,
-        data_vinculo: usuarioServico.data_vinculo,
-        data_desvinculo: usuarioServico.data_desvinculo,
-        is_ativo: usuarioServico.is_ativo
+    else if (!dados.data_vinculo || dados.data_vinculo.length != 10) {
+        MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Data de vínculo incorreta]'
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
     }
-}
-
-// Validar vínculo usuário-serviço
-const validarUsuarioServico = async (usuarioServico) => {
-
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
-
-    // Validação FK usuário
-    if (
-        usuarioServico.fk_id_usuario == undefined ||
-        usuarioServico.fk_id_usuario == null ||
-        usuarioServico.fk_id_usuario == '' ||
-        isNaN(usuarioServico.fk_id_usuario) ||
-        usuarioServico.fk_id_usuario <= 0
-    ) {
-
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Id do usuário inválido]'
-
-        return MENSSAGENS.ERROR_REQUIRED_FIELDS
-    }
-
-    // Validação FK serviço
-    else if (
-        usuarioServico.fk_id_servico == undefined ||
-        usuarioServico.fk_id_servico == null ||
-        usuarioServico.fk_id_servico == '' ||
-        isNaN(usuarioServico.fk_id_servico) ||
-        usuarioServico.fk_id_servico <= 0
-    ) {
-
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Id do serviço inválido]'
-
-        return MENSSAGENS.ERROR_REQUIRED_FIELDS
-    }
-
-    // Validação data vínculo
-    else if (
-        usuarioServico.data_vinculo == undefined ||
-        usuarioServico.data_vinculo == null ||
-        usuarioServico.data_vinculo == ''
-    ) {
-
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Data do vínculo inválida]'
-
-        return MENSSAGENS.ERROR_REQUIRED_FIELDS
-    }
-
     else {
-
         return false
     }
 }
 
-module.exports ={
-    inserirUsuarioServico,
-    atualizarUsuarioServico,
-    deletarUsuarioServico
+module.exports = {
+    listarVinculos,
+    inserirVinculo,
+    deletarVinculo
 }
