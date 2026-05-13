@@ -71,7 +71,7 @@ const buscarEvidenciaId = async (id) => {
             if (resultEvidencia) {
 
                 if (resultEvidencia.length > 0) {
-                    let evidenciaFormatada = await formatarEvidencia(resultEvidencia[0])
+                    let evidenciaFormatada = formatarEvidencia(resultEvidencia[0])
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSSAGENS.SUCCESS_REQUEST,
                         { evidencia: evidenciaFormatada }

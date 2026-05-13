@@ -9,7 +9,7 @@ const conexaoKnex = require('../../knex/index.js');
 
 const getAllExpenses = async () => {
     try {
-        let sql = 'select * from tbl_gastos where is_ativo = true order by id desc';
+        let sql = 'select * from vw_gasto where is_ativo = true order by id desc';
         let result = await conexaoKnex.conexao.raw(sql);
         console.log(result)
         if (result[0].length > 0)
@@ -24,7 +24,50 @@ const getAllExpenses = async () => {
 
 const getExpenseById = async (id) => {
     try {
-        let sql = `select * from tbl_gastos where id = ${id}`;
+        let sql = `select * from vw_gasto where id = ${id}`;
+        let result = await conexaoKnex.conexao.raw(sql);
+
+        if (result[0].length > 0)
+            return result[0];
+        else
+            return false;
+    } catch (error) {
+        return false;
+    }
+}
+
+const getExpenseByIdVehicle = async (id) => {
+    try {
+        let sql = `select * from vw_gasto where id_veiculo = ${id}`;
+        let result = await conexaoKnex.conexao.raw(sql);
+
+        if (result[0].length > 0)
+            return result[0];
+        else
+            return false;
+    } catch (error) {
+        return false;
+    }
+}
+const getExpenseByIdVehicleAndType = async (id_veiculo, id_tipo) => {
+    try {
+    
+        let result = await conexaoKnex.conexao.raw('select * from vw_gasto where id_veiculo = ? and id_tipo_gasto = ?',[
+            id_veiculo,id_tipo
+        ]);
+
+        if (result[0].length > 0)
+            return result[0];
+        else
+            return false;
+    } catch (error) {
+        return false;
+    }
+}
+
+const getExpenseByIdType = async (id) => {
+    try {
+        let sql = `select * from vw_gasto where id_tipo_gasto = ${id}`;
         let result = await conexaoKnex.conexao.raw(sql);
 
         if (result[0].length > 0)
@@ -98,11 +141,11 @@ const deleteExpense = async (id) => {
 
 const getSelectLastId = async () => {
     try {
-        let sql = 'select cast(last_insert_id() as DECIMAL) as id from tbl_gastos limit 1';
+        let sql = 'select * from vw_gasto order by id desc limit 1';
         let result = await conexaoKnex.conexao.raw(sql);
-
+console.log(result)
         if (result[0].length > 0)
-            return result;
+            return result[0];
         else
             return false;
     } catch (error) {
@@ -116,5 +159,8 @@ module.exports = {
     postExpense,
     putExpense,
     deleteExpense,
-    getSelectLastId
+    getSelectLastId,
+    getExpenseByIdType,
+    getExpenseByIdVehicle,
+    getExpenseByIdVehicleAndType
 }

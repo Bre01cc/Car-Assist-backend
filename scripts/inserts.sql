@@ -33,16 +33,18 @@ VALUES
 ('2025-02-10 14:00:00', 600.00, 70000, 'Oficina do Zé', 'Troca necessária', 2, 2, 2);
 
 -- PEÇAS
-INSERT INTO tbl_pecas (nome)
-VALUES 
-('Filtro de óleo'),
-('Freios');
-
--- RELAÇÃO MANUTENÇÃO x PEÇAS
-INSERT INTO tbl_manutencao_peca (fk_id_manutencao, fk_id_peca)
-VALUES
-(1, 1),
-(2, 2);
+INSERT INTO tbl_pecas (
+    nome,
+    fk_id_manutencao
+) VALUES
+(
+    'Filtro de óleo',
+    1
+),
+(
+    'Freios',
+    1
+);
 
 -- TIPO DE SERVIÇO
 INSERT INTO tbl_tipo_servico (nome)
