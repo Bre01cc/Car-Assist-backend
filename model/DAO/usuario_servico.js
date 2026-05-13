@@ -7,3 +7,133 @@
 
 //Import do knex
 const conexaoKnex = require('../../knex/index.js');
+
+// Inserir vínculo usuário-serviço
+const postUserService = async (usuarioServico) => {
+
+    try {
+
+        const result = await conexaoKnex.conexao.raw(`
+            INSERT INTO tbl_usuario_servico(
+                fk_id_usuario,
+                fk_id_servico,
+                data_vinculo,
+                data_desvinculo,
+                is_ativo
+            )
+            VALUES(
+                ?,
+                ?,
+                ?,
+                ?,
+                ?
+            )
+        `, [
+            usuarioServico.fk_id_usuario,
+            usuarioServico.fk_id_servico,
+            usuarioServico.data_vinculo,
+            usuarioServico.data_desvinculo,
+            usuarioServico.is_ativo
+        ])
+
+        if (result[0]) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+// Atualizar vínculo usuário-serviço
+const putUserService = async (usuarioServico) => {
+
+    try {
+
+        const result = await conexaoKnex.conexao.raw(`
+            UPDATE tbl_usuario_servico
+            SET
+                data_vinculo = ?,
+                data_desvinculo = ?,
+                is_ativo = ?
+            WHERE fk_id_usuario = ?
+            AND fk_id_servico = ?
+        `, [
+            usuarioServico.data_vinculo,
+            usuarioServico.data_desvinculo,
+            usuarioServico.is_ativo,
+            usuarioServico.fk_id_usuario,
+            usuarioServico.fk_id_servico
+        ])
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+
+//Busca último ID cadastrado
+const getSelectLastId = async () => {
+
+    try {
+
+        const result = await conexaoKnex.conexao.raw(
+            'select * from tbl_usuario_veiculo order by id desc limit 1'
+        )
+
+        if (result[0].length > 0) {
+
+            return result[0]
+
+        } else {
+
+            return false
+        }
+
+    } catch (error) {
+
+        return false
+    }
+}
+
+// Deletar vínculo usuário-serviço
+const deleteUserServiceById = async (fk_id_usuario, fk_id_servico) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(`
+            DELETE FROM tbl_usuario_servico
+            WHERE fk_id_usuario = ?
+            AND fk_id_servico = ?
+        `, [
+            fk_id_usuario,
+            fk_id_servico
+        ])
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+module.exports = {
+    postUserService,
+    putUserService,
+    deleteUserServiceById
+}
