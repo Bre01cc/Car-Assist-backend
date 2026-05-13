@@ -48,6 +48,39 @@ const postUserService = async (usuarioServico) => {
     }
 }
 
+// Atualizar vínculo usuário-serviço
+const putUserService = async (usuarioServico) => {
+
+    try {
+
+        const result = await conexaoKnex.conexao.raw(`
+            UPDATE tbl_usuario_servico
+            SET
+                data_vinculo = ?,
+                data_desvinculo = ?,
+                is_ativo = ?
+            WHERE fk_id_usuario = ?
+            AND fk_id_servico = ?
+        `, [
+            usuarioServico.data_vinculo,
+            usuarioServico.data_desvinculo,
+            usuarioServico.is_ativo,
+            usuarioServico.fk_id_usuario,
+            usuarioServico.fk_id_servico
+        ])
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 const getUserServiceById = async(id) =>{
     try {
         const result = await conexaoKnex.conexao.raw(
