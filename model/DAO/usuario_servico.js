@@ -48,35 +48,17 @@ const postUserService = async (usuarioServico) => {
     }
 }
 
-// Atualizar vínculo usuário-serviço
-const putUserService = async (usuarioServico) => {
-
+const getUserServiceById = async(id) =>{
     try {
-
-        const result = await conexaoKnex.conexao.raw(`
-            UPDATE tbl_usuario_servico
-            SET
-                data_vinculo = ?,
-                data_desvinculo = ?,
-                is_ativo = ?
-            WHERE fk_id_usuario = ?
-            AND fk_id_servico = ?
-        `, [
-            usuarioServico.data_vinculo,
-            usuarioServico.data_desvinculo,
-            usuarioServico.is_ativo,
-            usuarioServico.fk_id_usuario,
-            usuarioServico.fk_id_servico
-        ])
-
-        if (result[0].affectedRows > 0) {
-            return true
-        } else {
+        const result = await conexaoKnex.conexao.raw(
+            'select * from tbl_usuario_servico where id = ?',[id]
+        );
+        if(result[0].length>0){
+            return result[0]
+        }else{
             return false
-        }
-
+        }       
     } catch (error) {
-        console.log(error)
         return false
     }
 }
@@ -107,7 +89,7 @@ const getSelectLastId = async () => {
 }
 
 // Deletar vínculo usuário-serviço
-const deleteUserServiceById = async (fk_id_usuario, fk_id_servico) => {
+const deleteUserServiceByIdUserAndService = async (fk_id_usuario, fk_id_servico) => {
 
     try {
 
@@ -132,8 +114,57 @@ const deleteUserServiceById = async (fk_id_usuario, fk_id_servico) => {
     }
 }
 
+// Deletar vínculo usuário-serviço
+const deleteUserServiceByIdUser = async (fk_id_usuario) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(`
+            DELETE FROM tbl_usuario_servico
+            WHERE fk_id_usuario = ?
+        `, [
+            fk_id_usuario,
+        ])
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+const deleteUserServiceById = async (id) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(`
+            DELETE FROM tbl_usuario_servico
+            WHERE id = ?
+        `, [
+            id
+        ])
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+
 module.exports = {
     postUserService,
-    putUserService,
-    deleteUserServiceById
+    deleteUserServiceById,
+    deleteUserServiceByIdUser,
+    deleteUserServiceByIdUserAndService
 }
