@@ -52,6 +52,7 @@ const manutencao = require('./routes/manuntencao_router.js');
 const pecas = require('./routes/pecas_route.js');
 const gasto = require('./routes/gasto_router.js');
 const lembrete = require('./routes/lembrete_router.js');
+const usuarioVeiculo = require('./routes/usuario_veiculo_router.js');
 
 app.use(categoriaGastos);
 app.use(veiculo);
@@ -64,6 +65,7 @@ app.use(manutencao);
 app.use(pecas);
 app.use(gasto);
 app.use(lembrete);
+app.use(usuarioVeiculo)
 
 
 app.listen(PORT, () => {
