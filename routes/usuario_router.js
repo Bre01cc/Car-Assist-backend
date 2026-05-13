@@ -197,10 +197,10 @@ router.get('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
     res.status(usuario.status_code).json(usuario);
 });
 
-router.get('/v1/car-assist/usuario/:email/:senha', cors(), async (req, res) => {
-    let emailUsuario = req.params.email;
-    let emailSenha = req.params.senha;
-    let usuario = await controllerUsuario.buscarUsuarioEmailComSenha(emailUsuario, emailSenha)
+router.post('/v1/car-assist/usuario/login', cors(), bodyParserJSON, async function (req, res) {
+    let dadosBody = req.body;
+    let contentType = req.headers['content-type'];
+    let usuario = await controllerUsuario.buscarUsuarioEmailComSenha(dadosBody, contentType);
     res.status(usuario.status_code).json(usuario);
 });
 

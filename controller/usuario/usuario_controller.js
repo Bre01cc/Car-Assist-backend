@@ -98,72 +98,85 @@ const buscarUsuarioId = async (id) => {
 }
 
 //Retorna um usuário pelo email e senha
-const buscarUsuarioEmailComSenha = async (email, senha) => {
+const buscarUsuarioEmailComSenha = async (usuario, contentType) => {
 
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     try {
 
-        //Validação da chegada do ID
-        if (email != undefined &&
-            email != null &&
-            email != '' &&
-            email.length < 100 &&
-            email.includes('@')
-            && senha != undefined &&
-            senha != null &&
-            senha != '' &&
-            senha.length < 255
-        ) {
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
-            let resultUsuario = await usuarioDAO.getUserByEmailAndPassword(email, senha)
+            let email = usuario.email
+            let senha = usuario.password
 
-            if (resultUsuario) {
+            if (
+                email != undefined &&
+                email != null &&
+                email != '' &&
+                email.length < 100 &&
+                email.includes('@') &&
 
-                if (resultUsuario.length > 0) {
+                senha != undefined &&
+                senha != null &&
+                senha != '' &&
+                senha.length < 255
+            ) {
 
-                    const usuario = await usuarioDAO.getUserById(resultUsuario[0].id)
+                let resultUsuario = await usuarioDAO.getUserByEmailAndPassword(email, senha)
 
-                    if (usuario) {
+                if (resultUsuario) {
 
-                        DEFAULT_MENSAGENS.criarResposta(SUCCESS_REQUEST,
-                            { usuario: resultUsuario }
+                    if (resultUsuario.length > 0) {
+                        let usuarioFiltrado = usuarioFormatado(resultUsuario[0])
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.SUCCESS_REQUEST,
+                            { usuario: usuarioFiltrado },
+                            "Guilherme Moreira de Souza"
                         )
 
                     } else {
+
                         return DEFAULT_MENSAGENS.criarResposta(
                             MENSSAGENS.ERROR_NOT_FOUND
                         )
 
                     }
 
-
                 } else {
+
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSSAGENS.ERROR_NOT_FOUND
                     )
+
                 }
 
             } else {
-                return criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+
+                MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Email incorreto] ou [Senha incorreta]'
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_REQUIRED_FIELDS
                 )
+
             }
+
         } else {
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Email incorreto] ou [Senha incorreta]'
 
             return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_REQUIRED_FIELDS
+                MENSSAGENS.ERROR_CONTENT_TYPE
             )
 
         }
 
     } catch (error) {
+        console.log(error)
+
         return DEFAULT_MENSAGENS.criarResposta(
             MENSSAGENS.ERROR_INTERNAL_SERVER
         )
-    }
 
+    }
 }
 
 //Retorna um usuário ativo pelo id 
@@ -474,6 +487,18 @@ const deletarUsuarioId = async (id) => {
         return DEFAULT_MENSAGENS.criarResposta(
             MENSSAGENS.ERROR_INTERNAL_SERVER
         )
+    }
+}
+
+const usuarioFormatado = (usuario) => {
+    return {
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email,
+        cpf: usuario.cpf,
+        data_nascimento: usuario.data_nascimento,
+        foto_usuario: usuario.foto_usuario,
+        is_ativo: usuario.is_ativo
     }
 }
 
