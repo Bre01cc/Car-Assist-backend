@@ -5,11 +5,11 @@
  * Versão: 1.0
  ***********************************************************************************************************************/
 
-const usuarioServicoDAO = require('../../model/DAO/usuario_servico')
-const servicoController = require('../servico/servico_controller')
-const usuarioController = require('../usuario/usuario_controller')
+const usuarioServicoDAO = require('../../model/DAO/usuario_servico.js')
+const servicoController = require('../servico/servico_controller.js')
+const usuarioController = require('./usuario_controller.js')
 
-const { DEFAULT_MENSAGENS } = require('../../modulo/config')
+const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
 
 // Vincula um usuário a um serviço
 const inserirUsuarioServico = async (usuarioServico, contentType) => {
@@ -95,7 +95,7 @@ const validarUsuarioServico = async (usuarioServico) => {
     }
 
     // Verifica se o serviço existe
-    let validarServico = await servicoController.buscarServicoId(usuarioServico.fk_id_servicos)
+    let validarServico = await servicoController.buscarServicosId(usuarioServico.fk_id_servicos)
 
     if (validarServico.status_code != 200) {
 
@@ -119,6 +119,14 @@ const validarUsuarioServico = async (usuarioServico) => {
     }
 
     return false
+}
+
+const buscarUsuarioServico = async(idUsuario, idServico)=>{
+try {
+    
+} catch (error) {
+    return DE
+}
 }
 
 // Deleta vínculo usuário-serviço

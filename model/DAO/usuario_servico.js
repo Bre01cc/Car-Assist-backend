@@ -8,7 +8,15 @@
 //Import do knex
 const conexaoKnex = require('../../knex/index.js');
 
-// Inserir vínculo usuário-serviço
+const getUserServiceByIdServiceAndUser = async (id_usuario,) => {
+    try {
+        const result = conexaoKnex.conexao.raw(
+            'select * from tbl_usuario_servico where fk_id_usuario = ? and fk_id_servico = ?'
+        )
+    } catch (error) {
+        return false
+    }
+}
 const postUserService = async (usuarioServico) => {
 
     try {
@@ -16,31 +24,21 @@ const postUserService = async (usuarioServico) => {
         const result = await conexaoKnex.conexao.raw(`
             INSERT INTO tbl_usuario_servico(
                 fk_id_usuario,
-                fk_id_servico,
-                data_vinculo,
-                data_desvinculo,
-                is_ativo
+                fk_id_servicos,
+                data_vinculo
             )
             VALUES(
-                ?,
-                ?,
                 ?,
                 ?,
                 ?
             )
         `, [
             usuarioServico.fk_id_usuario,
-            usuarioServico.fk_id_servico,
-            usuarioServico.data_vinculo,
-            usuarioServico.data_desvinculo,
-            usuarioServico.is_ativo
+            usuarioServico.fk_id_servicos,
+            usuarioServico.data_vinculo || new Date()
         ])
 
-        if (result[0]) {
-            return true
-        } else {
-            return false
-        }
+        return result
 
     } catch (error) {
         console.log(error)
@@ -81,16 +79,16 @@ const putUserService = async (usuarioServico) => {
     }
 }
 
-const getUserServiceById = async(id) =>{
+const getUserServiceById = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from tbl_usuario_servico where id = ?',[id]
+            'select * from tbl_usuario_servico where id = ?', [id]
         );
-        if(result[0].length>0){
+        if (result[0].length > 0) {
             return result[0]
-        }else{
+        } else {
             return false
-        }       
+        }
     } catch (error) {
         return false
     }
@@ -122,7 +120,7 @@ const getSelectLastId = async () => {
 }
 
 // Deletar vínculo usuário-serviço
-const deleteUserServiceByIdUserAndService = async (fk_id_usuario, fk_id_servico) => {
+const deleteUserServiceByIdUserAndService = async (id_usuario, id_servico) => {
 
     try {
 
@@ -131,8 +129,8 @@ const deleteUserServiceByIdUserAndService = async (fk_id_usuario, fk_id_servico)
             WHERE fk_id_usuario = ?
             AND fk_id_servico = ?
         `, [
-            fk_id_usuario,
-            fk_id_servico
+            id_usuario,
+            id_servico
         ])
 
         if (result[0].affectedRows > 0) {
@@ -148,7 +146,7 @@ const deleteUserServiceByIdUserAndService = async (fk_id_usuario, fk_id_servico)
 }
 
 // Deletar vínculo usuário-serviço
-const deleteUserServiceByIdUser = async (fk_id_usuario) => {
+const deleteUserServiceByIdUser = async (id_usuario) => {
 
     try {
 
@@ -156,7 +154,7 @@ const deleteUserServiceByIdUser = async (fk_id_usuario) => {
             DELETE FROM tbl_usuario_servico
             WHERE fk_id_usuario = ?
         `, [
-            fk_id_usuario,
+            id_usuario,
         ])
 
         if (result[0].affectedRows > 0) {
