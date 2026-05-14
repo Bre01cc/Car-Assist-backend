@@ -89,6 +89,7 @@ CREATE TABLE tbl_gastos (
 CREATE TABLE tbl_manutencao (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     data_manutencao DATETIME NOT NULL,
+    data_criacao DATETIME NOT NULL,
     custo DECIMAL(10,2) NOT NULL,
     quilometragem INT NOT NULL,
     oficina VARCHAR(100) NULL,
@@ -132,6 +133,10 @@ CREATE TABLE tbl_usuario_servico (
     CONSTRAINT FK_usu_serv_s FOREIGN KEY (fk_id_servicos) REFERENCES tbl_servicos (id) ON DELETE CASCADE,
     CONSTRAINT FK_usu_serv_u FOREIGN KEY (fk_id_usuario) REFERENCES tbl_usuario (id) ON DELETE CASCADE
 );
+ALTER TABLE tbl_usuario_servico
+ADD COLUMN data_vinculo DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN data_desvinculo DATETIME NULL
+
 
 CREATE TABLE tbl_usuario_veiculo (
     fk_id_usuario INT NOT NULL,
@@ -144,3 +149,4 @@ CREATE TABLE tbl_usuario_veiculo (
     CONSTRAINT FK_usu_vei_u FOREIGN KEY (fk_id_usuario) REFERENCES tbl_usuario (id) ON DELETE CASCADE,
     CONSTRAINT FK_usu_vei_v FOREIGN KEY (fk_id_veiculo) REFERENCES tbl_veiculo (id) ON DELETE CASCADE
 );
+
