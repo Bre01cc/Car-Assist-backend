@@ -21,10 +21,13 @@ const listarEnderecos = async () => {
         if (resultEndereco) {
 
             if (resultEndereco.length > 0) {
-
+                console.log(resultEndereco)
+                let enderecoFormatado = resultEndereco.map(
+                    endereco=> formatarEnderecos(endereco)
+                );
                 return DEFAULT_MENSAGENS.criarResposta(
                     MENSSAGENS.SUCCESS_REQUEST,
-                    { enderecos: resultEndereco }
+                    { enderecos: enderecoFormatado }
                 )
 
             } else {
@@ -66,10 +69,11 @@ const buscarEnderecoId = async (id) => {
             if (resultEndereco) {
 
                 if (resultEndereco.length > 0) {
-
+                    console.log(resultEndereco)
+                    let enderecoFormatado = formatarEnderecos(resultEndereco[0])
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSSAGENS.SUCCESS_REQUEST,
-                        { endereco: resultEndereco }
+                        { endereco: enderecoFormatado }
                     )
 
                 } else {
@@ -118,14 +122,16 @@ const buscarEnderecoServico = async (idServico) => {
         if (!isNaN(idServico) && idServico != null && idServico > 0) {
 
             let resultEndereco = await enderecoDAO.getAddressByServiceId(idServico)
-
+            console.log(resultEndereco)
             if (resultEndereco) {
 
                 if (resultEndereco.length > 0) {
-
+                    let enderecoFormatado = resultEndereco.map(
+                        endereco=> formatarEnderecos(endereco)
+                    )
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSSAGENS.SUCCESS_REQUEST,
-                        { endereco: resultEndereco }
+                        { endereco: enderecoFormatado }
                     )
 
                 } else {
@@ -411,6 +417,20 @@ const deletarEndereco = async (id) => {
 
     }
 
+}
+
+
+const formatarEnderecos = (endereco) =>{
+    return{
+        id: endereco.id,
+        logradouro: endereco.logradouro,
+        cep:endereco.cep,
+        complemento:endereco.complemento,
+        servico:{
+            id: endereco.id_servico,
+            nome: endereco.nome_local
+        }
+    }
 }
 
 //Exports
