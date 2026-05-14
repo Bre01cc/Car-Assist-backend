@@ -81,6 +81,21 @@ const putUserService = async (usuarioServico) => {
     }
 }
 
+const getUserServiceById = async(id) =>{
+    try {
+        const result = await conexaoKnex.conexao.raw(
+            'select * from tbl_usuario_servico where id = ?',[id]
+        );
+        if(result[0].length>0){
+            return result[0]
+        }else{
+            return false
+        }       
+    } catch (error) {
+        return false
+    }
+}
+
 
 //Busca último ID cadastrado
 const getSelectLastId = async () => {
@@ -107,7 +122,7 @@ const getSelectLastId = async () => {
 }
 
 // Deletar vínculo usuário-serviço
-const deleteUserServiceById = async (fk_id_usuario, fk_id_servico) => {
+const deleteUserServiceByIdUserAndService = async (fk_id_usuario, fk_id_servico) => {
 
     try {
 
@@ -132,8 +147,57 @@ const deleteUserServiceById = async (fk_id_usuario, fk_id_servico) => {
     }
 }
 
+// Deletar vínculo usuário-serviço
+const deleteUserServiceByIdUser = async (fk_id_usuario) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(`
+            DELETE FROM tbl_usuario_servico
+            WHERE fk_id_usuario = ?
+        `, [
+            fk_id_usuario,
+        ])
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+const deleteUserServiceById = async (id) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(`
+            DELETE FROM tbl_usuario_servico
+            WHERE id = ?
+        `, [
+            id
+        ])
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+
 module.exports = {
     postUserService,
-    putUserService,
-    deleteUserServiceById
+    deleteUserServiceById,
+    deleteUserServiceByIdUser,
+    deleteUserServiceByIdUserAndService
 }
