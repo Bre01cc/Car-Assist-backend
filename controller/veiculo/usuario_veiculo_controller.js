@@ -72,7 +72,7 @@ const validarVinculo = (dados) => {
     if (!dados.fk_id_usuario || isNaN(dados.fk_id_usuario)) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Usuário incorreto]'
         return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
-    } 
+    }
     else if (!dados.fk_id_veiculo || isNaN(dados.fk_id_veiculo)) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Veículo incorreto]'
         return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
