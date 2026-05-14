@@ -17,13 +17,13 @@ VALUES
 (2, 1, 'Editor', '2024-02-01'),
 (2, 2, 'Proprietário', '2024-03-01');
 
--- TIPOS DE MANUTENÇÃO (ANTES da manutenção)
+-- TIPOS DE MANUTENÇÃO
 INSERT INTO tbl_tipo_manutencao (nome, valor_score, descricao)
 VALUES 
 ('Troca de óleo', -5, 'Manutenção preventiva'),
 ('Revisão geral', -10, 'Revisão completa');
 
--- MANUTENÇÃO (SEM pecas)
+-- MANUTENÇÃO
 INSERT INTO tbl_manutencao (
     data_manutencao, custo, quilometragem, oficina, observacoes,
     fk_id_tipo_manutencao, fk_id_usuario, fk_id_veiculo
@@ -32,17 +32,11 @@ VALUES
 ('2025-01-20 10:00:00', 250.00, 50000, 'Oficina do Zé', 'Tudo ok', 1, 1, 1),
 ('2025-02-10 14:00:00', 600.00, 70000, 'Oficina do Zé', 'Troca necessária', 2, 2, 2);
 
--- PEÇAS
-INSERT INTO tbl_pecas (nome)
+-- PEÇAS (Ajustado: fk_id_manutencao inserido diretamente aqui)
+INSERT INTO tbl_pecas (nome, fk_id_manutencao)
 VALUES 
-('Filtro de óleo'),
-('Freios');
-
--- RELAÇÃO MANUTENÇÃO x PEÇAS
-INSERT INTO tbl_manutencao_peca (fk_id_manutencao, fk_id_peca)
-VALUES
-(1, 1),
-(2, 2);
+('Filtro de óleo', 1),
+('Freios', 2);
 
 -- TIPO DE SERVIÇO
 INSERT INTO tbl_tipo_servico (nome)

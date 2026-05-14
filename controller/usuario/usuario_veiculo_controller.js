@@ -19,7 +19,7 @@ const listarVinculos = async () => {
             return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
         }
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL, null, 'Nikolas Fernandes')
+        return DEFAULT_MENSAGENS.criarResposta(DEFAULT_MENSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
     }
 }
 
@@ -42,8 +42,9 @@ const inserirVinculo = async (dados, contentType) => {
             return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_CONTENT_TYPE, null, 'Nikolas Fernandes')
         }
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
+        return DEFAULT_MENSAGENS.criarResposta(DEFAULT_MENSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
     }
+    console.log(error)
 }
 
 // Deleta (Desativa) um vínculo pelo ID composto
@@ -61,7 +62,7 @@ const deletarVinculo = async (idUsuario, idVeiculo) => {
             return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
         }
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
+        return DEFAULT_MENSAGENS.criarResposta(DEFAULT_MENSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
     }
 }
 
@@ -72,7 +73,7 @@ const validarVinculo = (dados) => {
     if (!dados.fk_id_usuario || isNaN(dados.fk_id_usuario)) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Usuário incorreto]'
         return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
-    } 
+    }
     else if (!dados.fk_id_veiculo || isNaN(dados.fk_id_veiculo)) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Veículo incorreto]'
         return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')

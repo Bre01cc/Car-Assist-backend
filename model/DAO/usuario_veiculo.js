@@ -17,6 +17,7 @@ const getAllUserVehicles = async () => {
         else
             return false;
     } catch (error) {
+        console.log(error);
         return false;
     }
 }
@@ -32,6 +33,7 @@ const getUserVehicleByIDs = async (idUsuario, idVeiculo) => {
         else
             return false;
     } catch (error) {
+        console.log(error);
         return false;
     }
 }
@@ -57,6 +59,7 @@ const postUserVehicle = async (dados) => {
         else
             return false;
     } catch (error) {
+        console.log(error);
         return false;
     }
 }
@@ -77,13 +80,13 @@ const putUserVehicle = async (idUsuario, idVeiculo, dados) => {
         else
             return false;
     } catch (error) {
+        console.log(error);
         return false;
     }
 }
 
 const deleteUserVehicle = async (idUsuario, idVeiculo) => {
     try {
-        // Desativação lógica seguindo o padrão dos outros módulos
         let sql = `update tbl_usuario_veiculo set 
                         is_ativo = false, 
                         data_desvinculo = current_date 
@@ -96,6 +99,7 @@ const deleteUserVehicle = async (idUsuario, idVeiculo) => {
         else
             return false;
     } catch (error) {
+        console.log(error);
         return false;
     }
 }
