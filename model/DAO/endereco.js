@@ -12,7 +12,7 @@ const getAllAddresses = async () => {
     try {
 
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_enderecos'
+            'SELECT * FROM vw_endereco'
         )
 
         if (result && result[0] && result[0].length > 0) {
@@ -31,7 +31,7 @@ const getAddressById = async (id) => {
     try {
 
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_enderecos WHERE id = ?',
+            'SELECT * FROM vw_endereco WHERE id = ?',
             [id]
         )
 
@@ -51,10 +51,10 @@ const getAddressByServiceId = async (idServico) => {
     try {
 
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_enderecos WHERE fk_id_servico = ?',
+            'SELECT * FROM vw_endereco WHERE id_servico = ?',
             [idServico]
         )
-
+        console.log(result)
         if (result && result[0] && result[0].length > 0) {
             return result[0]
         } else {
@@ -72,7 +72,7 @@ const getSelectLastId = async () => {
 
         let result = await conexaoKnex.conexao
             .select('id')
-            .from('tbl_enderecos')
+            .from('vw_endereco')
             .orderBy('id', 'desc')
             .limit(1)
 
