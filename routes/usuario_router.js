@@ -13,6 +13,7 @@ const bodyParserJSON = bodyParser.json()
 const router = express.Router()
 
 const controllerUsuario = require('../controller/usuario/usuario_controller.js')
+const controllerUsuarioServico = require('../controller/usuario/usuario_servico_controller.js')
 
 
 /**
@@ -174,6 +175,13 @@ router.post('/v1/car-assist/usuario', cors(), bodyParserJSON, async function (re
     let contentType = request.headers['content-type'];
     let usuario = await controllerUsuario.inserirUsuario(dadosBody, contentType);
     response.status(usuario.status_code).json(usuario);
+});
+
+router.post('/v1/car-assist/usuario-servico', cors(), bodyParserJSON, async function (request, response) {
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type'];
+    let usuarioServico = await controllerUsuarioServico.inserirUsuarioServico(dadosBody, contentType);
+    response.status(usuarioServico.status_code).json(usuarioServico);
 });
 
 router.delete('/v1/car-assist/usuario/:id', cors(), async (req, res) => {

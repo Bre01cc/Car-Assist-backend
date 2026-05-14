@@ -8,7 +8,6 @@
 //Import do knex
 const conexaoKnex = require('../../knex/index.js');
 
-// Inserir vínculo usuário-serviço
 const postUserService = async (usuarioServico) => {
 
     try {
@@ -16,7 +15,7 @@ const postUserService = async (usuarioServico) => {
         const result = await conexaoKnex.conexao.raw(`
             INSERT INTO tbl_usuario_servico(
                 fk_id_usuario,
-                fk_id_servico,
+                fk_id_servicos,
                 data_vinculo,
                 data_desvinculo,
                 is_ativo
@@ -31,16 +30,12 @@ const postUserService = async (usuarioServico) => {
         `, [
             usuarioServico.fk_id_usuario,
             usuarioServico.fk_id_servico,
-            usuarioServico.data_vinculo,
-            usuarioServico.data_desvinculo,
-            usuarioServico.is_ativo
+            usuarioServico.data_vinculo || new Date(),
+            usuarioServico.data_desvinculo || null,
+            usuarioServico.is_ativo ?? true
         ])
 
-        if (result[0]) {
-            return true
-        } else {
-            return false
-        }
+        return result
 
     } catch (error) {
         console.log(error)
