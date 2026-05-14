@@ -4,7 +4,7 @@ module.exports = {
     connection: {
       host: '127.0.0.1',
       database: 'car_assist_database',
-      user: 'root',
+      user:     'root',
       password: '12345678'
     },
     pool: {

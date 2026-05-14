@@ -13,13 +13,16 @@ const listarGastos = async () => {
     try {
         let resultGasto = await gastoDAO.getAllExpenses()
         if (resultGasto) {
-            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_REQUEST, { gastos: resultGasto },'Nikolas Fernandes')
+            let gastoFormatado = resultGasto.map(
+                gasto => formatarGasto(gasto)
+            )
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_REQUEST, { gastos: gastoFormatado }, 'Nikolas Fernandes')
         } else {
-            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND,null,'Nikolas Fernandes')
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
         }
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL,null,'Nikolas Fernandes')
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL, null, 'Nikolas Fernandes')
 
     }
 }
@@ -30,9 +33,77 @@ const buscarGastoId = async (id) => {
         if (!isNaN(id) && id != null && id > 0) {
             let resultGasto = await gastoDAO.getExpenseById(id)
             if (resultGasto) {
+                let gastoFormato = formatarGasto(resultGasto[0])
+                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_REQUEST, { gasto: gastoFormato }, 'Nikolas Fernandes')
 
-                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_REQUEST, { gasto: resultGasto }, 'Nikolas Fernandes')
-                
+            } else {
+                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
+            }
+        } else {
+
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
+        }
+    } catch (error) {
+
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
+    }
+}
+const buscarGastoIdVeiculo = async (id) => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    try {
+        if (!isNaN(id) && id != null && id > 0) {
+            let resultGasto = await gastoDAO.getExpenseByIdVehicle(id)
+            if (resultGasto) {
+                let gastoFormato = formatarGasto(resultGasto[0])
+                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_REQUEST, { gasto: gastoFormato }, 'Nikolas Fernandes')
+
+            } else {
+                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
+            }
+        } else {
+
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
+        }
+    } catch (error) {
+
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
+    }
+}
+
+const buscarGastoIdTipo = async (id) => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    try {
+        if (!isNaN(id) && id != null && id > 0) {
+            let resultGasto = await gastoDAO.getExpenseByIdType(id)
+            if (resultGasto) {
+                let gastoFormato = formatarGasto(resultGasto[0])
+                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_REQUEST, { gasto: gastoFormato }, 'Nikolas Fernandes')
+
+            } else {
+                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
+            }
+        } else {
+
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
+        }
+    } catch (error) {
+
+        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
+    }
+}
+
+const buscarGastoIdVeiculoComTipo = async (id_veiculo,id_tipo) => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    try {
+        if (!isNaN(id_veiculo) && id_veiculo != null && id_veiculo > 0 && !isNaN(id_tipo) && id_tipo != null && id_tipo > 0) {
+            let resultGasto = await gastoDAO.getExpenseByIdVehicleAndType(id_veiculo,id_tipo)
+            if (resultGasto) {
+                let gastoFormato = formatarGasto(resultGasto[0])
+                return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_REQUEST, { gasto: gastoFormato }, 'Nikolas Fernandes')
+
             } else {
                 return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_NOT_FOUND, null, 'Nikolas Fernandes')
             }
@@ -57,8 +128,9 @@ const inserirGasto = async (gasto, contentType) => {
                 if (resultGasto) {
                     let ultimoId = await gastoDAO.getSelectLastId()
                     if (ultimoId) {
-                        gasto.id = ultimoId.id
-                        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_CREATED_ITEM, gasto, 'Nikolas Fernandes')
+                        console.log(ultimoId)
+                        let gastoFormatado = formatarGasto(ultimoId[0])
+                        return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_CREATED_ITEM, gastoFormatado, 'Nikolas Fernandes')
                     }
                 }
                 return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL, null, 'Nikolas Fernandes')
@@ -83,8 +155,11 @@ const atualizarGasto = async (gasto, id, contentType) => {
                 if (validarId.status_code == 200) {
                     gasto.id = Number(id)
                     let resultGasto = await gastoDAO.putExpense(id, gasto)
+
+                    let gastoNew = await buscarGastoId(id)
+                 
                     if (resultGasto) {
-                        return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.SUCCESS_UPDATE_ITEM, { gasto: gasto }, 'Nikolas Fernandes')
+                        return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.SUCCESS_UPDATE_ITEM, { gasto: gastoNew.data.gasto}, 'Nikolas Fernandes')
                     }
                     return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.ERROR_INTERNAL, null, 'Nikolas Fernandes')
                 } else {
@@ -148,10 +223,31 @@ const validarGasto = (gasto) => {
 
 }
 
+const formatarGasto = (gasto) => {
+    console.log(gasto)
+    return {
+        id: gasto.id,
+        data: gasto.data_gasto,
+        valor: gasto.valor,
+        is_ativo: gasto.is_ativo,
+        veiculo: {
+            id: gasto.id_veiculo,
+            modelo: gasto.modelo
+        },
+        tipo_gasto: {
+            id: gasto.id_tipo_gasto,
+            nome: gasto.nome_categoria
+        }
+    }
+}
+
 module.exports = {
     listarGastos,
     buscarGastoId,
     inserirGasto,
     atualizarGasto,
-    deletarGastoId
+    deletarGastoId,
+    buscarGastoIdTipo,
+    buscarGastoIdVeiculo,
+    buscarGastoIdVeiculoComTipo
 }

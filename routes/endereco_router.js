@@ -10,6 +10,10 @@ const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
 
+const router = express.Router()
+
+const controllerEndereco = require('../controller/endereco/endereco_controller.js')
+
 /**
  * @swagger
  * /v1/car-assist/endereco/{id}:
@@ -126,4 +130,73 @@ const bodyParserJSON = bodyParser.json()
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
 
-const router = express.Router()
+
+router.post('/v1/car-assist/endereco', cors(), bodyParserJSON, async function (request, response) {
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type'];
+    let endereco = await controllerEndereco.inserirEndereco(dadosBody, contentType);
+    response.status(endereco.status_code).json(endereco);
+});
+
+router.put('/v1/car-assist/endereco/:id', cors(), bodyParserJSON, async function (request, response) {
+
+    let dadosBody = request.body;
+
+    let idEndereco = request.params.id;
+
+    let contentType = request.headers['content-type'];
+
+    let endereco = await controllerEndereco.atualizarEndereco(dadosBody, idEndereco, contentType);
+
+    response.status(endereco.status_code).json(endereco);
+});
+
+router.delete('/v1/car-assist/endereco/:id', cors(), async function (req, res) {
+
+    let idEndereco = req.params.id;
+
+    let endereco = await controllerEndereco.deletarEndereco(idEndereco);
+
+    res.status(endereco.status_code);
+
+    res.json(endereco);
+
+});
+
+router.get('/v1/car-assist/endereco/:id', cors(), async function (req, res) {
+
+    let idEndereco = req.params.id;
+
+    let endereco = await controllerEndereco.buscarEnderecoId(idEndereco);
+
+    res.status(endereco.status_code);
+
+    res.json(endereco);
+
+});
+
+router.get('/v1/car-assist/endereco', cors(), async function (req, res) {
+
+    let endereco = await controllerEndereco.listarEnderecos();
+
+    res.status(endereco.status_code);
+
+    res.json(endereco);
+
+});
+
+router.get('/v1/car-assist/endereco/servico/:id', cors(), async function (req, res) {
+    
+    let idServico = req.params.id;
+
+    let endereco = await controllerEndereco.buscarEnderecoServico(idServico);
+
+    res.status(endereco.status_code);
+
+    res.json(endereco);
+
+});
+
+
+
+module.exports = router
