@@ -84,7 +84,7 @@ const putUserService = async (usuarioServico) => {
 const getUserServiceById = async(id) =>{
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from tbl_usuario_servico where id = ?',[id]
+            'select * from tbl_usuario_servico where fk_id_usuario = ? and fk_id_servico',[id]
         );
         if(result[0].length>0){
             return result[0]
@@ -199,5 +199,7 @@ module.exports = {
     postUserService,
     deleteUserServiceById,
     deleteUserServiceByIdUser,
-    deleteUserServiceByIdUserAndService
+    deleteUserServiceByIdUserAndService,
+    getUserServiceById,
+    getSelectLastId
 }

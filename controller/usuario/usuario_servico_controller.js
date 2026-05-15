@@ -9,7 +9,7 @@ const usuarioServicoDAO = require('../../model/DAO/usuario_servico')
 const servicoController = require('../servico/servico_controller')
 const usuarioController = require('../usuario/usuario_controller')
 
-const { DEFAULT_MENSAGENS } = require('../../modulo/config')
+const DEFAULT_MENSAGENS = require('../../modulo/config')
 
 // Vincula um usuário a um serviço
 const inserirUsuarioServico = async (usuarioServico, contentType) => {
@@ -53,6 +53,42 @@ const inserirUsuarioServico = async (usuarioServico, contentType) => {
 
     } catch (error) {
 
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+}
+
+const buscarUsuarioServico = (idUsuario, idServico) => {
+
+    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    try {
+
+        let validarUsuario = await usuarioController.buscarUsuarioId(idUsuario)
+
+        if (validarUsuario.status_code == 200) {
+
+            let validarServico = await servicoController.buscarServicoId(idServico)
+
+            if (validarServico.status_code == 200) {
+                let result = await usuarioServicoDAO.getUserServiceById(idUsuario,idServico)
+                if(result){
+                    
+                }
+
+            } else {
+                MENSAGENS.ERROR_NOT_FOUND.message += '[id do serviço]'
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSAGENS.ERROR_NOT_FOUND
+                )
+            }
+        } else {
+            MENSAGENS.ERROR_NOT_FOUND.message += '[id do usuário]'
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSAGENS.ERROR_NOT_FOUND)
+        }
+
+    } catch (error) {
         return DEFAULT_MENSAGENS.criarResposta(
             MENSAGENS.ERROR_INTERNAL_SERVER
         )
