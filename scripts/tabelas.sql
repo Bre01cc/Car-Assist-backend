@@ -223,10 +223,17 @@ CREATE TABLE tbl_chatbot (
 -- TABELA: USUÁRIO SERVIÇO
 -- =====================================================
 CREATE TABLE tbl_usuario_servico (
+    id INT NOT NULL AUTO_INCREMENT,
+
     fk_id_servicos INT NOT NULL,
     fk_id_usuario INT NOT NULL,
 
-    PRIMARY KEY (fk_id_servicos, fk_id_usuario),
+    PRIMARY KEY (id),
+
+    UNIQUE KEY UK_usuario_servico (
+        fk_id_servicos,
+        fk_id_usuario
+    ),
 
     CONSTRAINT FK_usu_serv_s
         FOREIGN KEY (fk_id_servicos)
@@ -238,7 +245,6 @@ CREATE TABLE tbl_usuario_servico (
         REFERENCES tbl_usuario (id)
         ON DELETE CASCADE
 );
-
 -- =====================================================
 -- TABELA: USUÁRIO VEÍCULO
 -- =====================================================

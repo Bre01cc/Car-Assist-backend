@@ -8,12 +8,22 @@
 //Import do knex
 const conexaoKnex = require('../../knex/index.js');
 
-const getUserServiceByIdServiceAndUser = async (id_usuario,) => {
+const getUserServiceByIdServiceAndUser = async (id_usuario,id_servico) => {
     try {
-        const result = conexaoKnex.conexao.raw(
-            'select * from tbl_usuario_servico where fk_id_usuario = ? and fk_id_servico = ?'
-        )
+        const result = await conexaoKnex.conexao.raw(
+            'select * from vw_usuario_servico where id_usuario = ? and id_servico = ?',[id_usuario,id_servico]
+        );
+        console.log(result)
+        if (result[0].length > 0) {
+
+            return result[0]
+
+        } else {
+
+            return false
+        }
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -199,5 +209,6 @@ module.exports = {
     deleteUserServiceByIdUser,
     deleteUserServiceByIdUserAndService,
     getUserServiceById,
+    getUserServiceByIdServiceAndUser,
     getSelectLastId
 }

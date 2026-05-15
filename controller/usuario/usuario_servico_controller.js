@@ -59,7 +59,7 @@ const inserirUsuarioServico = async (usuarioServico, contentType) => {
     }
 }
 
-const buscarUsuarioServico = (idUsuario, idServico) => {
+const buscarUsuarioServico = async (idUsuario, idServico) => {
 
     let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
     try {
@@ -68,12 +68,24 @@ const buscarUsuarioServico = (idUsuario, idServico) => {
 
         if (validarUsuario.status_code == 200) {
 
-            let validarServico = await servicoController.buscarServicoId(idServico)
+            let validarServico = await servicoController.buscarServicosId(idServico)
 
             if (validarServico.status_code == 200) {
-                let result = await usuarioServicoDAO.getUserServiceById(idUsuario,idServico)
-                if(result){
-                    
+                let result = await usuarioServicoDAO.getUserServiceByIdServiceAndUser(idUsuario, idServico)
+    
+                if (result.length > 0) {
+                    resultFormatado = result.map(
+                        usuarioServico => formatarUsuarioServico(usuarioServico)
+                    )
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSAGENS.SUCCESS_REQUEST,
+                        {usuario_servico: resultFormatado}
+                    )
+                } else {
+                    MENSAGENS.ERROR_NOT_FOUND.message += '[id do usuario servico]'
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSAGENS.ERROR_NOT_FOUND
+                    )
                 }
 
             } else {
@@ -157,14 +169,6 @@ const validarUsuarioServico = async (usuarioServico) => {
     return false
 }
 
-const buscarUsuarioServico = async(idUsuario, idServico)=>{
-try {
-    
-} catch (error) {
-    return DE
-}
-}
-
 // Deleta vínculo usuário-serviço
 const deletarUsuarioServico = async (idUsuario, idServico) => {
 
@@ -179,7 +183,7 @@ const deletarUsuarioServico = async (idUsuario, idServico) => {
             let result = await usuarioServicoDAO.deleteUsuarioServico(idUsuario, idServico)
 
             if (result) {
-
+                
                 return DEFAULT_MENSAGENS.criarResposta(
                     MENSAGENS.SUCCESS_DELETE
                 )
@@ -204,7 +208,32 @@ const deletarUsuarioServico = async (idUsuario, idServico) => {
     }
 }
 
+const formatarUsuarioServico = (usuarioServico)=>{
+    return {
+        id: usuarioServico.id,
+        data_vinculo: usuarioServico.data_vinculo,
+        data_desvinculo: usuarioServico.data_desvinculo,
+        servico:{
+            id: usuarioServico.id_servico,
+            nome: usuarioServico.nome_local,
+            latitude : usuarioServico.latitude,
+            longitude: usuarioServico.longitude,
+        },
+        tipo_servico:{
+            id: usuarioServico.id_tipo_servico,
+            nome: usuarioServico.nome
+        },
+        endereco:{
+            id: usuarioServico.id_endereco,
+            logradouro: usuarioServico.logradouro,
+            cep: usuarioServico.cep,
+            complemento: usuarioServico.complemento
+        }
+    }
+}
+
 module.exports = {
     inserirUsuarioServico,
-    deletarUsuarioServico
+    deletarUsuarioServico,
+    buscarUsuarioServico
 }

@@ -133,4 +133,35 @@ tipo_gasto.id id_tipo_gasto,
 tipo_gasto.nome_categoria
 from tbl_gastos gasto join tbl_veiculo veiculo 
 on gasto.fk_id_veiculo = veiculo.id left join tbl_categoria_gasto tipo_gasto
- on gasto.fk_id_categoria = tipo_gasto.id;
+on gasto.fk_id_categoria = tipo_gasto.id;
+
+CREATE VIEW vw_usuario_servico AS
+SELECT
+    usuario_servico.fk_id_usuario id_usuario,
+    usuario_servico.id,
+    usuario_servico.data_vinculo,
+    usuario_servico.data_desvinculo,
+
+    servico.id AS id_servico,
+    servico.nome_local,
+    servico.latitude,
+    servico.longitude,
+
+    tipo_servico.id AS id_tipo_servico,
+    tipo_servico.nome,
+
+    endereco.id AS id_endereco,
+    endereco.logradouro,
+    endereco.cep,
+    endereco.complemento
+
+FROM tbl_usuario_servico usuario_servico
+
+JOIN tbl_servicos servico
+    ON usuario_servico.fk_id_servicos = servico.id
+
+JOIN tbl_tipo_servico tipo_servico
+    ON tipo_servico.id = servico.fk_id_tipo_servico
+
+JOIN tbl_enderecos endereco
+    ON endereco.fk_id_servico = servico.id;

@@ -3,7 +3,7 @@
 3-npm install knex mysql2
 4-npx knex init
 5-npm install multer
-6-
+6-npm install dotenv
 7-
 8-
 9-

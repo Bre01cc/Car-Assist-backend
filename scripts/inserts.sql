@@ -26,6 +26,14 @@ INSERT INTO tbl_usuario (
     '1998-02-20',
     'hash456',
     'foto2.jpg'
+),
+(
+    'Carlos Lima',
+    'carlos@gmail.com',
+    '45678912300',
+    '1992-09-15',
+    'hash789',
+    'foto3.jpg'
 );
 
 -- =========================================
@@ -54,6 +62,14 @@ INSERT INTO tbl_veiculo (
     'BRANCO',
     2018,
     'gol.jpg'
+),
+(
+    'BRA2E19',
+    'Corolla',
+    'Toyota',
+    'PRATA',
+    2022,
+    'corolla.jpg'
 );
 
 -- =========================================
@@ -73,6 +89,11 @@ INSERT INTO tbl_tipo_manutencao (
     'Revisão geral',
     -10,
     'Revisão completa'
+),
+(
+    'Troca de pneus',
+    -7,
+    'Substituição dos pneus'
 );
 
 -- =========================================
@@ -82,7 +103,9 @@ INSERT INTO tbl_tipo_servico (
     nome
 ) VALUES
 ('Oficina'),
-('Posto de combustível');
+('Posto de combustível'),
+('Lava rápido'),
+('Borracharia');
 
 -- =========================================
 -- CATEGORIAS DE GASTO
@@ -91,7 +114,9 @@ INSERT INTO tbl_categoria_gasto (
     nome_categoria
 ) VALUES
 ('Combustível'),
-('Manutenção');
+('Manutenção'),
+('Peças'),
+('Lavagem');
 
 -- =========================================
 -- SERVIÇOS
@@ -113,6 +138,18 @@ INSERT INTO tbl_servicos (
     -23.55100000,
     -46.63400000,
     2
+),
+(
+    'Lava Rápido Flash',
+    -23.54980000,
+    -46.63200000,
+    3
+),
+(
+    'Borracharia Avenida',
+    -23.54800000,
+    -46.63150000,
+    4
 );
 
 -- =========================================
@@ -135,6 +172,18 @@ INSERT INTO tbl_enderecos (
     '06001000',
     NULL,
     2
+),
+(
+    'Rua das Flores, 89',
+    '06002000',
+    'Ao lado da farmácia',
+    3
+),
+(
+    'Av. Paulista, 1000',
+    '06003000',
+    'Esquina',
+    4
 );
 
 -- =========================================
@@ -163,6 +212,12 @@ INSERT INTO tbl_usuario_veiculo (
     2,
     'Proprietário',
     '2024-03-01'
+),
+(
+    3,
+    3,
+    'Proprietário',
+    '2024-04-01'
 );
 
 -- =========================================
@@ -197,6 +252,16 @@ INSERT INTO tbl_manutencao (
     2,
     2,
     2
+),
+(
+    '2025-03-05 09:30:00',
+    1200.00,
+    30000,
+    'Auto Center Prime',
+    'Troca completa dos pneus',
+    3,
+    3,
+    3
 );
 
 -- =========================================
@@ -213,6 +278,10 @@ INSERT INTO tbl_pecas (
 (
     'Freios',
     1
+),
+(
+    'Pneu Michelin',
+    3
 );
 
 -- =========================================
@@ -241,6 +310,12 @@ INSERT INTO tbl_gastos (
     200.00,
     2,
     1
+),
+(
+    '2025-03-01',
+    1200.00,
+    3,
+    3
 );
 
 -- =========================================
@@ -257,6 +332,10 @@ INSERT INTO tbl_evidencia (
 (
     'evidencia2.jpg',
     2
+),
+(
+    'evidencia3.jpg',
+    3
 );
 
 -- =========================================
@@ -282,6 +361,13 @@ INSERT INTO tbl_lembretes (
     '2025-07-01 10:00:00',
     'ativo',
     2
+),
+(
+    'Calibrar pneus',
+    'Verificar pressão',
+    '2025-08-01 09:00:00',
+    'ativo',
+    3
 );
 
 -- =========================================
@@ -301,6 +387,11 @@ INSERT INTO tbl_chatbot (
     'Qual combustível usar?',
     'Gasolina comum',
     2
+),
+(
+    'Quando trocar os pneus?',
+    'Depende do desgaste e quilometragem',
+    3
 );
 
 -- =========================================
@@ -317,4 +408,12 @@ INSERT INTO tbl_usuario_servico (
 (
     2,
     2
+),
+(
+    3,
+    3
+),
+(
+    4,
+    1
 );
