@@ -22,11 +22,28 @@ const getAllVehicles = async () => {
         return false;
 
     } catch (error) {
-     
+
         return false;
     }
 }
+const getVeiculoByPlaca = async (placa) => {
+    try {
+        let result = await conexaoKnex.conexao.raw('select * from tbl_veiculo where placa = ?', [placa])
 
+        if(result[0].length>0){
+            return result[0]
+        }else{
+             return false
+        }
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+
+
+
+
+}
 //Busca um veículo pelo id
 const getVehicleById = async (id) => {
     try {
@@ -42,7 +59,7 @@ const getVehicleById = async (id) => {
         return false;
 
     } catch (error) {
-    
+
         return false;
     }
 }
@@ -55,15 +72,16 @@ const getSelectLastId = async () => {
             .select('id')
             .orderBy('id', 'desc')
             .limit(1)
-        if (result[0].length > 0) {
-
-        }else{
+            console.log(result)
+        if (result.length > 0) {
+            return result[0]
+        } else {
             return false
         }
         return Number(result[0].id)
 
     } catch (error) {
-       
+console.log(error)
         return false
     }
 }
@@ -91,6 +109,7 @@ const setInsertVehicle = async function (veiculo) {
             return false
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -121,7 +140,7 @@ const putVeiculo = async (veiculo) => {
             veiculo.is_ativo,
             veiculo.id
         ])
-        
+
 
         if (result[0].affectedRows) {
             return true
@@ -130,7 +149,7 @@ const putVeiculo = async (veiculo) => {
         }
 
     } catch (error) {
-      
+
         return false
     }
 }
@@ -166,5 +185,6 @@ module.exports = {
     getSelectLastId,
     setInsertVehicle,
     putVeiculo,
-    deleteVeiculo
+    deleteVeiculo,
+    getVeiculoByPlaca
 }

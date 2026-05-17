@@ -73,6 +73,29 @@ const getSelectLastId = async () => {
     }
 }
 
+const getSelectLastIdUser = async (id) => {
+
+    try {
+
+        const result = await conexaoKnex.conexao.raw(
+            'select * from vw_usuario_veiculo where id_usuario = ? order by data_vinculo desc limit 1',[id]
+        )
+
+        if (result[0].length > 0) {
+
+            return result[0]
+
+        } else {
+
+            return false
+        }
+
+    } catch (error) {
+
+        return false
+    }
+}
+
 const postUserVehicle = async (dados) => {
     try {
         let sql = `insert into tbl_usuario_veiculo (
@@ -143,5 +166,6 @@ module.exports = {
     postUserVehicle,
     putUserVehicle,
     deleteUserVehicle,
-    getUserVehicleByIDUser
+    getUserVehicleByIDUser,
+    getSelectLastIdUser
 }

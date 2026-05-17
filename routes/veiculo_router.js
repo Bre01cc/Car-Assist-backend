@@ -195,6 +195,17 @@ router.get('/v1/car-assist/veiculo/:id', cors(), async function (request, respon
     response.json(veiculo);
 })
 
+router.get('/v1/car-assist/veiculo/placa/:placa', cors(), async function (request, response) {
+
+    let placaVeiculo = request.params.placa;
+
+    let veiculo = await controllerVeiculo.buscarVeiculoPlaca(placaVeiculo);
+
+    response.status(veiculo.status_code);
+
+    response.json(veiculo);
+})
+
 //Buscar todos os veiculos
 router.get('/v1/car-assist/veiculo', cors(), async function (request, response) {
 
@@ -220,6 +231,21 @@ router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, async function (re
     let contentType = request.headers['content-type'];
 
     let veiculo = await controllerVeiculo.inserirVeiculo(dadosBody, contentType);
+
+    response.status(veiculo.status_code);
+
+    response.json(veiculo);
+});
+
+router.post('/v1/car-assist/veiculo-usuario', cors(), bodyParserJSON, async function (request, response) {
+
+    let dadosBody = request.body;
+    console.log(dadosBody)
+
+    let contentType = request.headers['content-type'];
+
+    let veiculo = await controllerVeiculo.inserirVeiculoUsuario(dadosBody, contentType);
+    console.log(veiculo)
 
     response.status(veiculo.status_code);
 

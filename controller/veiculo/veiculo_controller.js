@@ -8,6 +8,7 @@
 
 //Import da model do DAO do genero    
 const veiculoDAO = require('../../model/DAO/veiculo.js')
+const controllerUsuarioVeiculo = require('./usuario_veiculo_controller.js')
 
 //Import do arquivo de mensagens
 const DEFAULT_MESSAGES = require('../modulo/config_messages.js')
@@ -96,6 +97,58 @@ const buscarVeiculoId = async (id) => {
     }
 }
 
+const buscarVeiculoPlaca = async (placa) => {
+    //Criando um objeto novo para as mensagens
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+        if (placa != '' &&
+            placa != undefined &&
+            placa != null &&
+            placa.length < 10) {
+            let resultVeiculo = await veiculoDAO.getVeiculoByPlaca(placa)
+
+
+            if (resultVeiculo) {
+                if (resultVeiculo.length > 0) {
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
+                        { veiculo: resultVeiculo },
+                        'Guilherme Moreira de Souza'
+                    ) //200
+                } else {
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND,
+                        null,
+                        'Guilherme Moreira de Souza'
+                    ) //404
+                }
+            } else {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_INTERNAL_SERVER,
+                    null,
+                    'Guilherme Moreira de Souza'
+                )
+            }
+        } else {
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Placa incorreta]'
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS,
+                null,
+                'Guilherme Moreira de Souza'
+            )
+        }
+
+    } catch (error) {
+        console.log(error)
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER,
+            null,
+            'Guilherme Moreira de Souza'
+        )
+    }
+}
+
 const inserirVeiculo = async (veiculo, contentType) => {
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -154,6 +207,102 @@ const inserirVeiculo = async (veiculo, contentType) => {
     }
 }
 
+
+const inserirVeiculoUsuario = async (veiculo, contentType) => {
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+        //validação do tipo de conteúdo
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+            let validar = await validarDadosVeiculo(veiculo)
+
+            if (!validar) {
+                let validarPlaca = await buscarVeiculoPlaca(veiculo.placa)
+                if (validarPlaca.status_code == 200) {
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_EXISTING_PLATE,
+                        null,
+                        'Guilherme Moreira de Souza'
+                    )
+                } else {
+                    let resultVeiculo = await veiculoDAO.setInsertVehicle(veiculo)
+
+                    if (resultVeiculo) {
+
+                        let lastId = await veiculoDAO.getSelectLastId()
+                        console.log(lastId)
+                        if (lastId) {
+                            veiculo.id = lastId.id
+
+                            if (veiculo.vinculo != undefined) {
+
+
+                                let vinculoObj = {
+                                    fk_id_veiculo: veiculo.id,
+                                    fk_id_usuario: veiculo.id_usuario,
+                                    papel_usuario: veiculo.vinculo.papel_usuario,
+                                    data_vinculo: new Date().toISOString().split('T')[0]
+                                }
+                                console.log(vinculoObj)
+                                let resultUsuarioVeiculo = await controllerUsuarioVeiculo.inserirVinculo(vinculoObj,contentType)
+                                console.log(resultUsuarioVeiculo)
+                                if (resultUsuarioVeiculo.status_code != 201) {
+                                    return DEFAULT_MESSAGES.criarResposta(
+                                        MESSAGES.ERROR_RELATION_TABLE
+                                    )
+                                } else {
+                                    delete veiculo.vinculo
+
+                                    let resultUsuarioVeiculoInfo = await controllerUsuarioVeiculo.buscarUsuarioVeiculoIdUsuarioPost(veiculo.id_usuario)
+
+                                    veiculo.vinculo = resultUsuarioVeiculoInfo.data
+                                }
+
+
+                            }
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.SUCCESS_CREATED_ITEM,
+                                { veiculo: veiculo },
+                                'Guilherme Moreira de Souza'
+                            )//201
+                        } else {
+                            console.log('aqui')
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.ERROR_INTERNAL_SERVER,
+                                null,
+                                'Guilherme Moreira de Souza'
+                            )//500
+                        }
+
+                    } else {
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER,
+                            null,
+                            'Guilherme Moreira de Souza'
+                        ) //500
+                    }
+                }
+            } else {
+                return validar //400
+            }
+        } else {
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE,
+                null,
+                'Guilherme Moreira de Souza'
+            ) //415
+        }
+
+    } catch (error) {
+        console.log(error)
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER,
+            null,
+            'Guilherme Moreira de Souza'
+        )
+    }
+}
+
 // Atualiza um veículo pelo id
 const atualizarVeiculo = async (veiculo, id, contentType) => {
 
@@ -171,7 +320,7 @@ const atualizarVeiculo = async (veiculo, id, contentType) => {
 
                 // Verifica se o ID existe no banco
                 let validarId = await buscarVeiculoId(id)
-                
+
                 if (validarId.status_code == 200) {
 
                     // Adiciona o ID no objeto
@@ -179,7 +328,7 @@ const atualizarVeiculo = async (veiculo, id, contentType) => {
 
                     // Chama a DAO para atualizar
                     let resultVeiculo = await veiculoDAO.putVeiculo(veiculo)
-                   
+
                     if (resultVeiculo) {
 
                         return DEFAULT_MESSAGES.criarResposta(
@@ -213,7 +362,7 @@ const atualizarVeiculo = async (veiculo, id, contentType) => {
         }
 
     } catch (error) {
-       
+
         return DEFAULT_MESSAGES.criarResposta(
             MENSAGENS.ERROR_INTERNAL_SERVER,
             null,
@@ -254,7 +403,7 @@ const deletarVeiculoId = async (id) => {
             return validarId
         }
     } catch (error) {
-       
+
         return DEFAULT_MESSAGES.criarResposta(
             MENSAGENS.ERROR_INTERNAL_SERVER,
             null,
@@ -369,5 +518,7 @@ module.exports = {
     buscarVeiculoId,
     inserirVeiculo,
     deletarVeiculoId,
-    atualizarVeiculo
+    atualizarVeiculo,
+    inserirVeiculoUsuario,
+    buscarVeiculoPlaca
 }

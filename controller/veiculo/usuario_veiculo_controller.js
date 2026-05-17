@@ -74,6 +74,57 @@ const buscarUsuarioVeiculoIdUsuario = async (idUsuario) => {
 
 }
 
+//Retorna um viculo pelo id do usuaário
+const buscarUsuarioVeiculoIdUsuarioPost = async (idUsuario) => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        //Validação da chegada do ID
+        if (!isNaN(idUsuario) && idUsuario != null && idUsuario > 0) {
+            let resultUsuarioVeiculo = await usuarioVeiculoDAO.getSelectLastIdUser(idUsuario)
+
+
+            if (resultUsuarioVeiculo) {
+                if (resultUsuarioVeiculo.length > 0) {
+                    console.log(resultUsuarioVeiculo)
+                    let resultFormadato = resultUsuarioVeiculo.map(
+                        usuarioVeiculo=> formatarUsuarioVeiculoPost(usuarioVeiculo)
+                    ) 
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.SUCCESS_REQUEST,
+                        { usuario_veiculo: resultFormadato }
+                    )
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
+                }
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
+            }
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+        console.log(error)
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+
+}
+
 // Insere um novo vínculo (Proprietário/Editor/Visualizador)
 const inserirVinculo = async (dados, contentType) => {
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
@@ -93,6 +144,7 @@ const inserirVinculo = async (dados, contentType) => {
             return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_CONTENT_TYPE, null, 'Nikolas Fernandes')
         }
     } catch (error) {
+          console.log(error)
         return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.ERROR_INTERNAL_SERVER, null, 'Nikolas Fernandes')
     }
 }
@@ -156,9 +208,18 @@ const formatarUsuarioVeiculo = (usuarioVeiculo) => {
     }
 }
 
+const formatarUsuarioVeiculoPost = (usuarioVeiculo) => {
+    return{
+        papel_usuario: usuarioVeiculo.papel_usuario,
+        data_vinculo:usuarioVeiculo.data_vinculo,
+        is_ativo:usuarioVeiculo.is_ativo,
+    }
+}
+
 module.exports = {
     listarVinculos,
     inserirVinculo,
     deletarVinculo,
-    buscarUsuarioVeiculoIdUsuario
+    buscarUsuarioVeiculoIdUsuario,
+    buscarUsuarioVeiculoIdUsuarioPost
 }
