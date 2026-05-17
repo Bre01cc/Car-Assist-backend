@@ -23,6 +23,57 @@ const listarVinculos = async () => {
     }
 }
 
+//Retorna um viculo pelo id do usuaário
+const buscarUsuarioVeiculoIdUsuario = async (idUsuario) => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        //Validação da chegada do ID
+        if (!isNaN(idUsuario) && idUsuario != null && idUsuario > 0) {
+            let resultUsuarioVeiculo = await usuarioVeiculoDAO.getUserVehicleByIDUser(idUsuario)
+
+
+            if (resultUsuarioVeiculo) {
+                if (resultUsuarioVeiculo.length > 0) {
+                    console.log(resultUsuarioVeiculo)
+                    let resultFormadato = resultUsuarioVeiculo.map(
+                        usuarioVeiculo=> formatarUsuarioVeiculo(usuarioVeiculo)
+                    ) 
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.SUCCESS_REQUEST,
+                        { usuario_veiculo: resultFormadato }
+                    )
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
+                }
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
+            }
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+        console.log(error)
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+
+}
+
 // Insere um novo vínculo (Proprietário/Editor/Visualizador)
 const inserirVinculo = async (dados, contentType) => {
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
@@ -72,7 +123,7 @@ const validarVinculo = (dados) => {
     if (!dados.fk_id_usuario || isNaN(dados.fk_id_usuario)) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Usuário incorreto]'
         return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
-    } 
+    }
     else if (!dados.fk_id_veiculo || isNaN(dados.fk_id_veiculo)) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Veículo incorreto]'
         return DEFAULT_MENSAGENS.criarResposta(MENSSAGES.ERROR_REQUIRED_FIELDS, null, 'Nikolas Fernandes')
@@ -86,8 +137,28 @@ const validarVinculo = (dados) => {
     }
 }
 
+const formatarUsuarioVeiculo = (usuarioVeiculo) => {
+    return{
+        id_usuario: usuarioVeiculo.id_usuario,
+        papel_usuario: usuarioVeiculo.papel_usuario,
+        data_vinculo:usuarioVeiculo.data_vinculo,
+        is_ativo:usuarioVeiculo.is_ativo,
+        veiculo:{
+            id:usuarioVeiculo.id_veiculo,
+            placa:usuarioVeiculo.placa,
+            modelo:usuarioVeiculo.modelo,
+            cor:usuarioVeiculo.cor,
+            score:usuarioVeiculo.score,
+            ano:usuarioVeiculo.ano,
+            foto: usuarioVeiculo.foto_veiculo
+        }
+
+    }
+}
+
 module.exports = {
     listarVinculos,
     inserirVinculo,
-    deletarVinculo
+    deletarVinculo,
+    buscarUsuarioVeiculoIdUsuario
 }

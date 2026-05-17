@@ -25,7 +25,7 @@ const listarUsuarios = async () => {
 
                 return DEFAULT_MENSAGENS.criarResposta(
                     MENSSAGENS.SUCCESS_REQUEST,
-                    { usuarioss: resultUsuario }
+                    { usuarios: resultUsuario }
                 )
 
 
@@ -170,7 +170,6 @@ const buscarUsuarioEmailComSenha = async (usuario, contentType) => {
         }
 
     } catch (error) {
-        console.log(error)
 
         return DEFAULT_MENSAGENS.criarResposta(
             MENSSAGENS.ERROR_INTERNAL_SERVER

@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pela manipulação de dados entre o APP e a MODEL do endereço
- * Data: 15/05/2026
+ * Objetivo: Arquivo responsável pela manipulação de dados entre o APP e a MODEL de endereço
+ * Data: 13/05/2026
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
@@ -16,15 +16,18 @@ const listarEnderecos = async () => {
 
     try {
 
-        let resultEndereco = await enderecoDAO.getAllEnderecos()
+        let resultEndereco = await enderecoDAO.getAllAddresses()
 
         if (resultEndereco) {
 
             if (resultEndereco.length > 0) {
-
+               
+                let enderecoFormatado = resultEndereco.map(
+                    endereco=> formatarEnderecos(endereco)
+                );
                 return DEFAULT_MENSAGENS.criarResposta(
                     MENSSAGENS.SUCCESS_REQUEST,
-                    { enderecos: resultEndereco }
+                    { enderecos: enderecoFormatado }
                 )
 
             } else {
@@ -50,10 +53,9 @@ const listarEnderecos = async () => {
         )
 
     }
-
 }
 
-//Retorna endereço pelo ID
+//Retorna endereço pelo id
 const buscarEnderecoId = async (id) => {
 
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
@@ -62,15 +64,16 @@ const buscarEnderecoId = async (id) => {
 
         if (!isNaN(id) && id != null && id > 0) {
 
-            let resultEndereco = await enderecoDAO.getEnderecoById(id)
+            let resultEndereco = await enderecoDAO.getAddressById(id)
 
             if (resultEndereco) {
 
                 if (resultEndereco.length > 0) {
-
+                    
+                    let enderecoFormatado = formatarEnderecos(resultEndereco[0])
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSSAGENS.SUCCESS_REQUEST,
-                        { endereco: resultEndereco }
+                        { endereco: enderecoFormatado }
                     )
 
                 } else {
@@ -109,24 +112,26 @@ const buscarEnderecoId = async (id) => {
 
 }
 
-//Retorna endereço pelo serviço
-const buscarEnderecoServico = async (fk_id_servico) => {
+//Retorna endereço pelo id do serviço
+const buscarEnderecoServico = async (idServico) => {
 
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     try {
 
-        if (!isNaN(fk_id_servico) && fk_id_servico != null && fk_id_servico > 0) {
+        if (!isNaN(idServico) && idServico != null && idServico > 0) {
 
-            let resultEndereco = await enderecoDAO.getEnderecoByServico(fk_id_servico)
-
+            let resultEndereco = await enderecoDAO.getAddressByServiceId(idServico)
+          
             if (resultEndereco) {
 
                 if (resultEndereco.length > 0) {
-
+                    let enderecoFormatado = resultEndereco.map(
+                        endereco=> formatarEnderecos(endereco)
+                    )
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSSAGENS.SUCCESS_REQUEST,
-                        { enderecos: resultEndereco }
+                        { endereco: enderecoFormatado }
                     )
 
                 } else {
@@ -178,14 +183,28 @@ const inserirEndereco = async (endereco, contentType) => {
 
             if (!validar) {
 
-                let resultEndereco = await enderecoDAO.postEndereco(endereco)
+                let resultEndereco = await enderecoDAO.postAddress(endereco)
 
                 if (resultEndereco) {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_CREATED_ITEM,
-                        endereco
-                    )
+                    let ultimoId = await enderecoDAO.getSelectLastId()
+
+                    if (ultimoId) {
+
+                        endereco.id = ultimoId
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.SUCCESS_CREATED_ITEM,
+                            endereco
+                        )
+
+                    } else {
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.ERROR_INTERNAL_SERVER
+                        )
+
+                    }
 
                 } else {
 
@@ -238,13 +257,13 @@ const atualizarEndereco = async (endereco, id, contentType) => {
 
                     endereco.id = Number(id)
 
-                    let resultEndereco = await enderecoDAO.putEndereco(endereco)
+                    let resultEndereco = await enderecoDAO.putAddress(endereco)
 
                     if (resultEndereco) {
 
                         return DEFAULT_MENSAGENS.criarResposta(
                             MENSSAGENS.SUCCESS_UPDATE_ITEM,
-                            { endereco }
+                            { endereco: endereco }
                         )
 
                     } else {
@@ -285,7 +304,79 @@ const atualizarEndereco = async (endereco, id, contentType) => {
 
 }
 
-//Deleta endereço
+//Valida os dados do endereço
+const validarEndereco = (endereco) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    //Validação do logradouro
+    if (
+        endereco.logradouro == undefined ||
+        endereco.logradouro == null ||
+        endereco.logradouro == '' ||
+        endereco.logradouro.length > 100
+    ) {
+
+        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Logradouro incorreto]'
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_REQUIRED_FIELDS
+        )
+
+    }
+
+    //Validação do CEP
+    else if (
+        endereco.cep == undefined ||
+        endereco.cep == null ||
+        endereco.cep == '' ||
+        endereco.cep.length > 12
+    ) {
+
+        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [CEP incorreto]'
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_REQUIRED_FIELDS
+        )
+
+    }
+
+    //Validação do complemento
+    else if (
+        endereco.complemento != undefined &&
+        endereco.complemento != null &&
+        endereco.complemento.length > 150
+    ) {
+
+        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Complemento incorreto]'
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_REQUIRED_FIELDS
+        )
+
+    }
+
+    //Validação da FK serviço
+    else if (
+        endereco.fk_id_servico == undefined ||
+        endereco.fk_id_servico == null ||
+        endereco.fk_id_servico == '' ||
+        isNaN(endereco.fk_id_servico)
+    ) {
+
+        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [ID do serviço incorreto]'
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_REQUIRED_FIELDS
+        )
+
+    }
+
+    return false
+
+}
+
+//Deleta um endereço
 const deletarEndereco = async (id) => {
 
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
@@ -296,7 +387,7 @@ const deletarEndereco = async (id) => {
 
         if (validarId.status_code == 200) {
 
-            let resultEndereco = await enderecoDAO.deleteEndereco(id)
+            let resultEndereco = await enderecoDAO.deleteAddress(id)
 
             if (resultEndereco) {
 
@@ -328,78 +419,21 @@ const deletarEndereco = async (id) => {
 
 }
 
-//Valida endereço
-const validarEndereco = (endereco) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
-
-    //logradouro
-    if (
-        endereco.logradouro == undefined ||
-        endereco.logradouro == null ||
-        endereco.logradouro == '' ||
-        endereco.logradouro.length > 100
-    ) {
-
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Logradouro incorreto]'
-
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_REQUIRED_FIELDS
-        )
-
+const formatarEnderecos = (endereco) =>{
+    return{
+        id: endereco.id,
+        logradouro: endereco.logradouro,
+        cep:endereco.cep,
+        complemento:endereco.complemento,
+        servico:{
+            id: endereco.id_servico,
+            nome: endereco.nome_local
+        }
     }
-
-    //cep
-    else if (
-        endereco.cep == undefined ||
-        endereco.cep == null ||
-        endereco.cep == '' ||
-        endereco.cep.length > 12
-    ) {
-
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [CEP incorreto]'
-
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_REQUIRED_FIELDS
-        )
-
-    }
-
-    //complemento
-    else if (
-        endereco.complemento != undefined &&
-        endereco.complemento != null &&
-        endereco.complemento.length > 150
-    ) {
-
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Complemento incorreto]'
-
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_REQUIRED_FIELDS
-        )
-
-    }
-
-    //fk_id_servico
-    else if (
-        endereco.fk_id_servico == undefined ||
-        endereco.fk_id_servico == null ||
-        endereco.fk_id_servico == '' ||
-        isNaN(endereco.fk_id_servico)
-    ) {
-
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [ID do serviço incorreto]'
-
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_REQUIRED_FIELDS
-        )
-
-    }
-
-    return false
-
 }
 
+//Exports
 module.exports = {
     listarEnderecos,
     buscarEnderecoId,

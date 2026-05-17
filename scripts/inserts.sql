@@ -399,21 +399,26 @@ INSERT INTO tbl_chatbot (
 -- =========================================
 INSERT INTO tbl_usuario_servico (
     fk_id_servicos,
-    fk_id_usuario
+    fk_id_usuario,
+    data_vinculo
 ) VALUES
 (
     1,
-    1
+    2,
+   CURDATE()
 ),
 (
     2,
-    2
+    2,
+  CURDATE()
 ),
 (
     3,
-    3
+    3,
+  CURDATE()
 ),
 (
     4,
-    1
+    1,
+  CURDATE()
 );

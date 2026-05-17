@@ -47,7 +47,7 @@ const getUserById = async (id) => {
 //Busca um usuário pelo id e status
 const getUserByAtivo = async (id, status) => {
     try {
-        console.log(id, status)
+      
         const result = await conexaoKnex.conexao.raw(
             'SELECT * FROM vw_usuario WHERE id = ? and is_ativo = ?',
             [id, status]
@@ -105,7 +105,7 @@ const getSelectLastId = async () => {
         }
 
     } catch (error) {
-        console.log(error)
+      
         return false
     }
 }
@@ -187,7 +187,7 @@ const postUser = async (usuario) => {
 
 
     } catch (error) {
-        console.log(error)
+     
         return false
     }
 

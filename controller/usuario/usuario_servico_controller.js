@@ -11,6 +11,60 @@ const usuarioController = require('./usuario_controller.js')
 
 const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
 
+
+//Retorna todos os registro da tabela relacional 
+const listarUsuariosServicos = async () => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+
+        let resultUsuarioServico = await usuarioServicoDAO.getAllUserService()
+
+
+        if (resultUsuarioServico) {
+
+            if (resultUsuarioServico.length > 0) {
+                resultFormatado = resultUsuarioServico.map(
+                    usuarioServico=> formatarUsuarioServico(usuarioServico)
+                )
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.SUCCESS_REQUEST,
+                    { usuario_servico: resultFormatado }
+                )
+
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )//404
+            }
+
+        } else {
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_NOT_FOUND
+            )//404
+        }
+
+
+    } catch (error) {
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL
+        )
+    }
+}
+
+const buscarUsuarioServicoByIdUsuario = async (idUsuario)=>{
+    try {
+        
+    } catch (error) {
+         return DEFAULT_MENSAGENS.criarResposta(
+            MENSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+}
+
 // Vincula um usuário a um serviço
 const inserirUsuarioServico = async (usuarioServico, contentType) => {
 
@@ -27,7 +81,8 @@ const inserirUsuarioServico = async (usuarioServico, contentType) => {
                 let resultUsuarioServico = await usuarioServicoDAO.postUserService(usuarioServico)
 
                 if (resultUsuarioServico) {
-
+                    let ultimoId = await usuarioServicoDAO.getSelectLastId()
+                    usuarioServico.id = ultimoId
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSAGENS.SUCCESS_CREATED_ITEM,
                         usuarioServico
@@ -180,7 +235,7 @@ const deletarUsuarioServico = async (idUsuario, idServico) => {
 
         if (validar.status_code == 200) {
 
-            let result = await usuarioServicoDAO.deleteUsuarioServico(idUsuario, idServico)
+            let result = await usuarioServicoDAO.deleteUserServiceByIdUserAndService(idUsuario, idServico)
 
             if (result) {
                 
@@ -201,7 +256,18 @@ const deletarUsuarioServico = async (idUsuario, idServico) => {
         }
 
     } catch (error) {
+       
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+}
 
+const deleteUsuarioServicoByIdUser = async (idUsuario) =>{
+    try {
+
+        
+    } catch (error) {
         return DEFAULT_MENSAGENS.criarResposta(
             MENSAGENS.ERROR_INTERNAL_SERVER
         )
@@ -213,6 +279,9 @@ const formatarUsuarioServico = (usuarioServico)=>{
         id: usuarioServico.id,
         data_vinculo: usuarioServico.data_vinculo,
         data_desvinculo: usuarioServico.data_desvinculo,
+        usuario:{
+            id: usuarioServico.id_usuario
+        },
         servico:{
             id: usuarioServico.id_servico,
             nome: usuarioServico.nome_local,
@@ -235,5 +304,6 @@ const formatarUsuarioServico = (usuarioServico)=>{
 module.exports = {
     inserirUsuarioServico,
     deletarUsuarioServico,
-    buscarUsuarioServico
+    buscarUsuarioServico,
+    listarUsuariosServicos
 }

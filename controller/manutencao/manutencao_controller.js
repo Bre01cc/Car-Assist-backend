@@ -315,7 +315,7 @@ const inserirManutencao = async (manutencao, contentType) => {
         }
 
     } catch (error) {
-      console.log(error)
+      
         return DEFAULT_MENSAGENS.criarResposta(
             MENSSAGENS.ERROR_INTERNAL_SERVER
         )

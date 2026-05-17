@@ -137,8 +137,8 @@ on gasto.fk_id_categoria = tipo_gasto.id;
 
 CREATE VIEW vw_usuario_servico AS
 SELECT
-    usuario_servico.fk_id_usuario id_usuario,
     usuario_servico.id,
+    usuario_servico.fk_id_usuario id_usuario,
     usuario_servico.data_vinculo,
     usuario_servico.data_desvinculo,
 
@@ -165,3 +165,22 @@ JOIN tbl_tipo_servico tipo_servico
 
 JOIN tbl_enderecos endereco
     ON endereco.fk_id_servico = servico.id;
+
+
+create view vw_usuario_veiculo as select
+usuario_veiculo.fk_id_usuario id_usuario,
+usuario_veiculo.papel_usuario,
+usuario_veiculo.data_vinculo,
+usuario_veiculo.data_desvinculo,
+usuario_veiculo.is_ativo,
+veiculo.id id_veiculo,
+veiculo.placa,
+veiculo.modelo,
+veiculo.cor,
+veiculo.score,
+veiculo.ano,
+veiculo.foto_veiculo,
+veiculo.is_ativo veiculo_is_ativo
+from tbl_usuario_veiculo usuario_veiculo join
+tbl_veiculo veiculo on 
+veiculo.id = usuario_veiculo.fk_id_veiculo;

@@ -22,7 +22,7 @@ const getAllVehicles = async () => {
         return false;
 
     } catch (error) {
-        console.error(error);
+     
         return false;
     }
 }
@@ -42,7 +42,7 @@ const getVehicleById = async (id) => {
         return false;
 
     } catch (error) {
-        console.error(error);
+    
         return false;
     }
 }
@@ -121,7 +121,7 @@ const putVeiculo = async (veiculo) => {
             veiculo.is_ativo,
             veiculo.id
         ])
-        console.log(result)
+        
 
         if (result[0].affectedRows) {
             return true
@@ -130,7 +130,7 @@ const putVeiculo = async (veiculo) => {
         }
 
     } catch (error) {
-        console.log(error)
+      
         return false
     }
 }

@@ -221,6 +221,13 @@ router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
 });
 
 
+router.get('/v1/car-assist/usuario-servico', cors(), async (req, res) => {
+
+    let usuarioServico = await controllerUsuarioServico.listarUsuariosServicos()
+
+    res.status(usuarioServico.status_code).json(usuarioServico);
+});
+
 router.get('/v1/car-assist/usuarios/:idUsuario/servicos/:idServico', cors(), async (req, res) => {
     let idUsuario = req.params.idUsuario;
     let idServico = req.params.idServico

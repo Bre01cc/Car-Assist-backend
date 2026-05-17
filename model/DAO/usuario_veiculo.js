@@ -36,6 +36,20 @@ const getUserVehicleByIDs = async (idUsuario, idVeiculo) => {
     }
 }
 
+const getUserVehicleByIDUser = async(id)=>{
+    try {
+    let result = await conexaoKnex.conexao.raw('select * from vw_usuario_veiculo where id_usuario = ?',[id])
+        if(result[0].length>0){
+            return result[0]
+        }else{
+            return false
+        }
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 const getSelectLastId = async () => {
 
     try {
@@ -128,5 +142,6 @@ module.exports = {
     getUserVehicleByIDs,
     postUserVehicle,
     putUserVehicle,
-    deleteUserVehicle
+    deleteUserVehicle,
+    getUserVehicleByIDUser
 }

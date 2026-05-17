@@ -20,6 +20,13 @@ router.get('/v1/car-assist/usuario-veiculo', cors(), async (req, res) => {
     res.status(result.status_code).json(result)
 })
 
+router.get('/v1/car-assist/usuario-veiculo/:id', cors(), async (req, res) => {
+    let idUsuarioVeiculo = req.params.id;
+    let usuario = await controllerUV.buscarUsuarioVeiculoIdUsuario(idUsuarioVeiculo)
+  
+    res.status(usuario.status_code).json(usuario);
+});
+
 // inserir um novo vínculo
 router.post('/v1/car-assist/usuario-veiculo', cors(), bodyParserJSON, async (req, res) => {
     let dadosBody = req.body

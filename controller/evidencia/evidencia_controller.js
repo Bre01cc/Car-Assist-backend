@@ -120,7 +120,7 @@ const buscarEvidenciaIdMaintenance = async (id) => {
             if (resultEvidencia) {
 
                 if (resultEvidencia.length > 0) {
-                    console.log(resultEvidencia)
+                 
                     let evidenciaFormatada = resultEvidencia.map(
                         evidencia => formatarEvidencia(evidencia)
                     )
@@ -174,12 +174,10 @@ const inserirEvidencia = async (evidencia, contentType) => {
             if (!validar) {
 
                 let resultEvidencia = await evidenciaDAO.postEvidence(evidencia)
-                console.log(resultEvidencia)
 
                 if (resultEvidencia) {
 
                     let ultimoId = await evidenciaDAO.getSelectLastId()
-                    console.log(ultimoId)
 
                     if (ultimoId) {
 

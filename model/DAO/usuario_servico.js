@@ -8,6 +8,20 @@
 //Import do knex
 const conexaoKnex = require('../../knex/index.js');
 
+const getAllUserService = async () =>{
+    try {
+        const result = await conexaoKnex.conexao.raw('select * from vw_usuario_servico decs order by id');
+
+        if(result[0].length>0){
+            return result[0]
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 const getUserServiceByIdServiceAndUser = async (id_usuario,id_servico) => {
     try {
         const result = await conexaoKnex.conexao.raw(
@@ -51,7 +65,7 @@ const postUserService = async (usuarioServico) => {
         return result
 
     } catch (error) {
-        console.log(error)
+      
         return false
     }
 }
@@ -89,10 +103,10 @@ const putUserService = async (usuarioServico) => {
     }
 }
 
-const getUserServiceById = async (id) => {
+const getUserServiceByIdUser = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from tbl_usuario_servico where fk_id_usuario = ? and fk_id_servico',[id]
+            'select * from vw_usuario_servico where id_usuario = ?',[id]
         );
         if (result[0].length > 0) {
             return result[0]
@@ -137,7 +151,7 @@ const deleteUserServiceByIdUserAndService = async (id_usuario, id_servico) => {
         let result = await conexaoKnex.conexao.raw(`
             DELETE FROM tbl_usuario_servico
             WHERE fk_id_usuario = ?
-            AND fk_id_servico = ?
+            AND fk_id_servicos = ?
         `, [
             id_usuario,
             id_servico
@@ -208,7 +222,8 @@ module.exports = {
     deleteUserServiceById,
     deleteUserServiceByIdUser,
     deleteUserServiceByIdUserAndService,
-    getUserServiceById,
+    getUserServiceByIdUser,
     getUserServiceByIdServiceAndUser,
-    getSelectLastId
+    getSelectLastId,
+    getAllUserService
 }

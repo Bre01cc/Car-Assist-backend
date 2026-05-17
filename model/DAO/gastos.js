@@ -11,13 +11,13 @@ const getAllExpenses = async () => {
     try {
         let sql = 'select * from vw_gasto where is_ativo = true order by id desc';
         let result = await conexaoKnex.conexao.raw(sql);
-        console.log(result)
+   
         if (result[0].length > 0)
             return result[0];
         else
             return false;
     } catch (error) {
-        console.log(error)
+   
         return false;
     }
 }
@@ -143,7 +143,7 @@ const getSelectLastId = async () => {
     try {
         let sql = 'select * from vw_gasto order by id desc limit 1';
         let result = await conexaoKnex.conexao.raw(sql);
-console.log(result)
+
         if (result[0].length > 0)
             return result[0];
         else
