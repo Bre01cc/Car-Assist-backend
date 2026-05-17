@@ -234,13 +234,13 @@ const inserirVeiculoUsuario = async (veiculo, contentType) => {
                         if (lastId) {
                             veiculo.id = lastId.id
 
-                            if (veiculo.vinculo != undefined) {
+                            if (veiculo.id_usuario != undefined) {
 
 
                                 let vinculoObj = {
                                     fk_id_veiculo: veiculo.id,
                                     fk_id_usuario: veiculo.id_usuario,
-                                    papel_usuario: veiculo.vinculo.papel_usuario,
+                                    papel_usuario: "Proprietário",
                                     data_vinculo: new Date().toISOString().split('T')[0]
                                 }
                                 console.log(vinculoObj)
