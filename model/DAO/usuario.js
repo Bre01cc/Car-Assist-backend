@@ -45,10 +45,32 @@ const getUserById = async (id) => {
     }
 }
 
+//Busca um usuário pelo id
+const getUserByIdAndPassword = async (id, senha) => {
+    try {
+        const result = await conexaoKnex.conexao.raw(
+            'SELECT * FROM vw_usuario WHERE id = ?',
+            [id]
+        );
+
+        senhaBanco = result[0][0].senha
+        const senhaCorreta = await bcrypt.compare(senha, senhaBanco)
+        if (result[0] && result[0].length > 0 && senhaCorreta) {
+            return result[0];
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+
+        return false;
+    }
+}
+
 //Busca um usuário pelo id e status
 const getUserByAtivo = async (id, status) => {
     try {
-      
+
         const result = await conexaoKnex.conexao.raw(
             'SELECT * FROM vw_usuario WHERE id = ? and is_ativo = ?',
             [id, status]
@@ -103,7 +125,7 @@ const getSelectLastId = async () => {
         }
 
     } catch (error) {
-      
+
         return false
     }
 }
@@ -115,9 +137,9 @@ const getUserByEmailAndPassword = async (email, senha) => {
             'SELECT * FROM tbl_usuario WHERE email = ?',
             [email]
         );
-        
+
         senhaBanco = result[0][0].senha
-        const senhaCorreta = await bcrypt.compare(senha,senhaBanco)
+        const senhaCorreta = await bcrypt.compare(senha, senhaBanco)
         if (result[0] && result[0].length > 0 && senhaCorreta) {
             return result[0];
         } else {
@@ -125,7 +147,7 @@ const getUserByEmailAndPassword = async (email, senha) => {
         }
 
     } catch (error) {
-console.log(error)
+        console.log(error)
         return false;
     }
 }
@@ -155,7 +177,7 @@ const postUser = async (usuario) => {
 
     try {
         //10 será refente ao custo de processamento, quanto maior mais seguro e lento será.
-        const senhaCriptografada = await bcrypt.hash(usuario.senha,10)
+        const senhaCriptografada = await bcrypt.hash(usuario.senha, 10)
         console.log(usuario.senha)
         console.log(senhaCriptografada)
         const result = await conexaoKnex.conexao.raw(`
@@ -178,18 +200,18 @@ const postUser = async (usuario) => {
             usuario.email,
             usuario.cpf,
             usuario.data_nascimento,
-           senhaCriptografada
+            senhaCriptografada
         ]);
-        
+
         if (result[0]) {
             return true
-        }else{
+        } else {
             return false
         }
 
 
     } catch (error) {
-     console.log(error)
+        console.log(error)
         return false
     }
 
@@ -198,7 +220,7 @@ const postUser = async (usuario) => {
 //Atualiza um usuário
 const putUser = async (usuario) => {
     try {
-        
+
         const result = await conexaoKnex.conexao.raw(`
           Update tbl_usuario
           set nome = ?,
@@ -215,7 +237,7 @@ const putUser = async (usuario) => {
             usuario.id
         ])
 
-        if (result[0].affectedRows>0) {
+        if (result[0].affectedRows > 0) {
             return true
         } else {
             return false
@@ -236,7 +258,7 @@ const deleteUser = async (id) => {
             0,
             id
         ])
-        if (result[0].affectedRows>0) {
+        if (result[0].affectedRows > 0) {
             return true
         } else {
             return false
@@ -255,6 +277,7 @@ module.exports = {
     deleteUser,
     getSelectLastId,
     getUserByEmailAndPassword,
+    getUserByIdAndPassword,
     getUserByAtivo,
     getAllUsers,
     getUserByEmail,

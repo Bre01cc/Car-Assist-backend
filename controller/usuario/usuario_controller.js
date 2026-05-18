@@ -254,6 +254,82 @@ const buscarUsuarioEmailComSenha = async (usuario, contentType) => {
 
             } else {
 
+                MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [id incorreto] ou [Senha incorreta]'
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_REQUIRED_FIELDS
+                )
+
+            }
+
+        } else {
+
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_CONTENT_TYPE
+            )
+
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+
+    }
+}
+//Retorna um usuário pelo email e senha
+const buscarUsuarioIDComSenha = async (usuario, contentType) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            let id = usuario.id
+            let senha = usuario.password
+
+            if (
+               !isNaN(id) && id != null && id > 0 &&
+
+                senha != undefined &&
+                senha != null &&
+                senha != '' &&
+                senha.length < 255
+            ) {
+
+                let resultUsuario = await usuarioDAO.getUserByIdAndPassword(id, senha)
+
+                if (resultUsuario) {
+
+                    if (resultUsuario.length > 0) {
+                        let usuarioFiltrado = usuarioFormatado(resultUsuario[0])
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.SUCCESS_REQUEST,
+                            { usuario: usuarioFiltrado },
+                            "Guilherme Moreira de Souza"
+                        )
+
+                    } else {
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.ERROR_NOT_FOUND
+                        )
+
+                    }
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
+                }
+
+            } else {
+
                 MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Email incorreto] ou [Senha incorreta]'
 
                 return DEFAULT_MENSAGENS.criarResposta(
@@ -424,6 +500,7 @@ const inserirUsuario = async (usuario, contentType) => {
 
 //Atualiza um usuário pelo id
 const atualizarUsuario = async (usuario, id, contentType) => {
+    console.log(contentType)
     let MENSSAGES = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     try {
@@ -432,12 +509,12 @@ const atualizarUsuario = async (usuario, id, contentType) => {
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
             // Chama a função para validar os dados do usuário
-            let validar = await validarUsuario(usuario, true)
+            let validar = validarUsuario(usuario, true)
 
             if (!validar) {
 
                 // Verifica se o ID existe no banco
-                let validarId = await buscarUsuarioId(id)
+                let validarId = await buscarUsuarioIDComSenha(usuario.email,usuario.senha)
 
                 if (validarId.status_code == 200) {
 
