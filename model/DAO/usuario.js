@@ -6,6 +6,7 @@
  ***********************************************************************************************************************/
 
 const conexaoKnex = require('../../knex/index.js');
+const bcrypt = require('bcrypt')
 
 //Busca todos os usuários
 const getAllUsers = async () => {
@@ -111,19 +112,20 @@ const getSelectLastId = async () => {
 const getUserByEmailAndPassword = async (email, senha) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_usuario WHERE email = ? and senha = ?',
-            [email, senha]
+            'SELECT * FROM tbl_usuario WHERE email = ?',
+            [email]
         );
-
-
-        if (result && result[0] && result[0].length > 0) {
+        
+        senhaBanco = result[0][0].senha
+        const senhaCorreta = await bcrypt.compare(senha,senhaBanco)
+        if (result[0] && result[0].length > 0 && senhaCorreta) {
             return result[0];
         } else {
             return false;
         }
 
     } catch (error) {
-
+console.log(error)
         return false;
     }
 }
@@ -152,7 +154,10 @@ const getUserByCPF = async (cpf) => {
 const postUser = async (usuario) => {
 
     try {
-
+        //10 será refente ao custo de processamento, quanto maior mais seguro e lento será.
+        const senhaCriptografada = await bcrypt.hash(usuario.senha,10)
+        console.log(usuario.senha)
+        console.log(senhaCriptografada)
         const result = await conexaoKnex.conexao.raw(`
        Insert into tbl_usuario(
         nome,
@@ -173,9 +178,9 @@ const postUser = async (usuario) => {
             usuario.email,
             usuario.cpf,
             usuario.data_nascimento,
-            usuario.senha
+           senhaCriptografada
         ]);
-
+        
         if (result[0]) {
             return true
         }else{
@@ -193,6 +198,7 @@ const postUser = async (usuario) => {
 //Atualiza um usuário
 const putUser = async (usuario) => {
     try {
+        
         const result = await conexaoKnex.conexao.raw(`
           Update tbl_usuario
           set nome = ?,

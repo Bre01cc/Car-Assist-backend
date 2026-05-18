@@ -4,7 +4,7 @@
 4-npx knex init
 5-npm install multer
 6-npm install dotenv
-7-
+7-npm install bcrypt
 8-
 9-
 10-

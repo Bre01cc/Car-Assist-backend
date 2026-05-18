@@ -231,12 +231,7 @@ CREATE TABLE tbl_usuario_servico (
 
     PRIMARY KEY (id),
 
-    UNIQUE KEY UK_usuario_servico (
-        fk_id_servicos,
-        fk_id_usuario
-    ),
-
-        data_vinculo DATE NOT NULL,
+    data_vinculo DATE NOT NULL,
     data_desvinculo DATE NULL,
     is_ativo BOOLEAN DEFAULT TRUE,
 
@@ -266,8 +261,6 @@ CREATE TABLE tbl_usuario_veiculo (
     data_vinculo DATE NOT NULL,
     data_desvinculo DATE NULL,
     is_ativo BOOLEAN DEFAULT TRUE,
-
-
 
     CONSTRAINT FK_usu_vei_u
         FOREIGN KEY (fk_id_usuario)

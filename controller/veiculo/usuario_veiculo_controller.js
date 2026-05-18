@@ -212,7 +212,7 @@ const formatarUsuarioVeiculoPost = (usuarioVeiculo) => {
     return{
         papel_usuario: usuarioVeiculo.papel_usuario,
         data_vinculo:usuarioVeiculo.data_vinculo,
-        is_ativo:usuarioVeiculo.is_ativo,
+        is_ativo:usuarioVeiculo.is_ativo
     }
 }
 

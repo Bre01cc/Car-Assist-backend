@@ -10,6 +10,7 @@ const usuarioDAO = require('../../model/DAO/usuario.js')
 const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
 
 
+
 //Retorna todos os usuários
 const listarUsuarios = async () => {
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
@@ -363,19 +364,18 @@ const inserirUsuario = async (usuario, contentType) => {
                         MENSSAGENS.ERROR_EXISTING
                     )
                 } else {
-                    
-                    console.log(usuario.email)
 
                     let resultEmail = await buscarUsuarioEmail(usuario.email);
-                    console.log(resultEmail)
+               
                     if (resultEmail.status_code == 200) {
                         MENSSAGENS.ERROR_EXISTING.message += 'Email'
                         return DEFAULT_MENSAGENS.criarResposta(
                             MENSSAGENS.ERROR_EXISTING
                         )
                     } else {
+
                         let resultUsuario = await usuarioDAO.postUser(usuario)
-                        console.log(resultUsuario)
+                  
                         if (resultUsuario) {
 
                             let ultimoId = await usuarioDAO.getSelectLastId()
