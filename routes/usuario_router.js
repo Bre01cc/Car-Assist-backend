@@ -184,6 +184,13 @@ router.post('/v1/car-assist/usuario', cors(), bodyParserJSON, async function (re
     response.status(usuario.status_code).json(usuario);
 });
 
+router.post('/v1/car-assist/usuario-servico', cors(), bodyParserJSON, async function (request, response) {
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type'];
+    let usuarioServico = await controllerUsuarioServico.inserirUsuarioServico(dadosBody, contentType);
+    response.status(usuarioServico.status_code).json(usuarioServico);
+});
+
 router.delete('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
     let idUsuario = req.params.id;
     let usuario = await controllerUsuario.deletarUsuarioId(idUsuario)

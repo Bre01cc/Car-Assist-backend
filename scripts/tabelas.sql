@@ -152,6 +152,7 @@ CREATE TABLE tbl_gastos (
 CREATE TABLE tbl_manutencao (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     data_manutencao DATETIME NOT NULL,
+    data_criacao DATETIME NOT NULL,
     custo DECIMAL(10,2) NOT NULL,
     quilometragem INT NOT NULL,
     oficina VARCHAR(100) NULL,

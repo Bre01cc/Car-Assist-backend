@@ -101,7 +101,7 @@ const buscarUsuarioServicoByIdUsuario = async (idUsuario) => {
 const inserirUsuarioServico = async (usuarioServico, contentType) => {
 
     let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
-
+    console.log(usuarioServico)
     try {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
@@ -139,7 +139,7 @@ const inserirUsuarioServico = async (usuarioServico, contentType) => {
         }
 
     } catch (error) {
-
+        console.log(error)
         return DEFAULT_MENSAGENS.criarResposta(
             MENSAGENS.ERROR_INTERNAL_SERVER
         )
@@ -201,10 +201,10 @@ const validarUsuarioServico = async (usuarioServico) => {
 
     // Validação do ID do serviço
     if (
-        usuarioServico.fk_id_servicos == undefined ||
-        usuarioServico.fk_id_servicos == null ||
-        usuarioServico.fk_id_servicos == '' ||
-        isNaN(usuarioServico.fk_id_servicos)
+        usuarioServico.fk_id_servico == undefined ||
+        usuarioServico.fk_id_servico == null ||
+        usuarioServico.fk_id_servico == '' ||
+        isNaN(usuarioServico.fk_id_servico)
     ) {
 
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [ID do serviço inválido]'
@@ -242,7 +242,7 @@ const validarUsuarioServico = async (usuarioServico) => {
     }
 
     // Verifica se o usuário existe
-    let validarUsuario = await usuarioController.buscarUsuarioId(usuarioServico.fk_id_usuario)
+    let validarUsuario = await controllerUsuario.buscarUsuarioId(usuarioServico.fk_id_usuario)
 
     if (validarUsuario.status_code != 200) {
 
@@ -254,6 +254,14 @@ const validarUsuarioServico = async (usuarioServico) => {
     }
 
     return false
+}
+
+const buscarUsuarioServico = async () => {
+    try {
+        
+    } catch (error) {
+
+    }
 }
 
 // Deleta vínculo usuário-serviço
