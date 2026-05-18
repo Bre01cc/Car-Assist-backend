@@ -146,53 +146,53 @@ const inserirUsuarioServico = async (usuarioServico, contentType) => {
     }
 }
 
-const buscarUsuarioServico = async (idUsuario, idServico) => {
+// const buscarUsuarioServico = async (idUsuario, idServico) => {
 
-    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
-    try {
+//     let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+//     try {
 
-        let validarUsuario = await usuarioController.buscarUsuarioId(idUsuario)
+//         let validarUsuario = await usuarioController.buscarUsuarioId(idUsuario)
 
-        if (validarUsuario.status_code == 200) {
+//         if (validarUsuario.status_code == 200) {
 
-            let validarServico = await servicoController.buscarServicosId(idServico)
+//             let validarServico = await servicoController.buscarServicosId(idServico)
 
-            if (validarServico.status_code == 200) {
-                let result = await usuarioServicoDAO.getUserServiceByIdServiceAndUser(idUsuario, idServico)
+//             if (validarServico.status_code == 200) {
+//                 let result = await usuarioServicoDAO.getUserServiceByIdServiceAndUser(idUsuario, idServico)
 
-                if (result.length > 0) {
-                    resultFormatado = result.map(
-                        usuarioServico => formatarUsuarioServico(usuarioServico)
-                    )
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSAGENS.SUCCESS_REQUEST,
-                        { usuario_servico: resultFormatado }
-                    )
-                } else {
-                    MENSAGENS.ERROR_NOT_FOUND.message += '[id do usuario servico]'
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSAGENS.ERROR_NOT_FOUND
-                    )
-                }
+//                 if (result.length > 0) {
+//                     resultFormatado = result.map(
+//                         usuarioServico => formatarUsuarioServico(usuarioServico)
+//                     )
+//                     return DEFAULT_MENSAGENS.criarResposta(
+//                         MENSAGENS.SUCCESS_REQUEST,
+//                         { usuario_servico: resultFormatado }
+//                     )
+//                 } else {
+//                     MENSAGENS.ERROR_NOT_FOUND.message += '[id do usuario servico]'
+//                     return DEFAULT_MENSAGENS.criarResposta(
+//                         MENSAGENS.ERROR_NOT_FOUND
+//                     )
+//                 }
 
-            } else {
-                MENSAGENS.ERROR_NOT_FOUND.message += '[id do serviço]'
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSAGENS.ERROR_NOT_FOUND
-                )
-            }
-        } else {
-            MENSAGENS.ERROR_NOT_FOUND.message += '[id do usuário]'
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSAGENS.ERROR_NOT_FOUND)
-        }
+//             } else {
+//                 MENSAGENS.ERROR_NOT_FOUND.message += '[id do serviço]'
+//                 return DEFAULT_MENSAGENS.criarResposta(
+//                     MENSAGENS.ERROR_NOT_FOUND
+//                 )
+//             }
+//         } else {
+//             MENSAGENS.ERROR_NOT_FOUND.message += '[id do usuário]'
+//             return DEFAULT_MENSAGENS.criarResposta(
+//                 MENSAGENS.ERROR_NOT_FOUND)
+//         }
 
-    } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSAGENS.ERROR_INTERNAL_SERVER
-        )
-    }
-}
+//     } catch (error) {
+//         return DEFAULT_MENSAGENS.criarResposta(
+//             MENSAGENS.ERROR_INTERNAL_SERVER
+//         )
+//     }
+// }
 
 // Valida os dados da tabela usuário_serviço
 const validarUsuarioServico = async (usuarioServico) => {
