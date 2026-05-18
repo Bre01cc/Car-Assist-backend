@@ -25,7 +25,7 @@ const listarUsuarios = async () => {
 
                 return DEFAULT_MENSAGENS.criarResposta(
                     MENSSAGENS.SUCCESS_REQUEST,
-                    { usuarioss: resultUsuario }
+                    { usuarios: resultUsuario }
                 )
 
 
@@ -58,6 +58,106 @@ const buscarUsuarioId = async (id) => {
         //Validação da chegada do ID
         if (!isNaN(id) && id != null && id > 0) {
             let resultUsuario = await usuarioDAO.getUserById(id)
+
+
+            if (resultUsuario) {
+
+                if (resultUsuario.length > 0) {
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.SUCCESS_REQUEST,
+                        { usuario: resultUsuario }
+                    )
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
+                }
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
+            }
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+
+}
+
+const buscarUsuarioCPF = async (cpf) => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        //Validação da chegada do ID
+        if (cpf != undefined &&
+            cpf != null &&
+            cpf != '' &&
+            cpf.length == 11 &&
+            !isNaN(cpf)) {
+            let resultUsuario = await usuarioDAO.getUserByCPF(cpf)
+
+
+            if (resultUsuario) {
+
+                if (resultUsuario.length > 0) {
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.SUCCESS_REQUEST,
+                        { usuario: resultUsuario }
+                    )
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
+                }
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
+            }
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+
+}
+
+const buscarUsuarioEmail = async (email) => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        //Validação da chegada do ID
+        if (email != undefined &&
+            email != null &&
+            email != '' &&
+            email.length < 100 &&
+            email.includes('@')) {
+            let resultUsuario = await usuarioDAO.getUserByEmail(email)
 
 
             if (resultUsuario) {
@@ -170,7 +270,6 @@ const buscarUsuarioEmailComSenha = async (usuario, contentType) => {
         }
 
     } catch (error) {
-        console.log(error)
 
         return DEFAULT_MENSAGENS.criarResposta(
             MENSSAGENS.ERROR_INTERNAL_SERVER
@@ -256,36 +355,55 @@ const inserirUsuario = async (usuario, contentType) => {
 
             if (!validar) {
 
-                let resultUsuario = await usuarioDAO.postUser(usuario)
+                let resultCPF = await buscarUsuarioCPF(usuario.cpf);
 
+                if (resultCPF.status_code == 200) {
+                    MENSSAGENS.ERROR_EXISTING.message += 'CPF'
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_EXISTING
+                    )
+                } else {
+                    
+                    console.log(usuario.email)
 
-                if (resultUsuario) {
-
-                    let ultimoId = await usuarioDAO.getSelectLastId()
-
-                    if (ultimoId) {
-
-                        usuario.id = ultimoId
-
+                    let resultEmail = await buscarUsuarioEmail(usuario.email);
+                    console.log(resultEmail)
+                    if (resultEmail.status_code == 200) {
+                        MENSSAGENS.ERROR_EXISTING.message += 'Email'
                         return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.SUCCESS_CREATED_ITEM, usuario
+                            MENSSAGENS.ERROR_EXISTING
                         )
-
                     } else {
+                        let resultUsuario = await usuarioDAO.postUser(usuario)
+                        console.log(resultUsuario)
+                        if (resultUsuario) {
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.ERROR_INTERNAL
-                        )
+                            let ultimoId = await usuarioDAO.getSelectLastId()
 
+                            if (ultimoId) {
+
+                                usuario.id = ultimoId
+
+                                return DEFAULT_MENSAGENS.criarResposta(
+                                    MENSSAGENS.SUCCESS_CREATED_ITEM, usuario
+                                )
+
+                            } else {
+
+                                return DEFAULT_MENSAGENS.criarResposta(
+                                    MENSSAGENS.ERROR_INTERNAL_SERVER
+                                )
+                            }
+
+                        } else {
+
+                            return DEFAULT_MENSAGENS.criarResposta(
+                                MENSSAGENS.ERROR_INTERNAL_SERVER
+                            )
+                        }
                     }
 
-                } else {
-
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_INTERNAL
-                    )
                 }
-
             } else {
                 return validar
             }
@@ -297,6 +415,7 @@ const inserirUsuario = async (usuario, contentType) => {
         }
 
     } catch (error) {
+        console.log(error)
         return DEFAULT_MENSAGENS.criarResposta(
             MENSSAGENS.ERROR_INTERNAL_SERVER
         )
@@ -338,7 +457,7 @@ const atualizarUsuario = async (usuario, id, contentType) => {
 
                     } else {
                         return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGES.ERROR_INTERNAL
+                            MENSSAGES.ERROR_INTERNAL_SERVER
                         ) // 500 model
                     }
 
@@ -426,7 +545,7 @@ const validarUsuario = (usuario, validar) => {
         usuario.senha == undefined ||
         usuario.senha == null ||
         usuario.senha == '' ||
-        usuario.senha.length < 6 && usuario.senha.length > 255
+        usuario.senha.length < 6 || usuario.senha.length > 255
     ) {
         MENSSAGES.ERROR_REQUIRED_FIELDS.message += ' [Senha incorreta]'
         return DEFAULT_MENSAGENS.criarResposta(

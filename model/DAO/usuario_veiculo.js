@@ -38,6 +38,20 @@ const getUserVehicleByIDs = async (idUsuario, idVeiculo) => {
     }
 }
 
+const getUserVehicleByIDUser = async (id) => {
+    try {
+        let result = await conexaoKnex.conexao.raw('select * from vw_usuario_veiculo where id_usuario = ?', [id])
+        if (result[0].length > 0) {
+            return result[0]
+        } else {
+            return false
+        }
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 const getSelectLastId = async () => {
 
     try {
@@ -61,21 +75,56 @@ const getSelectLastId = async () => {
     }
 }
 
+const getSelectLastIdUser = async (id) => {
+
+    try {
+
+        const result = await conexaoKnex.conexao.raw(
+            'select * from vw_usuario_veiculo where id_usuario = ? order by data_vinculo desc limit 1', [id]
+        )
+
+        if (result[0].length > 0) {
+
+            return result[0]
+
+        } else {
+
+            return false
+        }
+
+    } catch (error) {
+
+        return false
+    }
+}
+
 const postUserVehicle = async (dados) => {
     try {
-        let sql = `insert into tbl_usuario_veiculo (
-                        fk_id_usuario, 
-                        fk_id_veiculo, 
-                        papel_usuario, 
-                        data_vinculo
-                    ) values (
+        let sql = `
                         ${dados.fk_id_usuario}, 
                         ${dados.fk_id_veiculo}, 
                         '${dados.papel_usuario}', 
                         '${dados.data_vinculo}'
                     )`;
 
-        let result = await conexaoKnex.conexao.raw(sql);
+        let result = await conexaoKnex.conexao.raw(`
+            insert into tbl_usuario_veiculo (
+                        fk_id_usuario, 
+                        fk_id_veiculo, 
+                        papel_usuario, 
+                        data_vinculo
+                    ) values (
+                    ?,
+                    ?,
+                    ?,
+                    ? 
+                    )
+            `, [
+            dados.fk_id_usuario,
+            dados.fk_id_veiculo,
+            dados.papel_usuario,
+            dados.data_vinculo
+        ]);
 
         if (result[0].affectedRows > 0)
             return true;
@@ -87,25 +136,45 @@ const postUserVehicle = async (dados) => {
     }
 }
 
-const putUserVehicle = async (idUsuario, idVeiculo, dados) => {
+const putUserVehicle = async (usuarioVeiculo) => {
+
     try {
-        let sql = `update tbl_usuario_veiculo set 
-                        papel_usuario = '${dados.papel_usuario}', 
-                        data_vinculo = '${dados.data_vinculo}',
-                        data_desvinculo = ${dados.data_desvinculo ? `'${dados.data_desvinculo}'` : 'NULL'},
-                        is_ativo = ${dados.is_ativo}
-                    where fk_id_usuario = ${idUsuario} and fk_id_veiculo = ${idVeiculo}`;
 
-        let result = await conexaoKnex.conexao.raw(sql);
+        const result = await conexaoKnex.conexao.raw(`
+            
+            UPDATE tbl_usuario_veiculo
+            SET
+                papel_usuario = ?,
+                data_vinculo = ?,
+                data_desvinculo = ?,
+                is_ativo = ?
+            WHERE
+                fk_id_usuario = ?
+            AND
+                fk_id_veiculo = ?
+        
+        `, [
+            usuarioVeiculo.papel_usuario,
+            usuarioVeiculo.data_vinculo ?? new Date().toISOString().split('T')[0],
+            usuarioVeiculo.data_desvinculo ?? null,
+            usuarioVeiculo.is_ativo ?? true,
+            usuarioVeiculo.fk_id_usuario,
+            usuarioVeiculo.fk_id_veiculo
+        ])
 
-        if (result[0].affectedRows > 0)
-            return true;
-        else
-            return false;
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
     } catch (error) {
-        console.log(error);
-        return false;
+
+        console.log(error)
+        return false
+
     }
+
 }
 
 const deleteUserVehicle = async (idUsuario, idVeiculo) => {
@@ -114,7 +183,7 @@ const deleteUserVehicle = async (idUsuario, idVeiculo) => {
                         is_ativo = false, 
                         data_desvinculo = current_date 
                    where fk_id_usuario = ${idUsuario} and fk_id_veiculo = ${idVeiculo}`;
-        
+
         let result = await conexaoKnex.conexao.raw(sql);
 
         if (result[0].affectedRows > 0)
@@ -132,5 +201,7 @@ module.exports = {
     getUserVehicleByIDs,
     postUserVehicle,
     putUserVehicle,
-    deleteUserVehicle
+    deleteUserVehicle,
+    getUserVehicleByIDUser,
+    getSelectLastIdUser
 }

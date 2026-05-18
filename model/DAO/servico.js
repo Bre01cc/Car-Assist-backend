@@ -31,7 +31,6 @@ const getServiceById = async (id) => {
             'SELECT * FROM vw_servicos WHERE id = ?',
             [id]
         );
-        console.log(result)
 
         if (result && result[0] && result[0].length > 0) {
             return result[0];
@@ -52,7 +51,6 @@ const getServiceByIdType = async (id) => {
             'SELECT * FROM vw_servicos WHERE id_tipo_servico = ? ORDER BY id',
             [id]
         );
-        console.log(result)
 
         if (result && result[0] && result[0].length > 0) {
             return result[0];
@@ -69,8 +67,7 @@ const getServiceByIdType = async (id) => {
 const getSelectLastId = async () => {
     try {
         const result = await conexaoKnex.conexao.raw('select * from vw_servicos order by id desc limit 1')
-        console.log(result)
-
+        
         if (result[0].length > 0) {
             return result[0]
         } else {
@@ -115,7 +112,6 @@ const postServico = async (servico) => {
         }
 
     } catch (error) {
-        console.log(error)
         return false
     }
 
@@ -148,7 +144,6 @@ const putServico = async (servico) => {
         }
 
     } catch (error) {
-        console.log(error)
         return false
     }
 

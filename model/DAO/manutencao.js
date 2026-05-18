@@ -172,7 +172,7 @@ const postManutencao = async (manutencao) => {
             manutencao.fk_id_veiculo
         ])
 
-        console.log(result)
+    
         if (result[0].affectedRows>0) {
             return true
         } else {
@@ -181,7 +181,6 @@ const postManutencao = async (manutencao) => {
 
     } catch (error) {
 
-        console.log(error)
         return false
 
     }
@@ -246,7 +245,7 @@ const getSelectLastId = async () => {
         }
 
     } catch (error) {
-        console.log(error)
+     
         return false
     }
 }

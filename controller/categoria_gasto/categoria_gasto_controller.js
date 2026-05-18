@@ -52,7 +52,6 @@ const buscarCategoriaGastoId = async (id) => {
         if (!isNaN(id) && id != null && id > 0) {
 
             let resultTipoCategoria = await tipoCategoria.getCategoryTypeById(id)
-            console.log(resultTipoCategoria)
 
             if (resultTipoCategoria) {
 

@@ -47,7 +47,7 @@ const getUserById = async (id) => {
 //Busca um usuário pelo id e status
 const getUserByAtivo = async (id, status) => {
     try {
-        console.log(id, status)
+      
         const result = await conexaoKnex.conexao.raw(
             'SELECT * FROM vw_usuario WHERE id = ? and is_ativo = ?',
             [id, status]
@@ -69,7 +69,7 @@ const getUserByAtivo = async (id, status) => {
 const getUserByEmail = async (email) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM vw_usuario where email = ?',
+            'SELECT * FROM tbl_usuario where email = ?',
             [email]
         );
 
@@ -83,9 +83,6 @@ const getUserByEmail = async (email) => {
 
         return false;
     }
-}
-const getUserAndVehicle = () => {
-
 }
 
 //Busca o último id de usuário
@@ -105,7 +102,7 @@ const getSelectLastId = async () => {
         }
 
     } catch (error) {
-        console.log(error)
+      
         return false
     }
 }
@@ -187,7 +184,7 @@ const postUser = async (usuario) => {
 
 
     } catch (error) {
-        console.log(error)
+     console.log(error)
         return false
     }
 
@@ -253,6 +250,8 @@ module.exports = {
     getSelectLastId,
     getUserByEmailAndPassword,
     getUserByAtivo,
-    getAllUsers
+    getAllUsers,
+    getUserByEmail,
+    getUserByCPF
 }
 

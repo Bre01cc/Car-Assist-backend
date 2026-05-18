@@ -10,9 +10,9 @@ const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
 
-const router = express.Router()
-
 const controllerEndereco = require('../controller/endereco/endereco_controller.js')
+
+const router = express.Router()
 
 /**
  * @swagger
@@ -129,7 +129,6 @@ const controllerEndereco = require('../controller/endereco/endereco_controller.j
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
-
 
 router.post('/v1/car-assist/endereco', cors(), bodyParserJSON, async function (request, response) {
     let dadosBody = request.body;

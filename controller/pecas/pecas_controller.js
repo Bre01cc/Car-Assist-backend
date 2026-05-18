@@ -6,7 +6,7 @@
  ***********************************************************************************************************************/
 
 const pecasDAO = require('../../model/DAO/pecas.js')
-const { buscarEvidenciaId } = require('../evidencia/evidencia_controller.js')
+const { buscarEvidenciaId, buscarEvidenciaIdMaintenance } = require('../evidencia/evidencia_controller.js')
 
 const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
 
@@ -217,7 +217,7 @@ const inserirPeca = async (peca, contentType) => {
         }
 
     } catch (error) {
-        console.log(error)
+       
         return DEFAULT_MENSAGENS.criarResposta(
             MENSSAGENS.ERROR_INTERNAL_SERVER
         )
@@ -328,12 +328,7 @@ const formatarPeca = (peca) => {
 
     return {
         id: peca.id,
-        nome: peca.nome,
-        manutencao: {
-            id: peca.id_manutencao,
-            oficina: peca.oficina,
-            data: peca.data
-        }
+        nome: peca.nome
     }
 }
 
@@ -383,5 +378,6 @@ module.exports = {
     buscarEvidenciaId,
     inserirPeca,
     atualizarPeca,
-    deletarPeca
+    deletarPeca,
+   buscarPecaIdMaintenance
 }

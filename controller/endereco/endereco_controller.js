@@ -21,7 +21,7 @@ const listarEnderecos = async () => {
         if (resultEndereco) {
 
             if (resultEndereco.length > 0) {
-                console.log(resultEndereco)
+               
                 let enderecoFormatado = resultEndereco.map(
                     endereco=> formatarEnderecos(endereco)
                 );
@@ -69,7 +69,7 @@ const buscarEnderecoId = async (id) => {
             if (resultEndereco) {
 
                 if (resultEndereco.length > 0) {
-                    console.log(resultEndereco)
+                    
                     let enderecoFormatado = formatarEnderecos(resultEndereco[0])
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSSAGENS.SUCCESS_REQUEST,
@@ -122,7 +122,7 @@ const buscarEnderecoServico = async (idServico) => {
         if (!isNaN(idServico) && idServico != null && idServico > 0) {
 
             let resultEndereco = await enderecoDAO.getAddressByServiceId(idServico)
-            console.log(resultEndereco)
+          
             if (resultEndereco) {
 
                 if (resultEndereco.length > 0) {

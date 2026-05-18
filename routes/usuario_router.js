@@ -170,6 +170,13 @@ router.put('/v1/car-assist/usuario/:id', cors(), bodyParserJSON, async function 
     response.status(usuario.status_code).json(usuario);
 });
 
+router.post('/v1/car-assist/usuario-servico', cors(), bodyParserJSON, async function (request, response) {
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type'];
+    let usuario = await controllerUsuarioServico.inserirUsuarioServico(dadosBody, contentType);
+    response.status(usuario.status_code).json(usuario);
+});
+
 router.post('/v1/car-assist/usuario', cors(), bodyParserJSON, async function (request, response) {
     let dadosBody = request.body;
     let contentType = request.headers['content-type'];
@@ -221,13 +228,35 @@ router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
 });
 
 
+router.get('/v1/car-assist/usuario-servico', cors(), async (req, res) => {
 
-// router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
-//     let idUsuario = req.query.id;
-//     let usuario = await controllerUsuario.buscarUsuarioId(idUsuario)
+    let usuarioServico = await controllerUsuarioServico.listarUsuariosServicos()
 
-//     res.status(usuario.status_code).json(usuario);
-// });
+    res.status(usuarioServico.status_code).json(usuarioServico);
+});
+
+router.get('/v1/car-assist/usuarios/:idUsuario/servicos/:idServico', cors(), async (req, res) => {
+    let idUsuario = req.params.idUsuario;
+    let idServico = req.params.idServico
+    let usuarioServico = await controllerUsuarioServico.buscarUsuarioServico(idUsuario,idServico)
+
+    res.status(usuarioServico.status_code).json(usuarioServico);
+});
+
+router.delete('/v1/car-assist/usuarios/:idUsuario/servicos/:idServico', cors(), async (req, res) => {
+    let idUsuario = req.params.idUsuario;
+    let idServico = req.params.idServico
+    let usuarioServico = await controllerUsuarioServico.deletarUsuarioServico(idUsuario,idServico)
+
+    res.status(usuarioServico.status_code).json(usuarioServico);
+});
+
+router.delete('/v1/car-assist/usuario-servico/:id', cors(), async (req, res) => {
+    let idUsuario = req.params.id;
+    let usuario = await controllerUsuarioServico.deleteUsuarioServicoByIdUser(idUsuario)
+    
+    res.status(usuario.status_code).json(usuario);
+});
 
 
 module.exports = router

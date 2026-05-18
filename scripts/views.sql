@@ -133,4 +133,54 @@ tipo_gasto.id id_tipo_gasto,
 tipo_gasto.nome_categoria
 from tbl_gastos gasto join tbl_veiculo veiculo 
 on gasto.fk_id_veiculo = veiculo.id left join tbl_categoria_gasto tipo_gasto
- on gasto.fk_id_categoria = tipo_gasto.id;
+on gasto.fk_id_categoria = tipo_gasto.id;
+
+CREATE VIEW vw_usuario_servico AS
+SELECT
+    usuario_servico.id,
+    usuario_servico.fk_id_usuario id_usuario,
+    usuario_servico.data_vinculo,
+    usuario_servico.data_desvinculo,
+
+    servico.id AS id_servico,
+    servico.nome_local,
+    servico.latitude,
+    servico.longitude,
+
+    tipo_servico.id AS id_tipo_servico,
+    tipo_servico.nome,
+
+    endereco.id AS id_endereco,
+    endereco.logradouro,
+    endereco.cep,
+    endereco.complemento
+
+FROM tbl_usuario_servico usuario_servico
+
+JOIN tbl_servicos servico
+    ON usuario_servico.fk_id_servicos = servico.id
+
+JOIN tbl_tipo_servico tipo_servico
+    ON tipo_servico.id = servico.fk_id_tipo_servico
+
+JOIN tbl_enderecos endereco
+    ON endereco.fk_id_servico = servico.id;
+
+
+create view vw_usuario_veiculo as select
+usuario_veiculo.fk_id_usuario id_usuario,
+usuario_veiculo.papel_usuario,
+usuario_veiculo.data_vinculo,
+usuario_veiculo.data_desvinculo,
+usuario_veiculo.is_ativo,
+veiculo.id id_veiculo,
+veiculo.placa,
+veiculo.modelo,
+veiculo.cor,
+veiculo.score,
+veiculo.ano,
+veiculo.foto_veiculo,
+veiculo.is_ativo veiculo_is_ativo
+from tbl_usuario_veiculo usuario_veiculo join
+tbl_veiculo veiculo on 
+veiculo.id = usuario_veiculo.fk_id_veiculo;

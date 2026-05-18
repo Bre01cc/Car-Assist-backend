@@ -128,7 +128,7 @@ const inserirGasto = async (gasto, contentType) => {
                 if (resultGasto) {
                     let ultimoId = await gastoDAO.getSelectLastId()
                     if (ultimoId) {
-                        console.log(ultimoId)
+                       
                         let gastoFormatado = formatarGasto(ultimoId[0])
                         return DEFAULT_MENSAGENS.criarResposta(MENSSAGENS.SUCCESS_CREATED_ITEM, gastoFormatado, 'Nikolas Fernandes')
                     }
@@ -224,7 +224,7 @@ const validarGasto = (gasto) => {
 }
 
 const formatarGasto = (gasto) => {
-    console.log(gasto)
+
     return {
         id: gasto.id,
         data: gasto.data_gasto,

@@ -128,7 +128,6 @@ const postEvidence = async (evidencia) => {
             evidencia.url,
             evidencia.fk_id_manutencao
         ]);
-        console.log(result[0])
 
         if (result[0].affectedRows > 0) {
             return true
@@ -137,8 +136,6 @@ const postEvidence = async (evidencia) => {
         }
 
     } catch (error) {
-
-        console.log(error)
         return false
 
     }
@@ -166,7 +163,6 @@ const putEvidence = async (evidencia) => {
 
     } catch (error) {
 
-        console.log(error)
         return false
 
     }

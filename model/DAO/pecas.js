@@ -158,8 +158,6 @@ const postParts = async (peca) => {
 
     } catch (error) {
 
-        console.log(error)
-
         return false
     }
 }
@@ -190,9 +188,6 @@ const putParts = async (peca) => {
         }
 
     } catch (error) {
-
-        console.log(error)
-
         return false
     }
 }

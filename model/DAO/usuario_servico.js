@@ -8,6 +8,39 @@
 //Import do knex
 const conexaoKnex = require('../../knex/index.js');
 
+const getAllUserService = async () =>{
+    try {
+        const result = await conexaoKnex.conexao.raw('select * from vw_usuario_servico decs order by id');
+
+        if(result[0].length>0){
+            return result[0]
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
+const getUserServiceByIdServiceAndUser = async (id_usuario,id_servico) => {
+    try {
+        const result = await conexaoKnex.conexao.raw(
+            'select * from vw_usuario_servico where id_usuario = ? and id_servico = ?',[id_usuario,id_servico]
+        );
+        console.log(result)
+        if (result[0].length > 0) {
+
+            return result[0]
+
+        } else {
+
+            return false
+        }
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
 const postUserService = async (usuarioServico) => {
 
     try {
@@ -16,29 +49,23 @@ const postUserService = async (usuarioServico) => {
             INSERT INTO tbl_usuario_servico(
                 fk_id_usuario,
                 fk_id_servicos,
-                data_vinculo,
-                data_desvinculo,
-                is_ativo
+                data_vinculo
             )
             VALUES(
-                ?,
-                ?,
                 ?,
                 ?,
                 ?
             )
         `, [
             usuarioServico.fk_id_usuario,
-            usuarioServico.fk_id_servico,
-            usuarioServico.data_vinculo || new Date(),
-            usuarioServico.data_desvinculo || null,
-            usuarioServico.is_ativo ?? true
+            usuarioServico.fk_id_servicos,
+            usuarioServico.data_vinculo || new Date()
         ])
 
         return result
 
     } catch (error) {
-        console.log(error)
+      
         return false
     }
 }
@@ -76,21 +103,20 @@ const putUserService = async (usuarioServico) => {
     }
 }
 
-const getUserServiceById = async(id) =>{
+const getUserServiceByIdUser = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from tbl_usuario_servico where id = ?',[id]
+            'select * from vw_usuario_servico where id_usuario = ?',[id]
         );
-        if(result[0].length>0){
+        if (result[0].length > 0) {
             return result[0]
-        }else{
+        } else {
             return false
-        }       
+        }
     } catch (error) {
         return false
     }
 }
-
 
 //Busca último ID cadastrado
 const getSelectLastId = async () => {
@@ -117,17 +143,17 @@ const getSelectLastId = async () => {
 }
 
 // Deletar vínculo usuário-serviço
-const deleteUserServiceByIdUserAndService = async (fk_id_usuario, fk_id_servico) => {
+const deleteUserServiceByIdUserAndService = async (id_usuario, id_servico) => {
 
     try {
 
         let result = await conexaoKnex.conexao.raw(`
             DELETE FROM tbl_usuario_servico
             WHERE fk_id_usuario = ?
-            AND fk_id_servico = ?
+            AND fk_id_servicos = ?
         `, [
-            fk_id_usuario,
-            fk_id_servico
+            id_usuario,
+            id_servico
         ])
 
         if (result[0].affectedRows > 0) {
@@ -143,7 +169,7 @@ const deleteUserServiceByIdUserAndService = async (fk_id_usuario, fk_id_servico)
 }
 
 // Deletar vínculo usuário-serviço
-const deleteUserServiceByIdUser = async (fk_id_usuario) => {
+const deleteUserServiceByIdUser = async (id_usuario) => {
 
     try {
 
@@ -151,7 +177,7 @@ const deleteUserServiceByIdUser = async (fk_id_usuario) => {
             DELETE FROM tbl_usuario_servico
             WHERE fk_id_usuario = ?
         `, [
-            fk_id_usuario,
+            id_usuario,
         ])
 
         if (result[0].affectedRows > 0) {
@@ -194,5 +220,9 @@ module.exports = {
     postUserService,
     deleteUserServiceById,
     deleteUserServiceByIdUser,
-    deleteUserServiceByIdUserAndService
+    deleteUserServiceByIdUserAndService,
+    getUserServiceByIdUser,
+    getUserServiceByIdServiceAndUser,
+    getSelectLastId,
+    getAllUserService
 }

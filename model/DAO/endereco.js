@@ -1,9 +1,9 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pelo CRUD de dados no MySQL referente ao endereço
- * Data: 13/05/2026
- * Autor: Breno Oliveira Assis Reis
- * Versão: 1.0
- ***********************************************************************************************************************/
+* Objetivo: Arquivo responsável pelo CRUD de dados no MySQL referente ao endereço
+* Data: 13/05/2026
+* Autor: Breno Oliveira Assis Reis
+* Versão: 1.0
+***********************************************************************************************************************/
 
 const conexaoKnex = require('../../knex/index.js');
 
@@ -54,7 +54,7 @@ const getAddressByServiceId = async (idServico) => {
             'SELECT * FROM vw_endereco WHERE id_servico = ?',
             [idServico]
         )
-        console.log(result)
+       
         if (result && result[0] && result[0].length > 0) {
             return result[0]
         } else {
@@ -83,7 +83,7 @@ const getSelectLastId = async () => {
         }
 
     } catch (error) {
-        console.log(error)
+
         return false
     }
 }
@@ -119,7 +119,7 @@ const postAddress = async (endereco) => {
         }
 
     } catch (error) {
-        console.log(error)
+       
         return false
     }
 }
@@ -150,7 +150,7 @@ const putAddress = async (endereco) => {
         }
 
     } catch (error) {
-        console.log(error)
+      
         return false
     }
 }
@@ -171,7 +171,7 @@ const deleteAddress = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+    
         return false
     }
 }

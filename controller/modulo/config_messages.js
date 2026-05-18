@@ -55,6 +55,12 @@ const ERROR_RELATION_TABLE = {
     message: 'A requisição foi bem sucedida na criação do item principal, porém houveram problemas na tabela relacionamento!!!'
 }
 
+const ERROR_EXISTING = {
+    status: false,
+    status_code: 409,
+    message: 'Já existe um cadastro com esse dado '
+}
+
 /*****************************************************MENSAGENS DE SUCESSO**********************************************/
 //Mensagem de sucesso da requisição
 const SUCCESS_REQUEST = {
@@ -108,5 +114,6 @@ module.exports = {
     SUCCESS_UPDATE_ITEM,
     SUCCESS_DELETE,
     ERROR_RELATION_TABLE,
+    ERROR_EXISTING,
     criarResposta
 }

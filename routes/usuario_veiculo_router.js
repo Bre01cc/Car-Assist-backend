@@ -12,13 +12,20 @@ const bodyParser = require('body-parser')
 const bodyParserJSON = bodyParser.json()
 const router =         express.Router()
 
-const controllerUV = require('../controller/usuario/usuario_veiculo_controller.js')
+const controllerUV = require('../controller/veiculo/usuario_veiculo_controller.js')
 
 // listar todos os vínculos
 router.get('/v1/car-assist/usuario-veiculo', cors(), async (req, res) => {
     let result = await controllerUV.listarVinculos()
     res.status(result.status_code).json(result)
 })
+
+router.get('/v1/car-assist/usuario-veiculo/:id', cors(), async (req, res) => {
+    let idUsuarioVeiculo = req.params.id;
+    let usuario = await controllerUV.buscarUsuarioVeiculoIdUsuario(idUsuarioVeiculo)
+  
+    res.status(usuario.status_code).json(usuario);
+});
 
 // inserir um novo vínculo
 router.post('/v1/car-assist/usuario-veiculo', cors(), bodyParserJSON, async (req, res) => {

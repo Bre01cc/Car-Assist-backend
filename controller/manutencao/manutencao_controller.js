@@ -6,6 +6,8 @@
  ***********************************************************************************************************************/
 
 const manutencaoDAO = require('../../model/DAO/manutencao.js')
+const controllerEvidencia = require('../evidencia/evidencia_controller.js')
+const controllerPeca = require('../pecas/pecas_controller.js')
 
 const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
 
@@ -269,11 +271,11 @@ const inserirManutencao = async (manutencao, contentType) => {
             if (!validar) {
 
                 let resultManutencao = await manutencaoDAO.postManutencao(manutencao)
-              
+
                 if (resultManutencao) {
 
                     let ultimoId = await manutencaoDAO.getSelectLastId()
-                 
+
 
                     if (ultimoId) {
 
@@ -315,7 +317,129 @@ const inserirManutencao = async (manutencao, contentType) => {
         }
 
     } catch (error) {
-      console.log(error)
+
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+
+    }
+}
+
+const inserirManutencaoComEvidenciaComPeca = async (manutencao, contentType) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            //Validação dos dados da manutenção
+            let validar = validarManutencao(manutencao)
+
+            if (!validar) {
+
+                let resultManutencao = await manutencaoDAO.postManutencao(manutencao)
+
+                if (resultManutencao) {
+
+                    let ultimoId = await manutencaoDAO.getSelectLastId()
+
+
+                    if (ultimoId) {
+
+                        manutencao.id = ultimoId
+
+                        if (manutencao.evidencia != undefined) {
+                            for (evidencia of manutencao.evidencia) {
+                                let evidenciaManutencao = {
+                                    url: evidencia.url,
+                                    fk_id_manutencao: manutencao.id
+                                }
+
+                                let resultEvidencia = await controllerEvidencia.inserirEvidencia(evidenciaManutencao, contentType)
+
+                                if (resultEvidencia.status_code != 201) {
+                                    MENSSAGENS.ERROR_RELATION_TABLE.message += 'Evidência'
+                                    return MENSSAGENS.ERROR_RELATION_TABLE
+                                } else {
+                                    delete manutencao.evidencia
+                                    let resultManutencaoEvidencia = await controllerEvidencia.buscarEvidenciaIdMaintenance(manutencao.id)
+
+                                    manutencao.evidencia = resultManutencaoEvidencia.data.evidencia
+
+                                }
+                            }
+                        } else {
+                            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Faltou Evidências]'
+
+                            return DEFAULT_MENSAGENS.criarResposta(
+                                MENSSAGENS.ERROR_REQUIRED_FIELDS
+                            )
+                        }
+                        if (manutencao.peca != undefined) {
+                            for (peca of manutencao.peca) {
+                                let pecaManutencao = {
+                                    fk_id_manutencao: manutencao.id,
+                                    nome: peca.nome
+                                }
+                                let resultPeca = await controllerPeca.inserirPeca(pecaManutencao, contentType)
+                                console.log(resultPeca)
+                                if (resultPeca.status_code != 201) {
+
+                                    MENSSAGENS.ERROR_RELATION_TABLE.message += 'Peças'
+                                    return MENSSAGENS.ERROR_RELATION_TABLE
+                                } else {
+                                    delete manutencao.peca
+
+                                    let resultManutencaoPeca = await controllerPeca.buscarPecaIdMaintenance(manutencao.id)
+
+                                    manutencao.peca = resultManutencaoPeca.data.pecas
+                                }
+                            }
+                        } else {
+                            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Faltou Peças]'
+
+                            return DEFAULT_MENSAGENS.criarResposta(
+                                MENSSAGENS.ERROR_REQUIRED_FIELDS
+                            )
+                        }
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.SUCCESS_CREATED_ITEM,
+                            { manutencao: manutencao }
+                        )
+
+                    } else {
+
+                        return DEFAULT_MENSAGENS.criarResposta(
+                            MENSSAGENS.ERROR_INTERNAL
+                        )
+
+                    }
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_INTERNAL
+                    )
+
+                }
+
+            } else {
+
+                return validar
+
+            }
+
+        } else {
+
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_CONTENT_TYPE
+            )
+
+        }
+
+    } catch (error) {
+        console.log(error)
         return DEFAULT_MENSAGENS.criarResposta(
             MENSSAGENS.ERROR_INTERNAL_SERVER
         )
@@ -566,5 +690,6 @@ module.exports = {
     buscarManutencaoIdUsuario,
     buscarManutencaoIdVeiculo,
     atualizarManutencao,
-    inserirManutencao
+    inserirManutencao,
+    inserirManutencaoComEvidenciaComPeca
 }
