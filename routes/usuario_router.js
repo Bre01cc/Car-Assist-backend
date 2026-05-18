@@ -244,13 +244,12 @@ router.delete('/v1/car-assist/usuarios/:idUsuario/servicos/:idServico', cors(), 
     res.status(usuarioServico.status_code).json(usuarioServico);
 });
 
-
-// router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
-//     let idUsuario = req.query.id;
-//     let usuario = await controllerUsuario.buscarUsuarioId(idUsuario)
-
-//     res.status(usuario.status_code).json(usuario);
-// });
+router.delete('/v1/car-assist/usuario-servico/:id', cors(), async (req, res) => {
+    let idUsuario = req.params.id;
+    let usuario = await controllerUsuarioServico.deleteUsuarioServicoByIdUser(idUsuario)
+    
+    res.status(usuario.status_code).json(usuario);
+});
 
 
 module.exports = router

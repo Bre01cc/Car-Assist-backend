@@ -118,7 +118,6 @@ const getUserServiceByIdUser = async (id) => {
     }
 }
 
-
 //Busca último ID cadastrado
 const getSelectLastId = async () => {
 

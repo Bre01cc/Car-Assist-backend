@@ -188,6 +188,13 @@ router.post('/v1/car-assist/manutencao', cors(), bodyParserJSON, async function 
     response.status(manutencao.status_code).json(manutencao);
 });
 
+router.post('/v1/car-assist/manutencao-evidencia-peca', cors(), bodyParserJSON, async function (request, response) {
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type'];
+    let manutencao = await controllerManutencao.inserirManutencaoComEvidenciaComPeca(dadosBody, contentType);
+    response.status(manutencao.status_code).json(manutencao);
+});
+
 router.get('/v1/car-assist/manutencao', cors(), async (req, res) => {
 
     let manutencao = await controllerManutencao.listarManutencao()

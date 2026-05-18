@@ -35,7 +35,7 @@ const listarVeiculos = async () => {
             }
         } else {
             return DEFAULT_MESSAGES.criarResposta(
-                MESSAGES.ERROR_INTERNAL_SERVER_MODEL,
+                MESSAGES.ERROR_INTERNAL_SERVER,
                 null,
                 'Guilherme Moreira de Souza'
             ) //500
@@ -207,7 +207,6 @@ const inserirVeiculo = async (veiculo, contentType) => {
     }
 }
 
-
 const inserirVeiculoUsuario = async (veiculo, contentType) => {
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
 
@@ -219,8 +218,9 @@ const inserirVeiculoUsuario = async (veiculo, contentType) => {
             if (!validar) {
                 let validarPlaca = await buscarVeiculoPlaca(veiculo.placa)
                 if (validarPlaca.status_code == 200) {
+                    MESSAGES.ERROR_EXISTING += 'Placa'
                     return DEFAULT_MESSAGES.criarResposta(
-                        MESSAGES.ERROR_EXISTING_PLATE,
+                        MESSAGES.ERROR_EXISTING,
                         null,
                         'Guilherme Moreira de Souza'
                     )
@@ -243,7 +243,6 @@ const inserirVeiculoUsuario = async (veiculo, contentType) => {
                                     papel_usuario: "Proprietário",
                                     data_vinculo: new Date().toISOString().split('T')[0]
                                 }
-                                console.log(vinculoObj)
                                 let resultUsuarioVeiculo = await controllerUsuarioVeiculo.inserirVinculo(vinculoObj,contentType)
                                 console.log(resultUsuarioVeiculo)
                                 if (resultUsuarioVeiculo.status_code != 201) {

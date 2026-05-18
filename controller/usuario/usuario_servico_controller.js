@@ -25,7 +25,7 @@ const listarUsuariosServicos = async () => {
 
             if (resultUsuarioServico.length > 0) {
                 resultFormatado = resultUsuarioServico.map(
-                    usuarioServico=> formatarUsuarioServico(usuarioServico)
+                    usuarioServico => formatarUsuarioServico(usuarioServico)
                 )
                 return DEFAULT_MENSAGENS.criarResposta(
                     MENSSAGENS.SUCCESS_REQUEST,
@@ -55,11 +55,43 @@ const listarUsuariosServicos = async () => {
     }
 }
 
-const buscarUsuarioServicoByIdUsuario = async (idUsuario)=>{
+const buscarUsuarioServicoByIdUsuario = async (idUsuario) => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
     try {
-        
+        if (!isNaN(idUsuario) && idUsuario != null && idUsuario > 0) {
+            let resultUsuarioervico = await usuarioServicoDAO.getUserServiceByIdUser(idUsuario)
+
+
+            if (resultUsuarioervico) {
+
+                if (resultUsuarioervico.length > 0) {
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.SUCCESS_REQUEST,
+                        { usuario: resultUsuarioervico }
+                    )
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
+                }
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
+            }
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
     } catch (error) {
-         return DEFAULT_MENSAGENS.criarResposta(
+        return DEFAULT_MENSAGENS.criarResposta(
             MENSAGENS.ERROR_INTERNAL_SERVER
         )
     }
@@ -127,14 +159,14 @@ const buscarUsuarioServico = async (idUsuario, idServico) => {
 
             if (validarServico.status_code == 200) {
                 let result = await usuarioServicoDAO.getUserServiceByIdServiceAndUser(idUsuario, idServico)
-    
+
                 if (result.length > 0) {
                     resultFormatado = result.map(
                         usuarioServico => formatarUsuarioServico(usuarioServico)
                     )
                     return DEFAULT_MENSAGENS.criarResposta(
                         MENSAGENS.SUCCESS_REQUEST,
-                        {usuario_servico: resultFormatado}
+                        { usuario_servico: resultFormatado }
                     )
                 } else {
                     MENSAGENS.ERROR_NOT_FOUND.message += '[id do usuario servico]'
@@ -238,7 +270,7 @@ const deletarUsuarioServico = async (idUsuario, idServico) => {
             let result = await usuarioServicoDAO.deleteUserServiceByIdUserAndService(idUsuario, idServico)
 
             if (result) {
-                
+
                 return DEFAULT_MENSAGENS.criarResposta(
                     MENSAGENS.SUCCESS_DELETE
                 )
@@ -256,43 +288,66 @@ const deletarUsuarioServico = async (idUsuario, idServico) => {
         }
 
     } catch (error) {
-       
+
         return DEFAULT_MENSAGENS.criarResposta(
             MENSAGENS.ERROR_INTERNAL_SERVER
         )
     }
 }
 
-const deleteUsuarioServicoByIdUser = async (idUsuario) =>{
+const deleteUsuarioServicoByIdUser = async (idUsuario) => {
+
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
     try {
+        let validarId = await buscarUsuarioServicoByIdUsuario(idUsuario)
+        if (validarId.status_code == 200) {
 
-        
+            let deletarUsuario = await usuarioServicoDAO.deleteUserServiceByIdUser(idUsuario)
+
+            if (deletarUsuario) {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.SUCCESS_DELETE
+                )
+            }
+            else {
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_INTERNAL_SERVER
+                )
+            }
+
+        } else {
+            return validarId
+        }
+
     } catch (error) {
+        console.log(error)
         return DEFAULT_MENSAGENS.criarResposta(
             MENSAGENS.ERROR_INTERNAL_SERVER
         )
     }
 }
 
-const formatarUsuarioServico = (usuarioServico)=>{
+const formatarUsuarioServico = (usuarioServico) => {
     return {
         id: usuarioServico.id,
         data_vinculo: usuarioServico.data_vinculo,
         data_desvinculo: usuarioServico.data_desvinculo,
-        usuario:{
+        usuario: {
             id: usuarioServico.id_usuario
         },
-        servico:{
+        servico: {
             id: usuarioServico.id_servico,
             nome: usuarioServico.nome_local,
-            latitude : usuarioServico.latitude,
+            latitude: usuarioServico.latitude,
             longitude: usuarioServico.longitude,
         },
-        tipo_servico:{
+        tipo_servico: {
             id: usuarioServico.id_tipo_servico,
             nome: usuarioServico.nome
         },
-        endereco:{
+        endereco: {
             id: usuarioServico.id_endereco,
             logradouro: usuarioServico.logradouro,
             cep: usuarioServico.cep,
@@ -305,5 +360,6 @@ module.exports = {
     inserirUsuarioServico,
     deletarUsuarioServico,
     buscarUsuarioServico,
-    listarUsuariosServicos
+    listarUsuariosServicos,
+    deleteUsuarioServicoByIdUser
 }

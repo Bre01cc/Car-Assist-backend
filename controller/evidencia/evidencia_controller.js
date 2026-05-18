@@ -320,12 +320,7 @@ const deletarEvidenciad = async (id) => {
 const formatarEvidencia = (evidencia) => {
     return {
         id: evidencia.id,
-        url: evidencia.url,
-        manutencao: {
-            id: evidencia.id_manutencao,
-            oficina: evidencia.oficina,
-            data: evidencia.data
-        }
+        url: evidencia.url
     }
 }
 
