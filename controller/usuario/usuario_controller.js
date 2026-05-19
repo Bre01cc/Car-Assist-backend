@@ -500,10 +500,14 @@ const inserirUsuario = async (usuario, contentType) => {
 
 //Atualiza um usuário pelo id
 const atualizarUsuario = async (usuario, id, contentType) => {
-    console.log(contentType)
+  
     let MENSSAGES = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     try {
+        console.log('CONTENT TYPE:', contentType)
+console.log(
+    String(contentType).toUpperCase() == 'APPLICATION/JSON'
+)
 
         // Validação do content-type
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
@@ -514,12 +518,18 @@ const atualizarUsuario = async (usuario, id, contentType) => {
             if (!validar) {
 
                 // Verifica se o ID existe no banco
-                let validarId = await buscarUsuarioIDComSenha(usuario.email,usuario.senha)
+                 usuario.id = Number(id)
+                 console.log(id)
+                usuario.password = usuario.senha
+                let validarId = await buscarUsuarioIDComSenha(usuario,contentType)
+                console.log (validarId)
+
+                delete  usuario.password
 
                 if (validarId.status_code == 200) {
 
                     // Adiciona o ID no objeto
-                    usuario.id = Number(id)
+                   
 
                     // Chama a DAO para atualizar
                     let resultUsuario = await usuarioDAO.putUser(usuario)
@@ -553,7 +563,7 @@ const atualizarUsuario = async (usuario, id, contentType) => {
 
     } catch (error) {
         return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        MENSSAGES.ERROR_INTERNAL_SERVER
         )
     }
 }

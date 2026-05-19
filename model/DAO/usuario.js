@@ -49,20 +49,26 @@ const getUserById = async (id) => {
 const getUserByIdAndPassword = async (id, senha) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM vw_usuario WHERE id = ?',
+            'SELECT * FROM tbl_usuario WHERE id = ?',
             [id]
         );
+       
 
-        senhaBanco = result[0][0].senha
-        const senhaCorreta = await bcrypt.compare(senha, senhaBanco)
-        if (result[0] && result[0].length > 0 && senhaCorreta) {
-            return result[0];
+        if (result[0] && result[0].length > 0) {
+            const senhaBanco = result[0][0].senha
+            const senhaCorreta = await bcrypt.compare(senha, senhaBanco)
+            if(senhaCorreta){
+               
+                return result[0]
+            }else{
+                return false
+            }
         } else {
             return false;
         }
 
     } catch (error) {
-
+        console.log(error)
         return false;
     }
 }
