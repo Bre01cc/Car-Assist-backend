@@ -134,6 +134,56 @@ const buscarUsuarioCPF = async (cpf) => {
                 )
             }
         } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[CPF incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+
+}
+
+const buscarUsuarioCPFAtualizar = async (cpf, id) => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        //Validação da chegada do ID
+        if (cpf != undefined &&
+            cpf != null &&
+            cpf != '' &&
+            cpf.length == 11 &&
+            !isNaN(cpf)) {
+            let resultUsuario = await usuarioDAO.getUserByCPFPut(cpf, id)
+
+
+            if (resultUsuario) {
+
+                if (resultUsuario.length > 0) {
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.SUCCESS_REQUEST,
+                        { usuario: resultUsuario }
+                    )
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
+                }
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
+            }
+        } else {
             MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
             return DEFAULT_MENSAGENS.criarResposta(
                 MENSSAGENS.ERROR_REQUIRED_FIELDS
@@ -160,6 +210,54 @@ const buscarUsuarioEmail = async (email) => {
             email.includes('@')) {
             let resultUsuario = await usuarioDAO.getUserByEmail(email)
 
+            if (resultUsuario) {
+
+                if (resultUsuario.length > 0) {
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.SUCCESS_REQUEST,
+                        { usuario: resultUsuario }
+                    )
+
+                } else {
+
+                    return DEFAULT_MENSAGENS.criarResposta(
+                        MENSSAGENS.ERROR_NOT_FOUND
+                    )
+
+                }
+
+            } else {
+
+                return DEFAULT_MENSAGENS.criarResposta(
+                    MENSSAGENS.ERROR_NOT_FOUND
+                )
+            }
+        } else {
+            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MENSAGENS.criarResposta(
+                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+        return DEFAULT_MENSAGENS.criarResposta(
+            MENSSAGENS.ERROR_INTERNAL_SERVER
+        )
+    }
+
+}
+
+const buscarUsuarioEmailPut = async (email, id) => {
+    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    try {
+        //Validação da chegada do ID
+        if (email != undefined &&
+            email != null &&
+            email != '' &&
+            email.length < 100 &&
+            email.includes('@')) {
+            let resultUsuario = await usuarioDAO.getUserByEmailPut(email, id)
 
             if (resultUsuario) {
 
@@ -291,7 +389,7 @@ const buscarUsuarioIDComSenha = async (usuario, contentType) => {
             let senha = usuario.password
 
             if (
-               !isNaN(id) && id != null && id > 0 &&
+                !isNaN(id) && id != null && id > 0 &&
 
                 senha != undefined &&
                 senha != null &&
@@ -300,7 +398,7 @@ const buscarUsuarioIDComSenha = async (usuario, contentType) => {
             ) {
 
                 let resultUsuario = await usuarioDAO.getUserByIdAndPassword(id, senha)
-
+                console.log(resultUsuario)
                 if (resultUsuario) {
 
                     if (resultUsuario.length > 0) {
@@ -442,7 +540,7 @@ const inserirUsuario = async (usuario, contentType) => {
                 } else {
 
                     let resultEmail = await buscarUsuarioEmail(usuario.email);
-               
+
                     if (resultEmail.status_code == 200) {
                         MENSSAGENS.ERROR_EXISTING.message += 'Email'
                         return DEFAULT_MENSAGENS.criarResposta(
@@ -451,7 +549,7 @@ const inserirUsuario = async (usuario, contentType) => {
                     } else {
 
                         let resultUsuario = await usuarioDAO.postUser(usuario)
-                  
+
                         if (resultUsuario) {
 
                             let ultimoId = await usuarioDAO.getSelectLastId()
@@ -491,7 +589,7 @@ const inserirUsuario = async (usuario, contentType) => {
         }
 
     } catch (error) {
-        console.log(error)
+
         return DEFAULT_MENSAGENS.criarResposta(
             MENSSAGENS.ERROR_INTERNAL_SERVER
         )
@@ -500,14 +598,10 @@ const inserirUsuario = async (usuario, contentType) => {
 
 //Atualiza um usuário pelo id
 const atualizarUsuario = async (usuario, id, contentType) => {
-  
+
     let MENSSAGES = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
     try {
-        console.log('CONTENT TYPE:', contentType)
-console.log(
-    String(contentType).toUpperCase() == 'APPLICATION/JSON'
-)
 
         // Validação do content-type
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
@@ -518,36 +612,50 @@ console.log(
             if (!validar) {
 
                 // Verifica se o ID existe no banco
-                 usuario.id = Number(id)
-                 console.log(id)
-                usuario.password = usuario.senha
-                let validarId = await buscarUsuarioIDComSenha(usuario,contentType)
-                console.log (validarId)
+                usuario.id = Number(id)
 
-                delete  usuario.password
+                usuario.password = usuario.senha
+
+                let validarId = await buscarUsuarioIDComSenha(usuario, contentType)
+
+                delete usuario.password
 
                 if (validarId.status_code == 200) {
 
-                    // Adiciona o ID no objeto
-                   
+                    let resultCPF = await buscarUsuarioCPFAtualizar(usuario.cpf, usuario.id)
 
-                    // Chama a DAO para atualizar
-                    let resultUsuario = await usuarioDAO.putUser(usuario)
-
-                    if (resultUsuario) {
-
+                    if (resultCPF.status_code == 200) {
+                        MENSSAGES.ERROR_EXISTING.message += 'CPF'
                         return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGES.SUCCESS_UPDATE_ITEM,
-                            { usuario: usuario }
+                            MENSSAGES.ERROR_EXISTING
                         )
-
-
                     } else {
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGES.ERROR_INTERNAL_SERVER
-                        ) // 500 model
-                    }
 
+                        let resultEmail = await buscarUsuarioEmailPut(usuario.email, usuario.id)
+                        if (resultEmail.status_code == 200) {
+                            MENSSAGES.ERROR_EXISTING.message += 'Email'
+                            return DEFAULT_MENSAGENS.criarResposta(
+                                MENSSAGES.ERROR_EXISTING
+                            )
+                        } else {
+
+                        }
+                        let resultUsuario = await usuarioDAO.putUser(usuario)
+
+                        if (resultUsuario) {
+
+                            return DEFAULT_MENSAGENS.criarResposta(
+                                MENSSAGES.SUCCESS_UPDATE_ITEM,
+                                { usuario: usuario }
+                            )
+
+
+                        } else {
+                            return DEFAULT_MENSAGENS.criarResposta(
+                                MENSSAGES.ERROR_INTERNAL_SERVER
+                            ) // 500 model
+                        }
+                    }
                 } else {
                     return validarId // retorna erro 400, 404 ou 500
                 }
@@ -562,8 +670,9 @@ console.log(
         }
 
     } catch (error) {
+        console.log(error)
         return DEFAULT_MENSAGENS.criarResposta(
-        MENSSAGES.ERROR_INTERNAL_SERVER
+            MENSSAGES.ERROR_INTERNAL_SERVER
         )
     }
 }

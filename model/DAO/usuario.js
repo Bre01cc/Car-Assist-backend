@@ -52,15 +52,15 @@ const getUserByIdAndPassword = async (id, senha) => {
             'SELECT * FROM tbl_usuario WHERE id = ?',
             [id]
         );
-       
 
+        console.log(result)
         if (result[0] && result[0].length > 0) {
             const senhaBanco = result[0][0].senha
             const senhaCorreta = await bcrypt.compare(senha, senhaBanco)
-            if(senhaCorreta){
-               
+            if (senhaCorreta) {
+
                 return result[0]
-            }else{
+            } else {
                 return false
             }
         } else {
@@ -114,6 +114,28 @@ const getUserByEmail = async (email) => {
     }
 }
 
+
+//Busca usuário pelo email
+const getUserByEmailPut = async (email,id) => {
+    try {
+        const result = await conexaoKnex.conexao.raw(
+            'SELECT * FROM tbl_usuario where email = ? and id <> ?',
+            [email,id]
+        );
+
+        if (result && result[0] && result[0].length > 0) {
+            return result[0];
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+
+        return false;
+    }
+}
+
+
 //Busca o último id de usuário
 const getSelectLastId = async () => {
     try {
@@ -144,21 +166,45 @@ const getUserByEmailAndPassword = async (email, senha) => {
             [email]
         );
 
-        senhaBanco = result[0][0].senha
-        const senhaCorreta = await bcrypt.compare(senha, senhaBanco)
-        if (result[0] && result[0].length > 0 && senhaCorreta) {
+   
+        if (result[0] && result[0].length > 0) {
+            const senhaBanco = result[0][0].senha
+            const senhaCorreta = await bcrypt.compare(senha, senhaBanco)
+            if (senhaCorreta) {
+                return result[0]
+            }
             return result[0];
         } else {
             return false;
         }
 
     } catch (error) {
-        console.log(error)
+    
         return false;
     }
 }
 
-//Busca usuário pelo CPF
+//Busca se existe um cpf igual ao que esta sendo atualizado, ignorando o do prórpio usuário
+const getUserByCPFPut = async (cpf,id) => {
+    try {
+        const result = await conexaoKnex.conexao.raw(
+            'SELECT * FROM tbl_usuario WHERE cpf = ? and id <> ?',
+            [cpf,id]
+        );
+
+        if (result && result[0] && result[0].length > 0) {
+            return result[0];
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+
+        return false;
+    }
+}
+
+//Busca se existe um cpf igual ao que esta sendo atualizado, ignorando o do prórpio usuário
 const getUserByCPF = async (cpf) => {
     try {
         const result = await conexaoKnex.conexao.raw(
@@ -177,6 +223,7 @@ const getUserByCPF = async (cpf) => {
         return false;
     }
 }
+
 
 //Inserir um usuário
 const postUser = async (usuario) => {
@@ -232,17 +279,15 @@ const putUser = async (usuario) => {
           set nome = ?,
           email = ?,
           cpf = ?,
-          senha = ?,
           foto_usuario = ?     
         where id = ?`, [
             usuario.nome,
             usuario.email,
             usuario.cpf,
-            usuario.senha,
             usuario.foto_usuario,
             usuario.id
         ])
-
+        console.log(result)
         if (result[0].affectedRows > 0) {
             return true
         } else {
@@ -250,6 +295,7 @@ const putUser = async (usuario) => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -287,6 +333,8 @@ module.exports = {
     getUserByAtivo,
     getAllUsers,
     getUserByEmail,
-    getUserByCPF
+    getUserByCPF,
+    getUserByCPFPut,
+    getUserByEmailPut
 }
 
