@@ -74,7 +74,7 @@ const buscarUsuarioVeiculoIdUsuario = async (idUsuario) => {
 
 }
 
-//Retorna um viculo pelo id do usuaário
+//Após o cadastro retornar as informações de vinculo
 const buscarUsuarioVeiculoIdUsuarioPost = async (idUsuario) => {
     let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
 
@@ -86,7 +86,6 @@ const buscarUsuarioVeiculoIdUsuarioPost = async (idUsuario) => {
 
             if (resultUsuarioVeiculo) {
                 if (resultUsuarioVeiculo.length > 0) {
-                    console.log(resultUsuarioVeiculo)
                     let resultFormadato = resultUsuarioVeiculo.map(
                         usuarioVeiculo=> formatarUsuarioVeiculoPost(usuarioVeiculo)
                     ) 
@@ -207,6 +206,7 @@ const formatarUsuarioVeiculo = (usuarioVeiculo) => {
 
     }
 }
+
 
 const formatarUsuarioVeiculoPost = (usuarioVeiculo) => {
     return{

@@ -16,20 +16,6 @@ const router = express.Router()
 
 const controllerVeiculo = require('../controller/veiculo/veiculo_controller.js')
 
-// const upload = multer({})
-
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb)=>{
-//         const
-//     }
-// })
-
-// router.post('/v1/car-assist/veiculo', cors(), async function (request, response) {
-//     if(!request.files) return response.status(400).json({message:'Arquivo invalido'})
-// });
-
-
-
 /**
  * @swagger
  * /v1/car-assist/veiculo/{id}:
@@ -189,17 +175,6 @@ router.get('/v1/car-assist/veiculo/:id', cors(), async function (request, respon
     let idVeiculo = request.params.id;
 
     let veiculo = await controllerVeiculo.buscarVeiculoId(idVeiculo);
-
-    response.status(veiculo.status_code);
-
-    response.json(veiculo);
-})
-
-router.get('/v1/car-assist/veiculo/placa/:placa', cors(), async function (request, response) {
-
-    let placaVeiculo = request.params.placa;
-
-    let veiculo = await controllerVeiculo.buscarVeiculoPlaca(placaVeiculo);
 
     response.status(veiculo.status_code);
 
