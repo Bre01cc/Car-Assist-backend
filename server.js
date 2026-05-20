@@ -52,7 +52,7 @@ const manutencao = require('./routes/manuntencao_router.js');
 const pecas = require('./routes/pecas_route.js');
 const gasto = require('./routes/gasto_router.js');
 const lembrete = require('./routes/lembrete_router.js');
-const usuarioVeiculo = require('./routes/usuario_veiculo_router.js');
+const usuarioVeiculo = require('./routes/usuario_veiculo.js');
 const endereco = require('./routes/endereco_router.js')
 
 app.use(categoriaGastos);
