@@ -309,6 +309,7 @@ const formatarUsuarioVeiculo = (usuarioVeiculo) => {
             id: usuarioVeiculo.id_veiculo,
             placa: usuarioVeiculo.placa,
             modelo: usuarioVeiculo.modelo,
+            marca: usuarioVeiculo.marca,
             cor: usuarioVeiculo.cor,
             score: usuarioVeiculo.score,
             ano: usuarioVeiculo.ano,
