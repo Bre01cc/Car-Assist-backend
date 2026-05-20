@@ -9,6 +9,7 @@
 const conexaoKnex = require('../../knex/index.js');
 
 const getAllUserService = async () =>{
+    
     try {
         const result = await conexaoKnex.conexao.raw('select * from vw_usuario_servico decs order by id');
 

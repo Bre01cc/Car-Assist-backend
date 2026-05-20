@@ -5,19 +5,18 @@
  * Versão: 1.0
  ***********************************************************************************************************************/
 
-const pecasDAO = require('../../model/DAO/pecas.js')
-const { buscarEvidenciaId, buscarEvidenciaIdMaintenance } = require('../evidencia/evidencia_controller.js')
+const pecasDAO = require('../../model/DAO/pecas.js');
 
-const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
+const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
 
 //Retorna todas as peças
 const listarPecas = async () => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
-        let resultPecas = await pecasDAO.getAllParts()
+        let resultPecas = await pecasDAO.getAllParts();
 
         if (resultPecas) {
 
@@ -25,31 +24,31 @@ const listarPecas = async () => {
 
                 let pecasFormatadas = resultPecas.map(
                     peca => formatarPeca(peca)
-                )
+                );
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.SUCCESS_REQUEST,
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_REQUEST,
                     { pecas: pecasFormatadas }
-                )
+                );
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )
             }
 
         } else {
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_NOT_FOUND
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_NOT_FOUND
             )
         }
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 }
@@ -57,52 +56,52 @@ const listarPecas = async () => {
 //Retorna peça pelo ID
 const buscarPecaId = async (id) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         if (!isNaN(id) && id != null && id > 0) {
 
-            let resultPeca = await pecasDAO.getPartsById(id)
+            let resultPeca = await pecasDAO.getPartsById(id);
 
             if (resultPeca) {
 
                 if (resultPeca.length > 0) {
 
-                    let pecaFormatada = formatarPeca(resultPeca[0])
+                    let pecaFormatada = formatarPeca(resultPeca[0]);
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_REQUEST,
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
                         { peca: pecaFormatada }
                     )
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_NOT_FOUND
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
                     )
                 }
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )
             }
 
         } else {
 
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
             )
         }
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 }
@@ -110,13 +109,13 @@ const buscarPecaId = async (id) => {
 //Retorna peças pelo ID da manutenção
 const buscarPecaIdMaintenance = async (id) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         if (!isNaN(id) && id != null && id > 0) {
 
-            let resultPecas = await pecasDAO.getPartsByMaintenance(id)
+            let resultPecas = await pecasDAO.getPartsByMaintenance(id);
 
             if (resultPecas) {
 
@@ -124,40 +123,40 @@ const buscarPecaIdMaintenance = async (id) => {
 
                     let pecasFormatadas = resultPecas.map(
                         peca => formatarPeca(peca)
-                    )
+                    );
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_REQUEST,
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
                         { pecas: pecasFormatadas }
                     )
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_NOT_FOUND
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
                     )
                 }
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )
             }
 
         } else {
 
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
             )
         }
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 }
@@ -165,42 +164,42 @@ const buscarPecaIdMaintenance = async (id) => {
 //Cadastra peça
 const inserirPeca = async (peca, contentType) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
-            let validar = await validarPeca(peca)
+            let validar = await validarPeca(peca);
 
             if (!validar) {
 
-                let resultPeca = await pecasDAO.postParts(peca)
+                let resultPeca = await pecasDAO.postParts(peca);
 
                 if (resultPeca) {
 
-                    let ultimoId = await pecasDAO.getSelectLastId()
+                    let ultimoId = await pecasDAO.getSelectLastId();
 
                     if (ultimoId) {
 
-                        let pecaFormatada = formatarPeca(ultimoId[0])
+                        let pecaFormatada = formatarPeca(ultimoId[0]);
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.SUCCESS_CREATED_ITEM,
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.SUCCESS_CREATED_ITEM,
                             pecaFormatada
                         )
 
                     } else {
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.ERROR_INTERNAL_SERVER
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
                         )
                     }
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_INTERNAL_SERVER
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_INTERNAL_SERVER
                     )
                 }
 
@@ -211,15 +210,15 @@ const inserirPeca = async (peca, contentType) => {
 
         } else {
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_CONTENT_TYPE
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
             )
         }
 
     } catch (error) {
-       
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 }
@@ -227,35 +226,35 @@ const inserirPeca = async (peca, contentType) => {
 //Atualiza peça
 const atualizarPeca = async (peca, id, contentType) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
-            let validar = await validarPeca(peca)
+            let validar = await validarPeca(peca);
 
             if (!validar) {
 
-                let validarId = await buscarPecaId(id)
+                let validarId = await buscarPecaId(id);
 
                 if (validarId.status_code == 200) {
 
                     peca.id = Number(id)
 
-                    let resultPeca = await pecasDAO.putParts(peca)
+                    let resultPeca = await pecasDAO.putParts(peca);
 
                     if (resultPeca) {
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.SUCCESS_UPDATE_ITEM,
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.SUCCESS_UPDATE_ITEM,
                             { peca: peca }
                         )
 
                     } else {
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.ERROR_INTERNAL_SERVER
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
                         )
                     }
 
@@ -271,15 +270,15 @@ const atualizarPeca = async (peca, id, contentType) => {
 
         } else {
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_CONTENT_TYPE
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
             )
         }
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 }
@@ -287,26 +286,26 @@ const atualizarPeca = async (peca, id, contentType) => {
 //Deleta peça
 const deletarPeca = async (id) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
-        let validarId = await buscarPecaId(id)
+        let validarId = await buscarPecaId(id);
 
         if (validarId.status_code == 200) {
 
-            let deletarPeca = await pecasDAO.deleteParts(id)
+            let deletarPeca = await pecasDAO.deleteParts(id);
 
             if (deletarPeca) {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.SUCCESS_DELETE
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_DELETE
                 )
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_INTERNAL_SERVER
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_INTERNAL_SERVER
                 )
             }
 
@@ -317,8 +316,8 @@ const deletarPeca = async (id) => {
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 }
@@ -335,7 +334,7 @@ const formatarPeca = (peca) => {
 //Valida peça
 const validarPeca = async (peca) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     //Validação nome
     if (
@@ -345,9 +344,9 @@ const validarPeca = async (peca) => {
         peca.nome.length > 200
     ) {
 
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Nome da peça inválido]'
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Nome da peça inválido]'
 
-        return MENSSAGENS.ERROR_REQUIRED_FIELDS
+        return MESSAGES.ERROR_REQUIRED_FIELDS
 
     }
 
@@ -360,9 +359,9 @@ const validarPeca = async (peca) => {
         peca.fk_id_manutencao <= 0
     ) {
 
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[Id da manutenção incorreto]'
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Id da manutenção incorreto]'
 
-        return MENSSAGENS.ERROR_REQUIRED_FIELDS
+        return MESSAGES.ERROR_REQUIRED_FIELDS
 
     }
 
@@ -375,9 +374,8 @@ const validarPeca = async (peca) => {
 module.exports = {
     buscarPecaId,
     listarPecas,
-    buscarEvidenciaId,
     inserirPeca,
     atualizarPeca,
     deletarPeca,
-   buscarPecaIdMaintenance
+    buscarPecaIdMaintenance
 }

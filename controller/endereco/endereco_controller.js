@@ -5,109 +5,104 @@
  * Versão: 1.0
  ***********************************************************************************************************************/
 
-const enderecoDAO = require('../../model/DAO/endereco.js')
+const enderecoDAO = require('../../model/DAO/endereco.js');
 
-const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
+const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
 
 //Retorna todos os endereços
 const listarEnderecos = async () => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
-        let resultEndereco = await enderecoDAO.getAllAddresses()
+        let resultEndereco = await enderecoDAO.getAllAddresses();
 
         if (resultEndereco) {
 
             if (resultEndereco.length > 0) {
-               
+
                 let enderecoFormatado = resultEndereco.map(
-                    endereco=> formatarEnderecos(endereco)
+                    endereco => formatarEnderecos(endereco)
                 );
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.SUCCESS_REQUEST,
+
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_REQUEST,
                     { enderecos: enderecoFormatado }
                 )
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )
-
             }
 
         } else {
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_NOT_FOUND
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_NOT_FOUND
             )
-
         }
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
-
     }
 }
 
 //Retorna endereço pelo id
 const buscarEnderecoId = async (id) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         if (!isNaN(id) && id != null && id > 0) {
 
-            let resultEndereco = await enderecoDAO.getAddressById(id)
+            let resultEndereco = await enderecoDAO.getAddressById(id);
 
             if (resultEndereco) {
 
                 if (resultEndereco.length > 0) {
-                    
-                    let enderecoFormatado = formatarEnderecos(resultEndereco[0])
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_REQUEST,
+
+                    let enderecoFormatado = formatarEnderecos(resultEndereco[0]);
+
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
                         { endereco: enderecoFormatado }
                     )
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_NOT_FOUND
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
                     )
-
                 }
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )
-
             }
 
         } else {
 
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [ID incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [ID incorreto]'
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
             )
-
         }
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
-
     }
 
 }
@@ -115,57 +110,55 @@ const buscarEnderecoId = async (id) => {
 //Retorna endereço pelo id do serviço
 const buscarEnderecoServico = async (idServico) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         if (!isNaN(idServico) && idServico != null && idServico > 0) {
 
-            let resultEndereco = await enderecoDAO.getAddressByServiceId(idServico)
-          
+            let resultEndereco = await enderecoDAO.getAddressByServiceId(idServico);
+
             if (resultEndereco) {
 
                 if (resultEndereco.length > 0) {
+
                     let enderecoFormatado = resultEndereco.map(
-                        endereco=> formatarEnderecos(endereco)
-                    )
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_REQUEST,
+                        endereco => formatarEnderecos(endereco)
+                    );
+
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
                         { endereco: enderecoFormatado }
                     )
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_NOT_FOUND
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
                     )
-
                 }
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )
-
             }
 
         } else {
 
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [ID do serviço incorreto]'
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [ID do serviço incorreto]'
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_REQUIRED_FIELDS
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
             )
-
         }
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
-
     }
 
 }
@@ -173,67 +166,62 @@ const buscarEnderecoServico = async (idServico) => {
 //Insere um endereço
 const inserirEndereco = async (endereco, contentType) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
-            let validar = validarEndereco(endereco)
+            let validar = validarEndereco(endereco);
 
             if (!validar) {
 
-                let resultEndereco = await enderecoDAO.postAddress(endereco)
+                let resultEndereco = await enderecoDAO.postAddress(endereco);
 
                 if (resultEndereco) {
 
-                    let ultimoId = await enderecoDAO.getSelectLastId()
+                    let ultimoId = await enderecoDAO.getSelectLastId();
 
                     if (ultimoId) {
 
-                        endereco.id = ultimoId
+                        endereco.id = ultimoId;
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.SUCCESS_CREATED_ITEM,
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.SUCCESS_CREATED_ITEM,
                             endereco
                         )
 
                     } else {
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.ERROR_INTERNAL_SERVER
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
                         )
-
                     }
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_INTERNAL_SERVER
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_INTERNAL_SERVER
                     )
-
                 }
 
             } else {
 
                 return validar
-
             }
 
         } else {
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_CONTENT_TYPE
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
             )
-
         }
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
-
     }
 
 }
@@ -241,65 +229,60 @@ const inserirEndereco = async (endereco, contentType) => {
 //Atualiza um endereço
 const atualizarEndereco = async (endereco, id, contentType) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
-            let validar = validarEndereco(endereco)
+            let validar = validarEndereco(endereco);
 
             if (!validar) {
 
-                let validarId = await buscarEnderecoId(id)
+                let validarId = await buscarEnderecoId(id);
 
                 if (validarId.status_code == 200) {
 
-                    endereco.id = Number(id)
+                    endereco.id = Number(id);
 
-                    let resultEndereco = await enderecoDAO.putAddress(endereco)
+                    let resultEndereco = await enderecoDAO.putAddress(endereco);
 
                     if (resultEndereco) {
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.SUCCESS_UPDATE_ITEM,
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.SUCCESS_UPDATE_ITEM,
                             { endereco: endereco }
                         )
 
                     } else {
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.ERROR_INTERNAL_SERVER
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
                         )
-
                     }
 
                 } else {
 
                     return validarId
-
                 }
 
             } else {
 
                 return validar
-
             }
 
         } else {
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_CONTENT_TYPE
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
             )
-
         }
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
-
     }
 
 }
@@ -307,8 +290,7 @@ const atualizarEndereco = async (endereco, id, contentType) => {
 //Valida os dados do endereço
 const validarEndereco = (endereco) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
-
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
     //Validação do logradouro
     if (
         endereco.logradouro == undefined ||
@@ -317,14 +299,12 @@ const validarEndereco = (endereco) => {
         endereco.logradouro.length > 100
     ) {
 
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Logradouro incorreto]'
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Logradouro incorreto]'
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
         )
-
     }
-
     //Validação do CEP
     else if (
         endereco.cep == undefined ||
@@ -333,14 +313,12 @@ const validarEndereco = (endereco) => {
         endereco.cep.length > 12
     ) {
 
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [CEP incorreto]'
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [CEP incorreto]'
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
         )
-
     }
-
     //Validação do complemento
     else if (
         endereco.complemento != undefined &&
@@ -348,14 +326,12 @@ const validarEndereco = (endereco) => {
         endereco.complemento.length > 150
     ) {
 
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Complemento incorreto]'
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Complemento incorreto]'
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
         )
-
     }
-
     //Validação da FK serviço
     else if (
         endereco.fk_id_servico == undefined ||
@@ -364,73 +340,73 @@ const validarEndereco = (endereco) => {
         isNaN(endereco.fk_id_servico)
     ) {
 
-        MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [ID do serviço incorreto]'
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [ID do serviço incorreto]'
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_REQUIRED_FIELDS
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS
         )
 
-    }
+    } else {
 
-    return false
+        return false
+    }
 
 }
 
 //Deleta um endereço
 const deletarEndereco = async (id) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
-        let validarId = await buscarEnderecoId(id)
+        let validarId = await buscarEnderecoId(id);
 
         if (validarId.status_code == 200) {
 
-            let resultEndereco = await enderecoDAO.deleteAddress(id)
+            let resultEndereco = await enderecoDAO.deleteAddress(id);
 
             if (resultEndereco) {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.SUCCESS_DELETE
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_DELETE
                 )
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_INTERNAL_SERVER
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_INTERNAL_SERVER
                 )
-
             }
 
         } else {
 
             return validarId
-
         }
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
-
     }
 
 }
 
 
-const formatarEnderecos = (endereco) =>{
-    return{
+const formatarEnderecos = (endereco) => {
+
+    return {
         id: endereco.id,
         logradouro: endereco.logradouro,
-        cep:endereco.cep,
-        complemento:endereco.complemento,
-        servico:{
+        cep: endereco.cep,
+        complemento: endereco.complemento,
+        servico: {
             id: endereco.id_servico,
             nome: endereco.nome_local
         }
     }
+
 }
 
 //Exports

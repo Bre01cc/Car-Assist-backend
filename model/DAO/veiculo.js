@@ -10,115 +10,140 @@ const conexaoKnex = require('../../knex/index.js');
 
 //Busca todos os veículos
 const getAllVehicles = async () => {
+
     try {
-        const result = await conexaoKnex.conexao.raw(
+
+        let result = await conexaoKnex.conexao.raw(
             'SELECT * FROM tbl_veiculo ORDER BY id'
         );
 
         if (result && result[0] && result[0].length > 0) {
-            return result[0];
-        }
 
-        return false;
-
-    } catch (error) {
-
-        return false;
-    }
-}
-const getVeiculoByPlaca = async (placa) => {
-    try {
-        let result = await conexaoKnex.conexao.raw('select * from tbl_veiculo where placa = ?', [placa])
-
-        if(result[0].length>0){
             return result[0]
-        }else{
-             return false
+
+        } else {
+
+            return false
         }
+
     } catch (error) {
-        console.log(error)
+
         return false
     }
 
+}
+const getVeiculoByPlaca = async (placa) => {
 
+    try {
 
+        let result = await conexaoKnex.conexao.raw(
+            'select * from tbl_veiculo where placa = ?',
+             [placa]
+            );
+
+        if (result[0].length > 0) {
+
+            return result[0]
+
+        } else {
+
+            return false
+        }
+
+    } catch (error) {
+
+        return false
+    }
 
 }
 //Busca um veículo pelo id
 const getVehicleById = async (id) => {
+
     try {
-        const result = await conexaoKnex.conexao.raw(
+
+        let result = await conexaoKnex.conexao.raw(
             'SELECT * FROM tbl_veiculo WHERE id = ?',
             [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
-            return result[0];
-        }
 
-        return false;
+            return result[0]
+
+        } else {
+
+            return false
+        }
 
     } catch (error) {
 
-        return false;
+        return false
     }
+
 }
 
 //Busca veículo com o ultimo ID
 const getSelectLastId = async () => {
+
     try {
 
-        const result = await conexaoKnex.conexao('tbl_veiculo')
+        let result = await conexaoKnex.conexao(
+            'tbl_veiculo')
             .select('id')
             .orderBy('id', 'desc')
-            .limit(1)
-            console.log(result)
+            .limit(1);
+
         if (result.length > 0) {
+
             return result[0]
+
         } else {
+
             return false
         }
-        return Number(result[0].id)
+
 
     } catch (error) {
-console.log(error)
+
         return false
     }
 }
-
-const getVehicleByPlate = async (placa) => {
-
-}
-
 //Insere um veiculo
 const setInsertVehicle = async function (veiculo) {
 
     try {
 
-        const result = await conexaoKnex.conexao('tbl_veiculo').insert({
+        let result = await conexaoKnex.conexao('tbl_veiculo').insert({
             placa: veiculo.placa,
             modelo: veiculo.modelo,
             marca: veiculo.marca,
             cor: veiculo.cor.toUpperCase(),
             ano: veiculo.ano
-        })
+        });
 
-        if (result)
+        if (result) {
+
             return true
-        else
+        }
+
+        else {
+
             return false
+        }
 
     } catch (error) {
-        console.log(error)
+       
         return false
     }
+
 }
 
 // Atualiza um veículo
 const putVeiculo = async (veiculo) => {
+
     try {
 
-        const result = await conexaoKnex.conexao.raw(`
+        let result = await conexaoKnex.conexao.raw(`
             UPDATE tbl_veiculo
             SET placa = ?,
                 modelo = ?,
@@ -139,12 +164,15 @@ const putVeiculo = async (veiculo) => {
             veiculo.foto_veiculo,
             veiculo.is_ativo,
             veiculo.id
-        ])
+        ]);
 
 
         if (result[0].affectedRows) {
+
             return true
+
         } else {
+
             return false
         }
 
@@ -152,28 +180,34 @@ const putVeiculo = async (veiculo) => {
 
         return false
     }
+
 }
 
 // Desativa um veículo
 const deleteVeiculo = async (id) => {
+
     try {
 
-        const result = await conexaoKnex.conexao.raw(`
+        let result = await conexaoKnex.conexao.raw(`
             UPDATE tbl_veiculo
             SET is_ativo = ?
             WHERE id = ?
         `, [
             0,
             id
-        ])
+        ]);
 
         if (result[0].affectedRows) {
+
             return true
+        
         } else {
+
             return false
         }
 
     } catch (error) {
+
         return false
     }
 }
