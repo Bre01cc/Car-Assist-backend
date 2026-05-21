@@ -27,7 +27,7 @@ const listarUsuariosServicos = async () => {
         if (resultUsuarioServico) {
 
             if (resultUsuarioServico.length > 0) {
-
+console.log(resultUsuarioServico)
                 resultFormatado = resultUsuarioServico.map(
                     usuarioServico => formatarUsuarioServico(usuarioServico)
                 );

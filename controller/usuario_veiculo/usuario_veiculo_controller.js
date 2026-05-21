@@ -19,10 +19,12 @@ const listarVinculos = async () => {
         let result = await usuarioVeiculoDAO.getAllUserVehicles();
 
         if (result) {
-
+            let resultFormatado = result.map(
+                usuarioVeiculo => formatarUsuarioVeiculo(usuarioVeiculo)
+            )
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.SUCCESS_REQUEST,
-                { vinculos: result },
+                { vinculos: resultFormatado },
                 'Nikolas Fernandes')
 
         } else {
@@ -166,6 +168,9 @@ const inserirVinculo = async (dados, contentType) => {
     try {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+
+            dados.data_vinculo =  new Date()
+            console.log(dados)
 
             let validar = validarVinculo(dados);
 

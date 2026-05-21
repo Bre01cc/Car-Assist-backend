@@ -8,27 +8,38 @@
 //Import do knex
 const conexaoKnex = require('../../knex/index.js');
 
-const getAllUserService = async () =>{
-    
-    try {
-        const result = await conexaoKnex.conexao.raw('select * from vw_usuario_servico decs order by id');
+const getAllUserService = async () => {
 
-        if(result[0].length>0){
+    try {
+
+        let result = await conexaoKnex.conexao.raw('select * from vw_usuario_servico decs order by id');
+
+        if (result[0].length > 0) {
+
             return result[0]
-        }else{
+
+        } else {
+
             return false
         }
+
     } catch (error) {
+
         return false
     }
+
 }
 
-const getUserServiceByIdServiceAndUser = async (id_usuario,id_servico) => {
+const getUserServiceByIdServiceAndUser = async (id_usuario, id_servico) => {
+
     try {
-        const result = await conexaoKnex.conexao.raw(
-            'select * from vw_usuario_servico where id_usuario = ? and id_servico = ?',[id_usuario,id_servico]
+
+        let result = await conexaoKnex.conexao.raw(
+            'select * from vw_usuario_servico where id_usuario = ? and id_servico = ?',
+            [id_usuario, id_servico]
         );
-        console.log(result)
+
+
         if (result[0].length > 0) {
 
             return result[0]
@@ -38,15 +49,16 @@ const getUserServiceByIdServiceAndUser = async (id_usuario,id_servico) => {
             return false
         }
     } catch (error) {
-        console.log(error)
+
         return false
     }
+
 }
 const postUserService = async (usuarioServico) => {
 
     try {
 
-        const result = await conexaoKnex.conexao.raw(`
+        let result = await conexaoKnex.conexao.raw(`
             INSERT INTO tbl_usuario_servico(
                 fk_id_usuario,
                 fk_id_servicos,
@@ -57,16 +69,24 @@ const postUserService = async (usuarioServico) => {
                 ?,
                 ?
             )
-        `, [
-            usuarioServico.fk_id_usuario,
-            usuarioServico.fk_id_servicos,
-            usuarioServico.data_vinculo || new Date()
-        ])
+        `,
+            [
+                usuarioServico.fk_id_usuario,
+                usuarioServico.fk_id_servicos,
+                usuarioServico.data_vinculo || new Date()
+            ])
 
-        return result
+        if (result.affectedRows > 0) {
+
+            return true
+
+        } else {
+
+            return false
+        }
 
     } catch (error) {
-      
+
         return false
     }
 }
@@ -76,7 +96,7 @@ const putUserService = async (usuarioServico) => {
 
     try {
 
-        const result = await conexaoKnex.conexao.raw(`
+        let result = await conexaoKnex.conexao.raw(`
             UPDATE tbl_usuario_servico
             SET
                 data_vinculo = ?,
@@ -93,30 +113,43 @@ const putUserService = async (usuarioServico) => {
         ])
 
         if (result[0].affectedRows > 0) {
+
             return true
+
         } else {
+
             return false
         }
 
     } catch (error) {
-        console.log(error)
+
         return false
     }
+
 }
 
 const getUserServiceByIdUser = async (id) => {
+
     try {
-        const result = await conexaoKnex.conexao.raw(
-            'select * from vw_usuario_servico where id_usuario = ?',[id]
+
+        let result = await conexaoKnex.conexao.raw(
+            'select * from vw_usuario_servico where id_usuario = ?', [id]
         );
+
         if (result[0].length > 0) {
+
             return result[0]
+
         } else {
+
             return false
         }
+
     } catch (error) {
+
         return false
     }
+
 }
 
 //Busca último ID cadastrado
@@ -158,15 +191,19 @@ const deleteUserServiceByIdUserAndService = async (id_usuario, id_servico) => {
         ])
 
         if (result[0].affectedRows > 0) {
+
             return true
+
         } else {
+
             return false
         }
 
     } catch (error) {
-        console.log(error)
+       
         return false
     }
+
 }
 
 // Deletar vínculo usuário-serviço
@@ -182,15 +219,19 @@ const deleteUserServiceByIdUser = async (id_usuario) => {
         ])
 
         if (result[0].affectedRows > 0) {
+
             return true
+
         } else {
+
             return false
         }
 
     } catch (error) {
-        console.log(error)
+       
         return false
     }
+    
 }
 
 const deleteUserServiceById = async (id) => {
@@ -200,9 +241,9 @@ const deleteUserServiceById = async (id) => {
         let result = await conexaoKnex.conexao.raw(`
             DELETE FROM tbl_usuario_servico
             WHERE id = ?
-        `, [
-            id
-        ])
+        `,
+            [id]
+        )
 
         if (result[0].affectedRows > 0) {
             return true

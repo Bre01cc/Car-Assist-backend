@@ -11,7 +11,7 @@ const getAllUserVehicles = async () => {
 
     try {
 
-        let result = await conexaoKnex.conexao.raw('select * from tbl_usuario_veiculo where is_ativo = true');
+        let result = await conexaoKnex.conexao.raw('select * from vw_usuario_veiculo where is_ativo = true');
 
         if (result[0].length > 0) {
 
