@@ -191,21 +191,33 @@ const inserirVeiculo = async (veiculo, contentType) => {
 
             if (!validar) {
 
-                let resultVeiculo = await veiculoDAO.setInsertVehicle(veiculo)
+                let validarPlaca = await buscarVeiculoPlaca(veiculo.placa)
+                console.log(validarPlaca)
+                if (validarPlaca.status_code != 200) {
+                    let resultVeiculo = await veiculoDAO.setInsertVehicle(veiculo)
 
-                if (resultVeiculo) {
+                    if (resultVeiculo) {
 
-                    let lastId = await veiculoDAO.getSelectLastId()
+                        let lastId = await veiculoDAO.getSelectLastId()
 
-                    if (lastId) {
+                        if (lastId) {
 
-                        veiculo.id = lastId
+                            veiculo.id = lastId
 
-                        return DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.SUCCESS_CREATED_ITEM,
-                            { veiculo: veiculo },
-                            'Guilherme Moreira de Souza'
-                        )//201
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.SUCCESS_CREATED_ITEM,
+                                { veiculo: veiculo },
+                                'Guilherme Moreira de Souza'
+                            )//201
+
+                        } else {
+
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.ERROR_INTERNAL_SERVER,
+                                null,
+                                'Guilherme Moreira de Souza'
+                            )//500
+                        }
 
                     } else {
 
@@ -213,18 +225,23 @@ const inserirVeiculo = async (veiculo, contentType) => {
                             MESSAGES.ERROR_INTERNAL_SERVER,
                             null,
                             'Guilherme Moreira de Souza'
-                        )//500
+                        ) //500
                     }
-
                 } else {
-
+                    MESSAGES.ERROR_EXISTING.message += 'Placa'
+                    console.log(
+                        DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_EXISTING,
+                            null,
+                            'Guilherme Moreira de Souza'
+                        )
+                    )
                     return DEFAULT_MESSAGES.criarResposta(
-                        MESSAGES.ERROR_INTERNAL_SERVER,
+                        MESSAGES.ERROR_EXISTING,
                         null,
                         'Guilherme Moreira de Souza'
-                    ) //500
+                    )
                 }
-
             } else {
 
                 return validar //400
@@ -240,7 +257,7 @@ const inserirVeiculo = async (veiculo, contentType) => {
         }
 
     } catch (error) {
-
+        console.log(error)
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER,
             null,
@@ -266,7 +283,7 @@ const inserirVeiculoUsuario = async (veiculo, contentType) => {
 
                 if (validarPlaca.status_code == 200) {
 
-                    MESSAGES.ERROR_EXISTING += 'Placa'
+                    MESSAGES.ERROR_EXISTING.message += 'Placa'
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.ERROR_EXISTING,
                         null,
@@ -289,14 +306,14 @@ const inserirVeiculoUsuario = async (veiculo, contentType) => {
 
 
                                 let vinculoObj = {
-                                    fk_id_veiculo: veiculo.id,
-                                    fk_id_usuario: veiculo.id_usuario,
+                                    id_veiculo: veiculo.id,
+                                    id_usuario: veiculo.id_usuario,
                                     papel_usuario: "Proprietário",
                                     data_vinculo: new Date().toISOString().split('T')[0]
                                 };
 
                                 let resultUsuarioVeiculo = await controllerUsuarioVeiculo.inserirVinculo(vinculoObj, contentType);
-
+                                console.log(resultUsuarioVeiculo)
                                 if (resultUsuarioVeiculo.status_code != 201) {
 
                                     return DEFAULT_MESSAGES.criarResposta(
@@ -311,7 +328,6 @@ const inserirVeiculoUsuario = async (veiculo, contentType) => {
 
                                     veiculo.vinculo = resultUsuarioVeiculoInfo.data
                                 }
-
 
                             }
                             return DEFAULT_MESSAGES.criarResposta(

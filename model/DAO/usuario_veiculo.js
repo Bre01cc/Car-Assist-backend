@@ -38,7 +38,7 @@ const getUserVehicleByIDs = async (idUsuario, idVeiculo) => {
             'select * from tbl_usuario_veiculo where fk_id_usuario = ? and fk_id_veiculo = ?',
             [idUsuario, idVeiculo]
         );
-
+        console.log(result)
         if (result[0].length > 0) {
 
             return result[0]
@@ -63,30 +63,6 @@ const getUserVehicleByIDUser = async (id) => {
             'select * from vw_usuario_veiculo where id_usuario = ?',
              [id]
             );
-
-        if (result[0].length > 0) {
-
-            return result[0]
-
-        } else {
-
-            return false
-        }
-
-    } catch (error) {
-
-        return false
-    }
-
-}
-
-const getSelectLastId = async () => {
-
-    try {
-
-        let result = await conexaoKnex.conexao.raw(
-            'select * from tbl_usuario_veiculo order by id desc limit 1'
-        );
 
         if (result[0].length > 0) {
 
@@ -145,8 +121,8 @@ const postUserVehicle = async (dados) => {
                     ? 
                     )
             `, [
-            dados.fk_id_usuario,
-            dados.fk_id_veiculo,
+            dados.id_usuario,
+            dados.id_veiculo,
             dados.papel_usuario,
             dados.data_vinculo
         ]);
@@ -161,7 +137,7 @@ const postUserVehicle = async (dados) => {
         }
 
     } catch (error) {
-
+        console.log(error)
         return false;
     }
 }
@@ -187,8 +163,8 @@ const putUserVehicle = async (usuarioVeiculo) => {
                 usuarioVeiculo.data_vinculo ?? new Date().toISOString().split('T')[0],
                 usuarioVeiculo.data_desvinculo ?? null,
                 usuarioVeiculo.is_ativo ?? true,
-                usuarioVeiculo.fk_id_usuario,
-                usuarioVeiculo.fk_id_veiculo
+                usuarioVeiculo.id_usuario,
+                usuarioVeiculo.id_veiculo
             ])
 
         if (result[0].affectedRows > 0) {

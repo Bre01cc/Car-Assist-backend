@@ -14,7 +14,7 @@ const getAllVehicles = async () => {
     try {
 
         let result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_veiculo ORDER BY id'
+            'SELECT * FROM tbl_veiculo where is_ativo = 1 ORDER BY id'
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -27,7 +27,7 @@ const getAllVehicles = async () => {
         }
 
     } catch (error) {
-
+console.log(error)
         return false
     }
 
@@ -62,7 +62,7 @@ const getVehicleById = async (id) => {
     try {
 
         let result = await conexaoKnex.conexao.raw(
-            'SELECT * FROM tbl_veiculo WHERE id = ?',
+            'SELECT * FROM tbl_veiculo WHERE id = ? and is_ativo = 1',
             [id]
         );
 
@@ -132,7 +132,7 @@ const setInsertVehicle = async function (veiculo) {
         }
 
     } catch (error) {
-       
+       console.log(error)
         return false
     }
 

@@ -109,7 +109,9 @@ const buscarGastoIdVeiculo = async (id) => {
 
             if (resultGasto) {
 
-                let gastoFormato = formatarGasto(resultGasto[0]);
+                let gastoFormato = resultGasto.map(
+                    gasto => formatarGasto(gasto)
+                )
 
                 return DEFAULT_MESSAGES.criarResposta(
                     MESSAGES.SUCCESS_REQUEST,
@@ -158,7 +160,9 @@ const buscarGastoIdTipo = async (id) => {
 
             if (resultGasto) {
 
-                let gastoFormato = formatarGasto(resultGasto[0])
+                let gastoFormato = resultGasto.map(
+                    gasto => formatarGasto(gasto)
+                )
 
                 return DEFAULT_MESSAGES.criarResposta(
                     MESSAGES.SUCCESS_REQUEST,
@@ -215,8 +219,10 @@ const buscarGastoIdVeiculoComTipo = async (id_veiculo, id_tipo) => {
             let resultGasto = await gastoDAO.getExpenseByIdVehicleAndType(id_veiculo, id_tipo);
 
             if (resultGasto) {
-
-                let gastoFormato = formatarGasto(resultGasto[0]);
+                
+                let gastoFormato = resultGasto.map(
+                    gasto => formatarGasto(gasto)
+                )
 
                 return DEFAULT_MESSAGES.criarResposta(
                     MESSAGES.SUCCESS_REQUEST,
@@ -485,10 +491,7 @@ const formatarGasto = (gasto) => {
         data: gasto.data_gasto,
         valor: gasto.valor,
         is_ativo: gasto.is_ativo,
-        veiculo: {
-            id: gasto.id_veiculo,
-            modelo: gasto.modelo
-        },
+        id_veiculo: gasto.id_veiculo,
         tipo_gasto: {
             id: gasto.id_tipo_gasto,
             nome: gasto.nome_categoria

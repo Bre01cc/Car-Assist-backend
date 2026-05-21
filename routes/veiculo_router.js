@@ -215,7 +215,7 @@ router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, async function (re
 router.post('/v1/car-assist/veiculo-usuario', cors(), bodyParserJSON, async function (request, response) {
 
     let dadosBody = request.body;
-    console.log(dadosBody)
+  console.log('erro')
 
     let contentType = request.headers['content-type'];
 

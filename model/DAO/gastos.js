@@ -9,23 +9,28 @@ const conexaoKnex = require('../../knex/index.js');
 
 const getAllExpenses = async () => {
     try {
-        let sql = 'select * from vw_gasto where is_ativo = true order by id desc';
-        let result = await conexaoKnex.conexao.raw(sql);
-   
+
+        let result = await conexaoKnex.conexao.raw(
+            'select * from vw_gasto where is_ativo = true order by id desc'
+        );
+
         if (result[0].length > 0)
             return result[0];
         else
             return false;
     } catch (error) {
-   
+
         return false;
     }
 }
 
 const getExpenseById = async (id) => {
     try {
-        let sql = `select * from vw_gasto where id = ${id}`;
-        let result = await conexaoKnex.conexao.raw(sql);
+
+        let result = await conexaoKnex.conexao.raw(
+            'select * from vw_gasto where id = ? and is_ativo = true',
+            [id]
+        );
 
         if (result[0].length > 0)
             return result[0];
@@ -37,9 +42,13 @@ const getExpenseById = async (id) => {
 }
 
 const getExpenseByIdVehicle = async (id) => {
+
     try {
-        let sql = `select * from vw_gasto where id_veiculo = ${id}`;
-        let result = await conexaoKnex.conexao.raw(sql);
+
+        let result = await conexaoKnex.conexao.raw(
+            `select * from vw_gasto where id_veiculo = ?`,
+            [id]
+        );
 
         if (result[0].length > 0)
             return result[0];
@@ -51,9 +60,10 @@ const getExpenseByIdVehicle = async (id) => {
 }
 const getExpenseByIdVehicleAndType = async (id_veiculo, id_tipo) => {
     try {
-    
-        let result = await conexaoKnex.conexao.raw('select * from vw_gasto where id_veiculo = ? and id_tipo_gasto = ?',[
-            id_veiculo,id_tipo
+
+        let result = await conexaoKnex.conexao.raw(
+            'select * from vw_gasto where id_veiculo = ? and id_tipo_gasto = ?', [
+            id_veiculo, id_tipo
         ]);
 
         if (result[0].length > 0)
@@ -67,8 +77,11 @@ const getExpenseByIdVehicleAndType = async (id_veiculo, id_tipo) => {
 
 const getExpenseByIdType = async (id) => {
     try {
-        let sql = `select * from vw_gasto where id_tipo_gasto = ${id}`;
-        let result = await conexaoKnex.conexao.raw(sql);
+
+        let result = await conexaoKnex.conexao.raw(
+            `select * from vw_gasto where id_tipo_gasto = ?`,
+            [id]
+        );
 
         if (result[0].length > 0)
             return result[0];
@@ -93,7 +106,25 @@ const postExpense = async (dados) => {
                         ${dados.fk_id_categoria}
                     )`;
 
-        let result = await conexaoKnex.conexao.raw(sql);
+        let result = await conexaoKnex.conexao.raw(
+            `insert into tbl_gastos (
+                        data_gasto, 
+                        valor, 
+                        fk_id_veiculo, 
+                        fk_id_categoria
+                    ) values (
+                     ?,
+                     ?,
+                     ?,
+                     ?
+                    )`,
+            [
+                dados.data_gasto,
+                dados.valor,
+                dados.fk_id_veiculo,
+                dados.fk_id_categoria
+            ]
+        );
 
         if (result[0].affectedRows > 0)
             return true;
@@ -106,15 +137,22 @@ const postExpense = async (dados) => {
 
 const putExpense = async (id, dados) => {
     try {
-        let sql = `update tbl_gastos set 
-                        data_gasto = '${dados.data_gasto}', 
-                        valor = ${dados.valor}, 
-                        fk_id_veiculo = ${dados.fk_id_veiculo}, 
-                        fk_id_categoria = ${dados.fk_id_categoria},
-                        is_ativo = ${dados.is_ativo}
-                    where id = ${id}`;
 
-        let result = await conexaoKnex.conexao.raw(sql);
+        let result = await conexaoKnex.conexao.raw(
+            `update tbl_gastos set 
+                        data_gasto = ?, 
+                        valor = ?, 
+                        fk_id_veiculo = ?, 
+                        fk_id_categoria = ?
+                    where id = ?`,
+            [
+                dados.data_gasto,
+                dados.valor,
+                dados.fk_id_veiculo,
+                dados.fk_id_categoria,
+                id
+            ]
+        );
 
         if (result[0].affectedRows > 0)
             return true;
@@ -126,9 +164,13 @@ const putExpense = async (id, dados) => {
 }
 
 const deleteExpense = async (id) => {
+
     try {
-        let sql = `update tbl_gastos set is_ativo = false where id = ${id}`;
-        let result = await conexaoKnex.conexao.raw(sql);
+
+        let result = await conexaoKnex.conexao.raw(
+            `update tbl_gastos set is_ativo = false where id = ?`,
+            [id]
+        );
 
         if (result[0].affectedRows > 0)
             return true;
@@ -137,20 +179,26 @@ const deleteExpense = async (id) => {
     } catch (error) {
         return false;
     }
+
 }
 
 const getSelectLastId = async () => {
+
     try {
-        let sql = 'select * from vw_gasto order by id desc limit 1';
-        let result = await conexaoKnex.conexao.raw(sql);
+
+        let result = await conexaoKnex.conexao.raw(
+            'select * from vw_gasto order by id desc limit 1'
+        );
 
         if (result[0].length > 0)
             return result[0];
         else
             return false;
+
     } catch (error) {
         return false;
     }
+
 }
 
 module.exports = {

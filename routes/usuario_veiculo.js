@@ -24,6 +24,7 @@ router.get('/v1/car-assist/usuario-veiculo/:id', cors(), async (req, res) => {
 
 // inserir um novo vínculo
 router.post('/v1/car-assist/usuario-veiculo', cors(), bodyParserJSON, async (req, res) => {
+    console.log('aqui')
     let dadosBody = req.body
     let contentType = req.headers['content-type']
     let result = await controllerUV.inserirVinculo(dadosBody, contentType)

@@ -230,6 +230,7 @@ const putManutencao = async (manutencao) => {
 
 //Busca o último id de manutenção
 const getSelectLastId = async () => {
+
     try {
 
         let result = await conexaoKnex.conexao
@@ -239,7 +240,9 @@ const getSelectLastId = async () => {
             .limit(1)
 
         if (result.length > 0) {
+
             return Number(result[0].id)
+            
         } else {
             return false
         }
