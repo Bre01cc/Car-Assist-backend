@@ -59,16 +59,8 @@ SELECT
     tipo_manutencao.nome AS nome_tipo_manutencao,
     
     usuario.id AS id_usuario,
-    usuario.nome AS nome_usuario,
     
-    veiculo.id AS id_veiculo,
-    veiculo.modelo,
-    
-    evidencia.id AS id_evidencia,
-    evidencia.url,
-
-    peca.id AS id_peca,
-    peca.nome AS nome_peca
+    veiculo.id AS id_veiculo
 
 FROM tbl_manutencao manutencao
 
@@ -79,13 +71,7 @@ JOIN tbl_usuario usuario
     ON manutencao.fk_id_usuario = usuario.id
 
 JOIN tbl_veiculo veiculo 
-    ON manutencao.fk_id_veiculo = veiculo.id
-
-LEFT JOIN tbl_evidencia evidencia 
-    ON evidencia.fk_id_manutencao = manutencao.id
-
-LEFT JOIN tbl_pecas peca
-    ON peca.fk_id_manutencao = manutencao.id;
+    ON manutencao.fk_id_veiculo = veiculo.id;
 
 
 create view vw_usuario as select 

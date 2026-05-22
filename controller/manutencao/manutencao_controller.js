@@ -405,44 +405,6 @@ const inserirManutencaoComEvidenciaComPeca = async (manutencao, contentType) => 
                             )
                         }
 
-                        if (manutencao.peca != undefined) {
-
-                            for (peca of manutencao.peca) {
-
-                                let pecaManutencao = {
-                                    fk_id_manutencao: manutencao.id,
-                                    nome: peca.nome
-                                }
-
-                                let resultPeca = await controllerPeca.inserirPeca(pecaManutencao, contentType);
-
-                                if (resultPeca.status_code != 201) {
-
-                                    MESSAGES.ERROR_RELATION_TABLE.message += 'Peças'
-
-                                    return DEFAULT_MESSAGES.criarResposta(
-                                        MESSAGES.ERROR_RELATION_TABLE
-                                    )
-
-                                } else {
-
-                                    delete manutencao.peca
-
-                                    let resultManutencaoPeca = await controllerPeca.buscarPecaIdMaintenance(manutencao.id)
-
-                                    manutencao.peca = resultManutencaoPeca.data.pecas
-                                }
-                            }
-
-                        } else {
-
-                            MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Faltou Peças]'
-
-                            return DEFAULT_MESSAGES.criarResposta(
-                                MESSAGES.ERROR_REQUIRED_FIELDS
-                            )
-                        }
-
                         return DEFAULT_MESSAGES.criarResposta(
                             MESSAGES.SUCCESS_CREATED_ITEM,
                             { manutencao: manutencao }

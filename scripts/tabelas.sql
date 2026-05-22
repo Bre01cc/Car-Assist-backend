@@ -177,6 +177,9 @@ CREATE TABLE tbl_manutencao (
 );
 
 ALTER TABLE tbl_manutencao
+ADD COLUMN pecas TEXT NULL;
+
+ALTER TABLE tbl_manutencao
 MODIFY COLUMN data_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
 -- =====================================================
 -- TABELA: PEÇAS
