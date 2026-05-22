@@ -9,8 +9,6 @@ const manutencaoDAO = require('../../model/DAO/manutencao.js');
 
 const controllerEvidencia = require('../evidencia/evidencia_controller.js');
 
-const controllerPeca = require('../pecas/pecas_controller.js');
-
 const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
 
 
@@ -27,9 +25,19 @@ const listarManutencao = async () => {
 
             if (resultManutencao.length > 0) {
 
-                const manutencaoFormatada = resultManutencao.map(
-                    manutencao => formatarManutencao(manutencao)
-                );
+                 const manutencaoFormatada = await Promise.all(
+                        resultManutencao.map(async (manutencao) => {
+
+                            let evidencia = await controllerEvidencia
+                                .buscarEvidenciaIdMaintenance(manutencao.id)
+                            
+                            manutencao.evidencia = evidencia.data?.evidencia || []
+                            let manutencaoFormatada = formatarManutencao(manutencao)
+                            return {
+                                manutencaoFormatada
+                            }
+                        })
+                    )
 
                 return DEFAULT_MESSAGES.criarResposta(
                     MESSAGES.SUCCESS_REQUEST,
@@ -52,9 +60,9 @@ const listarManutencao = async () => {
 
 
     } catch (error) {
-
+        console.log(error)
         return DEFAULT_MESSAGES.criarResposta(
-            MESSAGES.ERROR_INTERNAL
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 }
@@ -73,9 +81,19 @@ const buscarManutencaoId = async (id) => {
 
                 if (resultManutencao.length > 0) {
 
-                    const manutencaoFormatada = resultManutencao.map(
-                        manutencao => formatarManutencao(manutencao)
-                    );
+                  const manutencaoFormatada = await Promise.all(
+                        resultManutencao.map(async (manutencao) => {
+
+                            let evidencia = await controllerEvidencia
+                                .buscarEvidenciaIdMaintenance(manutencao.id)
+                            
+                            manutencao.evidencia = evidencia.data?.evidencia || []
+                            let manutencaoFormatada = formatarManutencao(manutencao)
+                            return {
+                                manutencaoFormatada
+                            }
+                        })
+                    )
 
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.SUCCESS_REQUEST,
@@ -129,9 +147,19 @@ const buscarManutencaoIdTipo = async (id) => {
 
                 if (resultManutencao.length > 0) {
 
-                    const manutencaoFormatada = resultManutencao.map(
-                        manutencao => formatarManutencao(manutencao)
-                    );
+                     const manutencaoFormatada = await Promise.all(
+                        resultManutencao.map(async (manutencao) => {
+
+                            let evidencia = await controllerEvidencia
+                                .buscarEvidenciaIdMaintenance(manutencao.id)
+                            //criando um n
+                            manutencao.evidencia = evidencia.data?.evidencia || []
+                            let manutencaoFormatada = formatarManutencao(manutencao)
+                            return {
+                                manutencaoFormatada
+                            }
+                        })
+                    )
 
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.SUCCESS_REQUEST,
@@ -184,9 +212,19 @@ const buscarManutencaoIdUsuario = async (id) => {
 
                 if (resultManutencao.length > 0) {
 
-                    const manutencaoFormatada = resultManutencao.map(
-                        manutencao => formatarManutencao(manutencao)
-                    );
+                     const manutencaoFormatada = await Promise.all(
+                        resultManutencao.map(async (manutencao) => {
+
+                            let evidencia = await controllerEvidencia
+                                .buscarEvidenciaIdMaintenance(manutencao.id)
+                            //criando um n
+                            manutencao.evidencia = evidencia.data?.evidencia || []
+                            let manutencaoFormatada = formatarManutencao(manutencao)
+                            return {
+                                manutencaoFormatada
+                            }
+                        })
+                    )
 
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.SUCCESS_REQUEST,
@@ -240,10 +278,19 @@ const buscarManutencaoIdVeiculo = async (id) => {
 
                 if (resultManutencao.length > 0) {
 
-                    const manutencaoFormatada = resultManutencao.map(
-                        manutencao => formatarManutencao(manutencao)
-                    );
+                    const manutencaoFormatada = await Promise.all(
+                        resultManutencao.map(async (manutencao) => {
 
+                            let evidencia = await controllerEvidencia
+                                .buscarEvidenciaIdMaintenance(manutencao.id)
+                            //criando um n
+                            manutencao.evidencia = evidencia.data?.evidencia || []
+                            let manutencaoFormatada = formatarManutencao(manutencao)
+                            return {
+                                manutencaoFormatada
+                            }
+                        })
+                    )
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.SUCCESS_REQUEST,
                         { manutencao: manutencaoFormatada }
@@ -273,7 +320,7 @@ const buscarManutencaoIdVeiculo = async (id) => {
         }
 
     } catch (error) {
-
+        console.log(error)
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -319,7 +366,7 @@ const inserirManutencao = async (manutencao, contentType) => {
                 } else {
 
                     return DEFAULT_MESSAGES.criarResposta(
-                        MESSAGES.ERROR_INTERNAL
+                        MESSAGES.ERROR_INTERNAL_SERVER
                     )
                 }
 
@@ -336,7 +383,7 @@ const inserirManutencao = async (manutencao, contentType) => {
         }
 
     } catch (error) {
-
+      
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -345,7 +392,7 @@ const inserirManutencao = async (manutencao, contentType) => {
 
 }
 
-const inserirManutencaoComEvidenciaComPeca = async (manutencao, contentType) => {
+const inserirManutencaoComEvidencia = async (manutencao, contentType) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
@@ -537,7 +584,7 @@ const validarManutencao = (manutencao) => {
     }
 
     // Validação do custo
-    else if (
+    if (
         manutencao.custo == undefined ||
         manutencao.custo == null ||
         manutencao.custo == '' ||
@@ -552,7 +599,7 @@ const validarManutencao = (manutencao) => {
     }
 
     // Validação da quilometragem
-    else if (
+    if (
         manutencao.quilometragem == undefined ||
         manutencao.quilometragem == null ||
         manutencao.quilometragem == '' ||
@@ -566,23 +613,27 @@ const validarManutencao = (manutencao) => {
         )
     }
 
+
     // Validação da oficina (opcional)
-    else if (
-        manutencao.oficina != undefined &&
-        manutencao.oficina != null &&
-        manutencao.oficina != '' &&
-        manutencao.oficina.length > 100
-    ) {
+    if (manutencao.oficina != undefined) {
+        if (
 
-        MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Oficina inválida]'
+            manutencao.oficina != null &&
+            manutencao.oficina != '' &&
+            typeof manutencao.oficina !== 'string' &&
+            manutencao.oficina.length > 100
+        ) {
 
-        return DEFAULT_MESSAGES.criarResposta(
-            MENSAGENS.ERROR_REQUIRED_FIELDS
-        )
+            MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Oficina inválida]'
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MENSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
     }
 
     // Validação das observações (opcional)
-    else if (
+    if (
         manutencao.observacoes != undefined &&
         manutencao.observacoes != null &&
         manutencao.observacoes.length > 1000
@@ -596,7 +647,7 @@ const validarManutencao = (manutencao) => {
     }
 
     // Validação do tipo de manutenção
-    else if (
+    if (
         manutencao.fk_id_tipo_manutencao == undefined ||
         manutencao.fk_id_tipo_manutencao == null ||
         manutencao.fk_id_tipo_manutencao == '' ||
@@ -610,8 +661,19 @@ const validarManutencao = (manutencao) => {
         )
     }
 
+    if (manutencao.pecas != undefined) {
+
+        if (manutencao.pecas == null || typeof manutencao.pecas !== 'string' || manutencao.pecas.trim() == "") {
+            MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Peças incorreto]'
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MENSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    }
     // Validação do usuário
-    else if (
+    if (
         manutencao.fk_id_usuario == undefined ||
         manutencao.fk_id_usuario == null ||
         manutencao.fk_id_usuario == '' ||
@@ -626,7 +688,7 @@ const validarManutencao = (manutencao) => {
     }
 
     // Validação do veículo
-    else if (
+    if (
         manutencao.fk_id_veiculo == undefined ||
         manutencao.fk_id_veiculo == null ||
         manutencao.fk_id_veiculo == '' ||
@@ -639,10 +701,10 @@ const validarManutencao = (manutencao) => {
             MENSAGENS.ERROR_REQUIRED_FIELDS
         )
 
-    } else {
-
-        return false
     }
+
+    return false
+
 
 }
 
@@ -652,30 +714,23 @@ const formatarManutencao = (manutencao) => {
 
     return {
         id: manutencao.id,
+        id_usuario: manutencao.id_usuario,
+        id_veiculo: manutencao.id_veiculo,
         data_manutencao: manutencao.data_manutencao,
         custo: manutencao.custo,
         quilometragem: manutencao.quilometragem,
-        oficina: manutencao.oficina,
+        oficina: manutencao.oficina ?? null,
+        pecas: manutencao.pecas,
         observacoes: manutencao.observacoes,
         is_ativo: manutencao.is_ativo,
+        data: manutencao.data_criacao,
         tipo_manutencao: {
-            id: manutencao.id_manutencao,
+            id: manutencao.id_tipo_manutencao,
             nome: manutencao.nome_tipo_manutencao,
         },
-        usuario: {
-            id: manutencao.id_usuario,
-            nome: manutencao.nome_usuario
-        },
-        veiculo: {
-            id: manutencao.id_veiculo,
-            modelo: manutencao.modelo
-        },
-        evidencia: {
-            id: manutencao.id_veiculo,
-            url: manutencao.url
-        }
+        evidencia: manutencao.evidencia
     }
-    
+
 }
 
 module.exports = {
@@ -686,5 +741,5 @@ module.exports = {
     buscarManutencaoIdVeiculo,
     atualizarManutencao,
     inserirManutencao,
-    inserirManutencaoComEvidenciaComPeca
+    inserirManutencaoComEvidencia
 }

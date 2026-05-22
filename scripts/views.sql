@@ -53,7 +53,10 @@ SELECT
     manutencao.quilometragem,
     manutencao.oficina,
     manutencao.observacoes,
+    manutencao.pecas,
+    manutencao.data_criacao,
     manutencao.is_ativo,
+
     
     tipo_manutencao.id AS id_tipo_manutencao,
     tipo_manutencao.nome AS nome_tipo_manutencao,

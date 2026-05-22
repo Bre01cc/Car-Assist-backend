@@ -22,6 +22,7 @@ const getMaintenanceById = async (id) => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -40,6 +41,7 @@ const getMaintenanceByIdType = async (id) => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -58,6 +60,7 @@ const getMaintenanceByIdUser = async (id) => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -76,6 +79,7 @@ const getMaintenanceByIdVehicle = async (id) => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -94,6 +98,7 @@ const getAllMaintenance = async () => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -109,6 +114,7 @@ const deleteMaintenance = async (id) => {
             return false
         }
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -129,6 +135,7 @@ const statusMaintenance = async (id, status) => {
             return false
         }
     } catch (error) {
+        console.log(error)
         return false
 
     }
@@ -148,10 +155,12 @@ const postManutencao = async (manutencao) => {
                 oficina,
                 observacoes,
                 fk_id_tipo_manutencao,
+                pecas,
                 fk_id_usuario,
                 fk_id_veiculo
             )
             VALUES(
+                ?,
                 ?,
                 ?,
                 ?,
@@ -165,22 +174,23 @@ const postManutencao = async (manutencao) => {
             manutencao.data_manutencao,
             manutencao.custo,
             manutencao.quilometragem,
-            manutencao.oficina,
+            manutencao.oficina ?? null,
             manutencao.observacoes,
             manutencao.fk_id_tipo_manutencao,
+            manutencao.pecas ?? null,
             manutencao.fk_id_usuario,
             manutencao.fk_id_veiculo
         ])
 
-    
-        if (result[0].affectedRows>0) {
+
+        if (result[0].affectedRows > 0) {
             return true
         } else {
             return false
         }
 
     } catch (error) {
-
+console.log(error)
         return false
 
     }
@@ -201,6 +211,7 @@ const putManutencao = async (manutencao) => {
                 observacoes = ?,
                 is_ativo = ?,
                 fk_id_tipo_manutencao = ?,
+                pecas,
                 fk_id_usuario = ?,
                 fk_id_veiculo = ?
             WHERE id = ?
@@ -208,10 +219,10 @@ const putManutencao = async (manutencao) => {
             manutencao.data_manutencao,
             manutencao.custo,
             manutencao.quilometragem,
-            manutencao.oficina,
+            manutencao.oficina ?? null,
             manutencao.observacoes,
-            manutencao.is_ativo,
             manutencao.fk_id_tipo_manutencao,
+            manutencao.pecas ?? null,
             manutencao.fk_id_usuario,
             manutencao.fk_id_veiculo,
             manutencao.id
@@ -224,6 +235,7 @@ const putManutencao = async (manutencao) => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -242,13 +254,13 @@ const getSelectLastId = async () => {
         if (result.length > 0) {
 
             return Number(result[0].id)
-            
+
         } else {
             return false
         }
 
     } catch (error) {
-     
+
         return false
     }
 }
