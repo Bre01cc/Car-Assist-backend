@@ -4,16 +4,17 @@
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
-const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
-const bodyParserJSON = bodyParser.json()
+const bodyParserJSON = bodyParser.json();
 
-const router = express.Router()
+const router = express.Router();
 
-const controllerUsuario = require('../controller/usuario/usuario_controller.js')
-const controllerUsuarioServico = require('../controller/usuario_servico/usuario_servico_controller.js')
+const upload = require('./upload.js');
+
+const controllerUsuario = require('../controller/usuario/usuario_controller.js');
 
 
 
@@ -158,7 +159,7 @@ const controllerUsuarioServico = require('../controller/usuario_servico/usuario_
  */
 
 
-router.put('/v1/car-assist/usuario/:id', cors(), bodyParserJSON, async function (request, response) {
+router.put('/v1/car-assist/usuario/:id', cors(), bodyParserJSON, upload.single('foto_usuario'), async function (request, response) {
 
     let dadosBody = request.body;
 
@@ -166,7 +167,9 @@ router.put('/v1/car-assist/usuario/:id', cors(), bodyParserJSON, async function 
 
     let contentType = request.headers['content-type'];
 
-    let usuario = await controllerUsuario.atualizarUsuario(dadosBody, idUsuario, contentType);
+    let foto = request.file
+
+    let usuario = await controllerUsuario.atualizarUsuario(dadosBody, idUsuario, contentType, foto);
 
     response.status(usuario.status_code).json(usuario);
 });
@@ -182,7 +185,7 @@ router.post('/v1/car-assist/usuario', cors(), bodyParserJSON, async function (re
 router.delete('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
     let idUsuario = req.params.id;
     let usuario = await controllerUsuario.deletarUsuarioId(idUsuario)
-    
+
     res.status(usuario.status_code).json(usuario);
 });
 
@@ -196,7 +199,7 @@ router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
 router.get('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
     let idUsuario = req.params.id;
     let usuario = await controllerUsuario.buscarUsuarioId(idUsuario)
-  
+
     res.status(usuario.status_code).json(usuario);
 });
 

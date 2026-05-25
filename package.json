@@ -11,5 +11,24 @@
     "node-fetch": "^3.3.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
-  }
+  },
+  "name": "car-assist-backend",
+  "version": "1.0.0",
+  "description": "![API REST](https://img.shields.io/badge/API-REST-blue) ![Node.js](https://img.shields.io/badge/Node.js-green?logo=node.js) ![Status](https://img.shields.io/badge/Status-em%20desenvolvimento-orange)",
+  "main": "server.js",
+  "devDependencies": {},
+  "scripts": {
+    "dev": "node --watch server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bre01cc/Car-Assist-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bre01cc/Car-Assist-backend/issues"
+  },
+  "homepage": "https://github.com/Bre01cc/Car-Assist-backend#readme"
 }

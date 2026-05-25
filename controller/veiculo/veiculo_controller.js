@@ -310,7 +310,7 @@ const inserirVeiculoUsuario = async (veiculo, contentType, foto) => {
                 } else {
 
                     let urlFoto = await UPLOAD.uploadFiles(foto);
-console.log(urlFoto)
+
                     if (urlFoto) {
                         veiculo.foto_veiculo = urlFoto
                         let resultVeiculo = await veiculoDAO.setInsertVehicle(veiculo);

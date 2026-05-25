@@ -67,7 +67,11 @@ const ERROR_UPLOAD_IMAGE = {
     message: 'Falha ao enviar a foto para o serviço de armazenamento.'
 }
 
-
+const ERROR_UPLOAD_IMAGE_DELETE = {
+    status: false,
+    status_code: 502,
+    message: 'Falha ao deletar a foto no serviço de armazenamento.'
+}
 
 /*****************************************************MENSAGENS DE SUCESSO**********************************************/
 //Mensagem de sucesso da requisição
@@ -76,12 +80,14 @@ const SUCCESS_REQUEST = {
     status_code: 200,
     message: "Requisição bem sucedida!!!"
 };
+
 //Mensagem de delete foi realizado com sucesso
 const SUCCESS_DELETE = {
     status: true,
     status_code: 200,
     message: "Delete realizado com sucesso!!!"
 };
+
 //Mensagem de update foi realizado com sucesso
 const SUCCESS_UPDATE_ITEM = {
     status: true,
@@ -124,5 +130,6 @@ module.exports = {
     ERROR_RELATION_TABLE,
     ERROR_EXISTING,
     ERROR_UPLOAD_IMAGE,
+    ERROR_UPLOAD_IMAGE_DELETE,
     criarResposta
 }

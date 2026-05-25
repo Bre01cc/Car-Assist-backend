@@ -32,6 +32,22 @@ const uploadFiles = async function(file) {
     }
 }
 
+const deleteUploadFiles = async function(nome) {
+
+     let deleteUrl = `https://${AZURE.ACCOUNT}.blob.core.windows.net/${AZURE.CONTAINER}/${fileName}`
+
+     const response = await fetch(deleteUrl,{
+        method : 'DELETE'
+     })
+
+     if(response.status == 202){
+        return true
+     }else{
+        return false 
+     }
+
+}
+
 module.exports={
     uploadFiles
 }

@@ -9,7 +9,8 @@ const usuarioDAO = require('../../model/DAO/usuario.js');
 
 const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
 
-
+//Import da controller que faz upload da foto
+const UPLOAD = require('../upload/controller_upload_azure.js');
 
 //Retorna todos os usuários
 const listarUsuarios = async () => {
@@ -636,14 +637,14 @@ const inserirUsuario = async (usuario, contentType) => {
 }
 
 //Atualiza um usuário pelo id
-const atualizarUsuario = async (usuario, id, contentType) => {
-
+const atualizarUsuario = async (usuario, id, contentType, foto) => {
+    console.log(contentType)
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         // Validação do content-type
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
 
             // Chama a função para validar os dados do usuário
             let validar = validarUsuario(usuario, true)
@@ -655,7 +656,9 @@ const atualizarUsuario = async (usuario, id, contentType) => {
 
                 usuario.password = usuario.senha
 
-                let validarId = await buscarUsuarioIDComSenha(usuario, contentType);
+
+                let validarId = await buscarUsuarioIDComSenha(usuario, 'APPLICATION/JSON');
+                console.log(validarId)
 
                 delete usuario.password
 
@@ -682,6 +685,24 @@ const atualizarUsuario = async (usuario, id, contentType) => {
                             )
 
                         } else {
+
+                            if (usuario.foto_usuario != undefined) {
+
+                                // if(usuario.foto == ){
+
+                                // }
+
+                                let urlFoto = await UPLOAD.uploadFiles(foto);
+
+                                if (urlFoto) {
+                                    usuario.foto_usuario = urlFoto
+                                } else {
+                                    return DEFAULT_MESSAGES.criarResposta(
+                                        MESSAGES.ERROR_UPLOAD_IMAGE
+                                    )
+                                }
+                            }
+
 
                             let resultUsuario = await usuarioDAO.putUser(usuario)
 
@@ -720,7 +741,7 @@ const atualizarUsuario = async (usuario, id, contentType) => {
         }
 
     } catch (error) {
-        
+        console.log(error)
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -749,7 +770,7 @@ const validarUsuario = (usuario, validar) => {
     }
 
     // Validação do email
-    else if (
+    if (
         usuario.email == undefined ||
         usuario.email == null ||
         usuario.email == '' ||
@@ -765,7 +786,7 @@ const validarUsuario = (usuario, validar) => {
     }
 
     // Validação do CPF
-    else if (
+    if (
         usuario.cpf == undefined ||
         usuario.cpf == null ||
         usuario.cpf == '' ||
@@ -780,7 +801,7 @@ const validarUsuario = (usuario, validar) => {
     }
 
     // Validação da data de nascimento (opcional)
-    else if (
+    if (
         usuario.data_nascimento != undefined &&
         usuario.data_nascimento != null &&
         usuario.data_nascimento != '' &&
@@ -794,7 +815,7 @@ const validarUsuario = (usuario, validar) => {
     }
 
     // Validação da senha
-    else if (
+    if (
         usuario.senha == undefined ||
         usuario.senha == null ||
         usuario.senha == '' ||
@@ -864,7 +885,7 @@ const deletarUsuarioId = async (id) => {
 }
 
 const usuarioFormatado = (usuario) => {
-    
+
     return {
         id: usuario.id,
         nome: usuario.nome,
