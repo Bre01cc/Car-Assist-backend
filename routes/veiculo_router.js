@@ -194,7 +194,7 @@ router.get('/v1/car-assist/veiculo', cors(), async function (request, response) 
 router.delete('/v1/car-assist/veiculo/:id', cors(), async (req, res) => {
     let idVeiculo = req.params.id;
     let veiculo = await controllerVeiculo.deletarVeiculoId(idVeiculo)
-    
+
     res.status(veiculo.status_code).json(veiculo);
 });
 
@@ -215,15 +215,17 @@ router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, upload.single('fot
     response.json(veiculo);
 });
 
-router.post('/v1/car-assist/veiculo-usuario', cors(), bodyParserJSON, async function (request, response) {
+router.post('/v1/car-assist/veiculo-usuario', cors(), bodyParserJSON, upload.single('foto_veiculo'), async function (request, response) {
 
     let dadosBody = request.body;
-  console.log('erro')
+
 
     let contentType = request.headers['content-type'];
 
-    let veiculo = await controllerVeiculo.inserirVeiculoUsuario(dadosBody, contentType);
-    console.log(veiculo)
+    let foto = request.file
+
+    let veiculo = await controllerVeiculo.inserirVeiculoUsuario(dadosBody, contentType, foto);
+
 
     response.status(veiculo.status_code);
 

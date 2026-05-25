@@ -184,12 +184,12 @@ const buscarVeiculoPlaca = async (placa) => {
 }
 
 const inserirVeiculo = async (veiculo, contentType, foto) => {
-console.log(contentType)
+
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
         //validação do tipo de conteúdo
-        if (contentType) {
+        if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
 
             let validar = await validarDadosVeiculo(veiculo)
 
@@ -204,7 +204,7 @@ console.log(contentType)
                     if (urlFoto) {
 
                         veiculo.foto_veiculo = urlFoto
-                        console.log(veiculo)
+
                         let resultVeiculo = await veiculoDAO.setInsertVehicle(veiculo)
 
                         if (resultVeiculo) {
@@ -274,7 +274,7 @@ console.log(contentType)
         }
 
     } catch (error) {
-        console.log(error)
+        
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER,
             null,
@@ -284,13 +284,13 @@ console.log(contentType)
 
 }
 
-const inserirVeiculoUsuario = async (veiculo, contentType) => {
+const inserirVeiculoUsuario = async (veiculo, contentType, foto) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
         //validação do tipo de conteúdo
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
 
             let validar = await validarDadosVeiculo(veiculo);
 
@@ -309,50 +309,63 @@ const inserirVeiculoUsuario = async (veiculo, contentType) => {
 
                 } else {
 
-                    let resultVeiculo = await veiculoDAO.setInsertVehicle(veiculo);
+                    let urlFoto = await UPLOAD.uploadFiles(foto);
+console.log(urlFoto)
+                    if (urlFoto) {
+                        veiculo.foto_veiculo = urlFoto
+                        let resultVeiculo = await veiculoDAO.setInsertVehicle(veiculo);
 
-                    if (resultVeiculo) {
+                        if (resultVeiculo) {
 
-                        let lastId = await veiculoDAO.getSelectLastId();
+                            let lastId = await veiculoDAO.getSelectLastId();
 
-                        if (lastId) {
+                            if (lastId) {
 
-                            veiculo.id = lastId.id;
+                                veiculo.id = lastId.id;
 
-                            if (veiculo.id_usuario != undefined) {
+                                if (veiculo.id_usuario != undefined) {
 
 
-                                let vinculoObj = {
-                                    id_veiculo: veiculo.id,
-                                    id_usuario: veiculo.id_usuario,
-                                    papel_usuario: "Proprietário",
-                                    data_vinculo: new Date().toISOString().split('T')[0]
-                                };
+                                    let vinculoObj = {
+                                        id_veiculo: veiculo.id,
+                                        id_usuario: veiculo.id_usuario,
+                                        papel_usuario: "Proprietário",
+                                        data_vinculo: new Date().toISOString().split('T')[0]
+                                    };
 
-                                let resultUsuarioVeiculo = await controllerUsuarioVeiculo.inserirVinculo(vinculoObj, contentType);
-                                console.log(resultUsuarioVeiculo)
-                                if (resultUsuarioVeiculo.status_code != 201) {
+                                    let resultUsuarioVeiculo = await controllerUsuarioVeiculo.inserirVinculo(vinculoObj, 'APPLICATION/JSON');
+                                    console.log(resultUsuarioVeiculo)
+                                    if (resultUsuarioVeiculo.status_code != 201) {
 
-                                    return DEFAULT_MESSAGES.criarResposta(
-                                        MESSAGES.ERROR_RELATION_TABLE
-                                    )
+                                        return DEFAULT_MESSAGES.criarResposta(
+                                            MESSAGES.ERROR_RELATION_TABLE
+                                        )
 
-                                } else {
+                                    } else {
 
-                                    delete veiculo.vinculo
+                                        delete veiculo.vinculo
 
-                                    let resultUsuarioVeiculoInfo = await controllerUsuarioVeiculo.buscarUsuarioVeiculoIdUsuarioPost(veiculo.id_usuario)
+                                        let resultUsuarioVeiculoInfo = await controllerUsuarioVeiculo.buscarUsuarioVeiculoIdUsuarioPost(veiculo.id_usuario)
 
-                                    veiculo.vinculo = resultUsuarioVeiculoInfo.data
+                                        veiculo.vinculo = resultUsuarioVeiculoInfo.data
+                                    }
+
                                 }
+                                return DEFAULT_MESSAGES.criarResposta(
 
+                                    MESSAGES.SUCCESS_CREATED_ITEM,
+                                    { veiculo: veiculo },
+                                    'Guilherme Moreira de Souza'
+                                )//201
+
+                            } else {
+
+                                return DEFAULT_MESSAGES.criarResposta(
+                                    MESSAGES.ERROR_INTERNAL_SERVER,
+                                    null,
+                                    'Guilherme Moreira de Souza'
+                                )//500
                             }
-                            return DEFAULT_MESSAGES.criarResposta(
-
-                                MESSAGES.SUCCESS_CREATED_ITEM,
-                                { veiculo: veiculo },
-                                'Guilherme Moreira de Souza'
-                            )//201
 
                         } else {
 
@@ -360,17 +373,14 @@ const inserirVeiculoUsuario = async (veiculo, contentType) => {
                                 MESSAGES.ERROR_INTERNAL_SERVER,
                                 null,
                                 'Guilherme Moreira de Souza'
-                            )//500
+                            ) //500
                         }
-
                     } else {
-
                         return DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.ERROR_INTERNAL_SERVER,
-                            null,
-                            'Guilherme Moreira de Souza'
-                        ) //500
+                            MESSAGES.ERROR_UPLOAD_IMAGE
+                        )
                     }
+
                 }
 
             } else {
