@@ -184,7 +184,7 @@ const buscarVeiculoPlaca = async (placa) => {
 }
 
 const inserirVeiculo = async (veiculo, contentType, foto) => {
-
+console.log(contentType)
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {

@@ -118,7 +118,8 @@ const setInsertVehicle = async function (veiculo) {
             modelo: veiculo.modelo,
             marca: veiculo.marca,
             cor: veiculo.cor.toUpperCase(),
-            ano: veiculo.ano
+            ano: veiculo.ano,
+            foto_veiculo:veiculo.foto_veiculo
         });
 
         if (result) {
