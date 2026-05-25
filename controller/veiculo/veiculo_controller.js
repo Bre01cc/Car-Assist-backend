@@ -5,13 +5,17 @@
  * Versão: 1.0
  ***********************************************************************************************************************/
 
-//Import da model do DAO do genero    
+//Import da model do DAO do veiculo  
 const veiculoDAO = require('../../model/DAO/veiculo.js');
 
+//Import da controle do usuario_veiculo
 const controllerUsuarioVeiculo = require('../usuario_veiculo/usuario_veiculo_controller.js');
 
 //Import do arquivo de mensagens
 const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
+
+//Import da controller que faz upload da foto
+const UPLOAD = require('../upload/controller_upload_azure.js');
 
 const listarVeiculos = async () => {
 
@@ -179,36 +183,52 @@ const buscarVeiculoPlaca = async (placa) => {
 
 }
 
-const inserirVeiculo = async (veiculo, contentType) => {
+const inserirVeiculo = async (veiculo, contentType, foto) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
         //validação do tipo de conteúdo
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (contentType) {
 
             let validar = await validarDadosVeiculo(veiculo)
 
             if (!validar) {
 
                 let validarPlaca = await buscarVeiculoPlaca(veiculo.placa)
-                console.log(validarPlaca)
+
                 if (validarPlaca.status_code != 200) {
-                    let resultVeiculo = await veiculoDAO.setInsertVehicle(veiculo)
 
-                    if (resultVeiculo) {
+                    let urlFoto = await UPLOAD.uploadFiles(foto);
 
-                        let lastId = await veiculoDAO.getSelectLastId()
+                    if (urlFoto) {
 
-                        if (lastId) {
+                        veiculo.foto_veiculo = urlFoto
+                        console.log(veiculo)
+                        let resultVeiculo = await veiculoDAO.setInsertVehicle(veiculo)
 
-                            veiculo.id = lastId
+                        if (resultVeiculo) {
 
-                            return DEFAULT_MESSAGES.criarResposta(
-                                MESSAGES.SUCCESS_CREATED_ITEM,
-                                { veiculo: veiculo },
-                                'Guilherme Moreira de Souza'
-                            )//201
+                            let lastId = await veiculoDAO.getSelectLastId()
+
+                            if (lastId) {
+
+                                veiculo.id = lastId
+
+                                return DEFAULT_MESSAGES.criarResposta(
+                                    MESSAGES.SUCCESS_CREATED_ITEM,
+                                    { veiculo: veiculo },
+                                    'Guilherme Moreira de Souza'
+                                )//201
+
+                            } else {
+
+                                return DEFAULT_MESSAGES.criarResposta(
+                                    MESSAGES.ERROR_INTERNAL_SERVER,
+                                    null,
+                                    'Guilherme Moreira de Souza'
+                                )//500
+                            }
 
                         } else {
 
@@ -216,17 +236,14 @@ const inserirVeiculo = async (veiculo, contentType) => {
                                 MESSAGES.ERROR_INTERNAL_SERVER,
                                 null,
                                 'Guilherme Moreira de Souza'
-                            )//500
+                            ) //500
                         }
-
                     } else {
-
                         return DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.ERROR_INTERNAL_SERVER,
-                            null,
-                            'Guilherme Moreira de Souza'
-                        ) //500
+                            MESSAGES.ERROR_UPLOAD_IMAGE
+                        )
                     }
+
                 } else {
                     MESSAGES.ERROR_EXISTING.message += 'Placa'
                     console.log(

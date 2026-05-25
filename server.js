@@ -10,10 +10,6 @@ const express = require('express');
 
 const cors       = require('cors');
 const bodyParser = require('body-parser');
-const multer     = require('multer');
-
-// Instância do objeto upload -
-const upload = multer()
 
 const bodyParserJSON = bodyParser.json()
 

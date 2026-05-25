@@ -21,18 +21,10 @@ const DEFAULT_HEADER = {
 
 /*****************************************************MENSAGENS DE ERRO*************************************************/
 
-//Mensagem caso algo não for encontrado
-const ERROR_NOT_FOUND = {
+const ERROR_RELATION_TABLE = {
     status: false,
-    status_code: 404,
-    message: 'Não foram encontrados dados de retorno!!!'
-};
-
-//Mensagem caso ocorra erros internos na execução dos arquivos
-const ERROR_INTERNAL_SERVER = {
-    status: false,
-    status_code: 500,
-    message: 'Não foi possível devido a erros internos no servidor!!!'
+    status_code: 200,
+    message: 'A requisição foi bem sucedida na criação do item principal, porém houveram problemas na tabela relacionamento!!!'
 };
 
 //Mensagem para informar a falta de campos obrigatorios
@@ -42,17 +34,11 @@ const ERROR_REQUIRED_FIELDS = {
     message: 'Não foi possível processar pois existem campos obrigatórios que devem ser encaminhados e atendidos conforme o desejado'
 };
 
-//Mensagem para informar que o tipo de passados na requisição não estão de acordo com o já pré-estabelecido.
-const ERROR_CONTENT_TYPE = {
+//Mensagem caso algo não for encontrado
+const ERROR_NOT_FOUND = {
     status: false,
-    status_code: 415,
-    message: 'Não foi possível processar a requisição o tipo de dados enviados no corpo deve ser JSON!!!'
-};
-
-const ERROR_RELATION_TABLE = {
-    status: false,
-    status_code: 200,
-    message: 'A requisição foi bem sucedida na criação do item principal, porém houveram problemas na tabela relacionamento!!!'
+    status_code: 404,
+    message: 'Não foram encontrados dados de retorno!!!'
 };
 
 const ERROR_EXISTING = {
@@ -60,6 +46,28 @@ const ERROR_EXISTING = {
     status_code: 409,
     message: 'Já existe um cadastro com esse dado '
 };
+
+//Mensagem para informar que o tipo de passados na requisição não estão de acordo com o já pré-estabelecido.
+const ERROR_CONTENT_TYPE = {
+    status: false,
+    status_code: 415,
+    message: 'Não foi possível processar a requisição o tipo de dados enviados no corpo deve ser JSON!!!'
+};
+
+//Mensagem caso ocorra erros internos na execução dos arquivos
+const ERROR_INTERNAL_SERVER = {
+    status: false,
+    status_code: 500,
+    message: 'Não foi possível devido a erros internos no servidor!!!'
+};
+
+const ERROR_UPLOAD_IMAGE = {
+    status: false,
+    status_code: 502,
+    message: 'Falha ao enviar a foto para o serviço de armazenamento.'
+}
+
+
 
 /*****************************************************MENSAGENS DE SUCESSO**********************************************/
 //Mensagem de sucesso da requisição
@@ -115,5 +123,6 @@ module.exports = {
     SUCCESS_DELETE,
     ERROR_RELATION_TABLE,
     ERROR_EXISTING,
+    ERROR_UPLOAD_IMAGE,
     criarResposta
 }

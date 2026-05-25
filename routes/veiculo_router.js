@@ -10,7 +10,7 @@ const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
 
-
+const upload = require('./upload.js')
 
 const router = express.Router()
 
@@ -199,13 +199,16 @@ router.delete('/v1/car-assist/veiculo/:id', cors(), async (req, res) => {
 });
 
 //Insere um veiculo
-router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, async function (request, response) {
+router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, upload.single('foto_veiculo'), async function (request, response) {
 
     let dadosBody = request.body;
 
     let contentType = request.headers['content-type'];
 
-    let veiculo = await controllerVeiculo.inserirVeiculo(dadosBody, contentType);
+    //Recebe o arquivo de imagem na req
+    let foto = request.file
+
+    let veiculo = await controllerVeiculo.inserirVeiculo(dadosBody, contentType, foto);
 
     response.status(veiculo.status_code);
 
