@@ -686,16 +686,26 @@ const atualizarUsuario = async (usuario, id, contentType, foto) => {
 
                         } else {
 
-                            if (usuario.foto_usuario != undefined) {
+                            if (foto) {
 
-                                // if(usuario.foto == ){
+                                if (validarId.data.usuario.foto_usuario) {
 
-                                // }
+                                    let deleteImg = await UPLOAD.deleteUploadFiles(validarId.data.usuario.foto_usuario.split('/').pop())
+
+                                    if (!deleteImg) {
+
+                                        return DEFAULT_MESSAGES.criarResposta(
+                                            MESSAGES.ERROR_UPLOAD_IMAGE_DELETE,
+                                        )
+                                    }
+                                }
 
                                 let urlFoto = await UPLOAD.uploadFiles(foto);
 
                                 if (urlFoto) {
+                                    
                                     usuario.foto_usuario = urlFoto
+
                                 } else {
                                     return DEFAULT_MESSAGES.criarResposta(
                                         MESSAGES.ERROR_UPLOAD_IMAGE
