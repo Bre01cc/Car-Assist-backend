@@ -274,7 +274,7 @@ const inserirVeiculo = async (veiculo, contentType, foto) => {
         }
 
     } catch (error) {
-        
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER,
             null,
@@ -409,13 +409,13 @@ const inserirVeiculoUsuario = async (veiculo, contentType, foto) => {
 }
 
 // Atualiza um veículo pelo id
-const atualizarVeiculo = async (veiculo, id, contentType) => {
-
+const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
+    console.log(contentType)
     let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
         // Validação do content-type
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
 
             // Chama a função para validar os dados do veículo
             let validar = await validarDadosVeiculo(veiculo, true);
@@ -429,6 +429,33 @@ const atualizarVeiculo = async (veiculo, id, contentType) => {
 
                     // Adiciona o ID no objeto
                     veiculo.id = Number(id);
+
+                    if (foto) {
+
+                        if (validarId.data.veiculo[0].foto_veiculo) {
+
+                            let deleteImg = await UPLOAD.deleteUploadFiles(validarId.data.veiculo[0].foto_veiculo.split('/').pop())
+
+                            if (!deleteImg) {
+
+                                return DEFAULT_MESSAGES.criarResposta(
+                                    MESSAGES.ERROR_UPLOAD_IMAGE_DELETE,
+                                )
+                            }
+                        }
+
+                        let urlFoto = await UPLOAD.uploadFiles(foto);
+
+                        if (urlFoto) {
+
+                            veiculo.foto_veiculo = urlFoto
+
+                        } else {
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.ERROR_UPLOAD_IMAGE
+                            )
+                        }
+                    }
 
                     // Chama a DAO para atualizar
                     let resultVeiculo = await veiculoDAO.putVeiculo(veiculo);
@@ -444,7 +471,7 @@ const atualizarVeiculo = async (veiculo, id, contentType) => {
                     } else {
 
                         return DEFAULT_MESSAGES.criarResposta(
-                            MENSAGENS.ERROR_INTERNAL,
+                            MENSAGENS.ERROR_INTERNAL_SERVER,
                             null,
                             'Guilherme Moreira de Souza'
                         )
@@ -470,7 +497,7 @@ const atualizarVeiculo = async (veiculo, id, contentType) => {
         }
 
     } catch (error) {
-
+console.log(error)
         return DEFAULT_MESSAGES.criarResposta(
             MENSAGENS.ERROR_INTERNAL_SERVER,
             null,

@@ -40,7 +40,7 @@ const deleteUploadFiles = async function(fileName) {
      let response = await fetch(deleteUrl,{
         method : 'DELETE'
      })
-    console.log(response)
+   
      if(response.status == 202 || response.status == 404){
         return true
      }else{

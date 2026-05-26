@@ -232,7 +232,7 @@ router.post('/v1/car-assist/veiculo-usuario', cors(), bodyParserJSON, upload.sin
     response.json(veiculo);
 });
 
-router.put('/v1/car-assist/veiculo/:id', cors(), bodyParserJSON, async function (request, response) {
+router.put('/v1/car-assist/veiculo/:id', cors(), bodyParserJSON,upload.single('foto_veiculo'), async function (request, response) {
 
     let dadosBody = request.body;
 
@@ -240,7 +240,9 @@ router.put('/v1/car-assist/veiculo/:id', cors(), bodyParserJSON, async function 
 
     let contentType = request.headers['content-type'];
 
-    let veiculo = await controllerVeiculo.atualizarVeiculo(dadosBody, idVeiculo, contentType);
+    let foto = request.file
+
+    let veiculo = await controllerVeiculo.atualizarVeiculo(dadosBody, idVeiculo, contentType, foto);
 
     response.status(veiculo.status_code).json(veiculo);
 });

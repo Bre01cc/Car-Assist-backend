@@ -150,20 +150,16 @@ const putVeiculo = async (veiculo) => {
                 modelo = ?,
                 marca = ?,
                 cor = ?,
-                score = ?,
                 ano = ?,
-                foto_veiculo = ?,
-                is_ativo = ?
+                foto_veiculo = ?
             WHERE id = ?
         `, [
             veiculo.placa,
             veiculo.modelo,
             veiculo.marca,
             veiculo.cor,
-            veiculo.score,
             veiculo.ano,
             veiculo.foto_veiculo,
-            veiculo.is_ativo,
             veiculo.id
         ]);
 
@@ -178,7 +174,7 @@ const putVeiculo = async (veiculo) => {
         }
 
     } catch (error) {
-
+console.log(error)
         return false
     }
 
