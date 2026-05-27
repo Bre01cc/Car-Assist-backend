@@ -327,8 +327,8 @@ console.log(urlFoto)
 
 
                                     let vinculoObj = {
-                                        id_veiculo: veiculo.id,
-                                        id_usuario: veiculo.id_usuario,
+                                        fk_id_veiculo: veiculo.id,
+                                        fk_id_usuario: veiculo.id_usuario,
                                         papel_usuario: "Proprietário",
                                         data_vinculo: new Date().toISOString().split('T')[0]
                                     };
