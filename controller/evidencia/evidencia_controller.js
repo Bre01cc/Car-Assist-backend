@@ -179,13 +179,15 @@ const inserirEvidencia = async (evidencia, contentType, foto) => {
 
         if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
 
+
             // Validação dos dados da evidência
-            let validar = await validarEvidencia(evidencia);
+            let validar = validarEvidencia(evidencia);
 
-
+           
             if (!validar) {
 
                 let urlFoto = await UPLOAD.uploadFiles(foto);
+
                 if (urlFoto) {
                     evidencia.url = urlFoto
                     let resultEvidencia = await evidenciaDAO.postEvidence(evidencia);
@@ -193,7 +195,7 @@ const inserirEvidencia = async (evidencia, contentType, foto) => {
                     if (resultEvidencia) {
 
                         let ultimoId = await evidenciaDAO.getSelectLastId();
-
+                 
                         if (ultimoId) {
 
                             let evidenciaFormatada = formatarEvidencia(ultimoId[0]);
@@ -213,7 +215,7 @@ const inserirEvidencia = async (evidencia, contentType, foto) => {
                     } else {
 
                         return DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.ERROR_INTERNAL
+                            MESSAGES.ERROR_INTERNAL_SERVER
                         )
                     }
                 } else {
@@ -235,7 +237,7 @@ const inserirEvidencia = async (evidencia, contentType, foto) => {
         }
 
     } catch (error) {
-
+    
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -244,42 +246,57 @@ const inserirEvidencia = async (evidencia, contentType, foto) => {
 }
 
 // Atualiza uma evidência pelo id
-const atualizarEvidencia = async (evidencia, id, contentType) => {
+const atualizarEvidencia = async (evidencia, id, contentType, foto) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         // Validação do content-type
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
 
             // Chama a função para validar os dados da evidência
-            let validar = await validarEvidencia(evidencia);
+            let validar = validarEvidencia(evidencia);
 
             if (!validar) {
 
                 // Verifica se o ID existe no banco
                 let validarId = await buscarEvidenciaId(id);
-
+            
                 if (validarId.status_code == 200) {
 
                     // Adiciona o ID no objeto
                     evidencia.id = Number(id);
-                    // Chama a DAO para atualizar
-                    let resultEvidencia = await evidenciaDAO.putEvidence(evidencia);
 
-                    if (resultEvidencia) {
+                    if (validarId.data.evidencia.url) {
+                        let deleteImg = await UPLOAD.deleteUploadFiles(validarId.data.evidencia.url.split('/').pop())
+                        if (!deleteImg) {
 
-                        return DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.SUCCESS_UPDATE_ITEM,
-                            { evidencia: evidencia }
-                        )
-
-                    } else {
-                        return DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.ERROR_INTERNAL_SERVER
-                        )
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.ERROR_UPLOAD_IMAGE_DELETE,
+                            )
+                        }
                     }
+                    let urlFoto = await UPLOAD.uploadFiles(foto);
+                    if (urlFoto) {
+                        evidencia.url = urlFoto
+                        // Chama a DAO para atualizar
+                        let resultEvidencia = await evidenciaDAO.putEvidence(evidencia);
+
+                        if (resultEvidencia) {
+
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.SUCCESS_UPDATE_ITEM,
+                                { evidencia: evidencia }
+                            )
+
+                        } else {
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.ERROR_INTERNAL_SERVER
+                            )
+                        }
+                    }
+
 
                 } else {
 
@@ -299,7 +316,7 @@ const atualizarEvidencia = async (evidencia, id, contentType) => {
         }
 
     } catch (error) {
-
+       
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -355,27 +372,11 @@ const formatarEvidencia = (evidencia) => {
 }
 
 //Validas os dados da evidência
-const validarEvidencia = async (evidencia) => {
+const validarEvidencia = (evidencia) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
-
-    // Validação da URL
-    if (
-        evidencia.url == undefined ||
-        evidencia.url == null ||
-        evidencia.url == '' ||
-        evidencia.url.length > 255
-    ) {
-
-        MESSAGES.ERROR_REQUIRED_FIELDS.message += '[URL da evidência inválida]'
-
-        return DEFAULT_MESSAGES.criarResposta(
-            MESSAGES.ERROR_REQUIRED_FIELDS
-        )
-
-    }
     // Validação da FK manutenção
-    else if (
+    if (
         evidencia.fk_id_manutencao <= 0 ||
         isNaN(evidencia.fk_id_manutencao) ||
         evidencia.fk_id_manutencao == undefined ||

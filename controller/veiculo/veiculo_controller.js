@@ -411,7 +411,7 @@ const inserirVeiculoUsuario = async (veiculo, contentType, foto) => {
 // Atualiza um veículo pelo id
 const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
     console.log(contentType)
-    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
         // Validação do content-type
@@ -463,7 +463,7 @@ const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
                     if (resultVeiculo) {
 
                         return DEFAULT_MESSAGES.criarResposta(
-                            MENSAGENS.SUCCESS_UPDATE_ITEM,
+                            MESSAGES.SUCCESS_UPDATE_ITEM,
                             { veiculo: veiculo },
                             'Guilherme Moreira de Souza'
                         )
@@ -471,7 +471,7 @@ const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
                     } else {
 
                         return DEFAULT_MESSAGES.criarResposta(
-                            MENSAGENS.ERROR_INTERNAL_SERVER,
+                            MESSAGES.ERROR_INTERNAL_SERVER,
                             null,
                             'Guilherme Moreira de Souza'
                         )
@@ -490,7 +490,7 @@ const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
         } else {
 
             return DEFAULT_MESSAGES.criarResposta(
-                MENSAGENS.ERROR_CONTENT_TYPE,
+              MESSAGES.ERROR_CONTENT_TYPE,
                 null,
                 'Guilherme Moreira de Souza'
             ) // 415
@@ -499,7 +499,7 @@ const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
     } catch (error) {
 console.log(error)
         return DEFAULT_MESSAGES.criarResposta(
-            MENSAGENS.ERROR_INTERNAL_SERVER,
+            MESSAGES.ERROR_INTERNAL_SERVER,
             null,
             'Guilherme Moreira de Souza'
         )

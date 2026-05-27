@@ -18,11 +18,11 @@ const router = express.Router()
 const controllerEvidencia = require('../controller/evidencia/evidencia_controller.js')
 
 router.post('/v1/car-assist/evidencia', cors(), bodyParserJSON, upload.single('url'), async function (request, response) {
- 
+
     let dadosBody = request.body;
 
     let contentType = request.headers['content-type'];
-        //Recebe o arquivo de imagem na req
+    //Recebe o arquivo de imagem na req
     let foto = request.file
 
     let evidencia = await controllerEvidencia.inserirEvidencia(dadosBody, contentType, foto);
@@ -30,7 +30,7 @@ router.post('/v1/car-assist/evidencia', cors(), bodyParserJSON, upload.single('u
     response.status(evidencia.status_code).json(evidencia);
 });
 
-router.put('/v1/car-assist/evidencia/:id', cors(), bodyParserJSON, async function (request, response) {
+router.put('/v1/car-assist/evidencia/:id', cors(), bodyParserJSON, upload.single('url'), async function (request, response) {
 
     let dadosBody = request.body;
 
@@ -38,7 +38,10 @@ router.put('/v1/car-assist/evidencia/:id', cors(), bodyParserJSON, async functio
 
     let contentType = request.headers['content-type'];
 
-    let evidenica = await controllerEvidencia.atualizarEvidencia(dadosBody, idEvidencia, contentType);
+    //Recebe o arquivo de imagem na req
+    let foto = request.file
+
+    let evidenica = await controllerEvidencia.atualizarEvidencia(dadosBody, idEvidencia, contentType, foto);
 
     response.status(evidenica.status_code).json(evidenica);
 });
