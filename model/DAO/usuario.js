@@ -6,36 +6,48 @@
  ***********************************************************************************************************************/
 
 const conexaoKnex = require('../../knex/index.js');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
 
 //Busca todos os usuários
 const getAllUsers = async () => {
+
     try {
-        const result = await conexaoKnex.conexao.raw(
+
+        let result = await conexaoKnex.conexao.raw(
             'SELECT * FROM vw_usuario'
         )
         if (result && result[0] && result[0].length > 0) {
+
             return result[0];
+
         } else {
+
             return false;
         }
 
     } catch (error) {
+
         return false
     }
+
 }
 
 //Busca um usuário pelo id
 const getUserById = async (id) => {
+
     try {
-        const result = await conexaoKnex.conexao.raw(
+
+        let result = await conexaoKnex.conexao.raw(
             'SELECT * FROM vw_usuario WHERE id = ?',
             [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
+
             return result[0];
+
         } else {
+
             return false;
         }
 
@@ -43,40 +55,88 @@ const getUserById = async (id) => {
 
         return false;
     }
+
+}
+
+//Busca um usuário pelo id
+const getUserByIdAndPassword = async (id, senha) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(
+            'SELECT * FROM tbl_usuario WHERE id = ?',
+            [id]
+        );
+
+        if (result[0] && result[0].length > 0) {
+
+            let senhaBanco = result[0][0].senha
+
+            let senhaCorreta = await bcrypt.compare(senha, senhaBanco);
+
+            if (senhaCorreta) {
+
+                return result[0]
+
+            } else {
+
+                return false
+            }
+
+        } else {
+
+            return false;
+        }
+
+    } catch (error) {
+
+        return false;
+    }
+
 }
 
 //Busca um usuário pelo id e status
 const getUserByAtivo = async (id, status) => {
+
     try {
-      
-        const result = await conexaoKnex.conexao.raw(
+
+        let result = await conexaoKnex.conexao.raw(
             'SELECT * FROM vw_usuario WHERE id = ? and is_ativo = ?',
             [id, status]
         );
 
         if (result && result[0] && result[0].length > 0) {
-            return result[0];
+
+            return result[0]
+
         } else {
-            return false;
+
+            return false
         }
 
     } catch (error) {
 
-        return false;
+        return false
     }
+
 }
 
 //Busca usuário pelo email
 const getUserByEmail = async (email) => {
+
     try {
-        const result = await conexaoKnex.conexao.raw(
+
+        let result = await conexaoKnex.conexao.raw(
             'SELECT * FROM tbl_usuario where email = ?',
             [email]
         );
 
         if (result && result[0] && result[0].length > 0) {
+
             return result[0];
+
         } else {
+
             return false;
         }
 
@@ -84,10 +144,40 @@ const getUserByEmail = async (email) => {
 
         return false;
     }
+    
 }
+
+
+//Busca usuário pelo email
+const getUserByEmailPut = async (email, id) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(
+            'SELECT * FROM tbl_usuario where email = ? and id <> ?',
+            [email, id]
+        );
+
+        if (result && result[0] && result[0].length > 0) {
+
+            return result[0];
+
+        } else {
+
+            return false;
+        }
+
+    } catch (error) {
+
+        return false;
+    }
+
+}
+
 
 //Busca o último id de usuário
 const getSelectLastId = async () => {
+
     try {
 
         let result = await conexaoKnex.conexao
@@ -97,50 +187,93 @@ const getSelectLastId = async () => {
             .limit(1)
 
         if (result.length > 0) {
+
             return Number(result[0].id)
+
         } else {
+
             return false
         }
 
     } catch (error) {
-      
+
         return false
     }
+
 }
 
 //Busca usuário pelo email e senha
 const getUserByEmailAndPassword = async (email, senha) => {
+
     try {
-        const result = await conexaoKnex.conexao.raw(
+        let result = await conexaoKnex.conexao.raw(
             'SELECT * FROM tbl_usuario WHERE email = ?',
             [email]
         );
-        
-        senhaBanco = result[0][0].senha
-        const senhaCorreta = await bcrypt.compare(senha,senhaBanco)
-        if (result[0] && result[0].length > 0 && senhaCorreta) {
-            return result[0];
+
+        if (result[0] && result[0].length > 0) {
+
+            let senhaBanco = result[0][0].senha
+
+            let senhaCorreta = await bcrypt.compare(senha, senhaBanco)
+
+            if (senhaCorreta) {
+
+                return result[0]
+            }
+
         } else {
+
             return false;
         }
 
     } catch (error) {
-console.log(error)
+
         return false;
     }
 }
 
-//Busca usuário pelo CPF
-const getUserByCPF = async (cpf) => {
+//Busca se existe um cpf igual ao que esta sendo atualizado, ignorando o do prórpio usuário
+const getUserByCPFPut = async (cpf, id) => {
+
     try {
-        const result = await conexaoKnex.conexao.raw(
+
+        let result = await conexaoKnex.conexao.raw(
+            'SELECT * FROM tbl_usuario WHERE cpf = ? and id <> ?',
+            [cpf, id]
+        );
+
+        if (result && result[0] && result[0].length > 0) {
+
+            return result[0];
+
+        } else {
+
+            return false;
+        }
+
+    } catch (error) {
+
+        return false;
+    }
+}
+
+//Busca se existe um cpf igual ao que esta sendo atualizado, ignorando o do prórpio usuário
+const getUserByCPF = async (cpf) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(
             'SELECT * FROM tbl_usuario WHERE cpf = ?',
             [cpf]
         );
 
         if (result && result[0] && result[0].length > 0) {
+
             return result[0];
+
         } else {
+
             return false;
         }
 
@@ -148,17 +281,18 @@ const getUserByCPF = async (cpf) => {
 
         return false;
     }
+
 }
+
 
 //Inserir um usuário
 const postUser = async (usuario) => {
 
     try {
         //10 será refente ao custo de processamento, quanto maior mais seguro e lento será.
-        const senhaCriptografada = await bcrypt.hash(usuario.senha,10)
-        console.log(usuario.senha)
-        console.log(senhaCriptografada)
-        const result = await conexaoKnex.conexao.raw(`
+        let senhaCriptografada = await bcrypt.hash(usuario.senha, 10)
+
+        let result = await conexaoKnex.conexao.raw(`
        Insert into tbl_usuario(
         nome,
         email,
@@ -178,18 +312,20 @@ const postUser = async (usuario) => {
             usuario.email,
             usuario.cpf,
             usuario.data_nascimento,
-           senhaCriptografada
+            senhaCriptografada
         ]);
-        
+
         if (result[0]) {
+
             return true
-        }else{
+
+        } else {
+
             return false
         }
 
-
     } catch (error) {
-     console.log(error)
+
         return false
     }
 
@@ -197,54 +333,66 @@ const postUser = async (usuario) => {
 
 //Atualiza um usuário
 const putUser = async (usuario) => {
+
     try {
-        
-        const result = await conexaoKnex.conexao.raw(`
+
+        let result = await conexaoKnex.conexao.raw(`
           Update tbl_usuario
           set nome = ?,
           email = ?,
           cpf = ?,
-          senha = ?,
           foto_usuario = ?     
         where id = ?`, [
             usuario.nome,
             usuario.email,
             usuario.cpf,
-            usuario.senha,
             usuario.foto_usuario,
             usuario.id
-        ])
+        ]);
 
-        if (result[0].affectedRows>0) {
+        if (result[0].affectedRows > 0) {
+
             return true
+
         } else {
+
             return false
         }
 
     } catch (error) {
+
         return false
     }
+
 }
 
 //Desativa um usuário
 const deleteUser = async (id) => {
+
     try {
-        const result = await conexaoKnex.conexao.raw(`
+
+        let result = await conexaoKnex.conexao.raw(`
             Update tbl_usuario
             set is_ativo = ? where id = ?
             `, [
             0,
             id
-        ])
-        if (result[0].affectedRows>0) {
+        ]);
+
+        if (result[0].affectedRows > 0) {
+
             return true
+
         } else {
+
             return false
         }
-    } catch (error) {
-        return false
 
+    } catch (error) {
+
+        return false
     }
+
 }
 
 //Exports das funções
@@ -255,9 +403,12 @@ module.exports = {
     deleteUser,
     getSelectLastId,
     getUserByEmailAndPassword,
+    getUserByIdAndPassword,
     getUserByAtivo,
     getAllUsers,
     getUserByEmail,
-    getUserByCPF
+    getUserByCPF,
+    getUserByCPFPut,
+    getUserByEmailPut
 }
 

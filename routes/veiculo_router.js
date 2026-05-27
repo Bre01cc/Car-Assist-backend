@@ -10,25 +10,11 @@ const bodyParser = require('body-parser')
 
 const bodyParserJSON = bodyParser.json()
 
-
+const upload = require('./upload.js')
 
 const router = express.Router()
 
 const controllerVeiculo = require('../controller/veiculo/veiculo_controller.js')
-
-// const upload = multer({})
-
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb)=>{
-//         const
-//     }
-// })
-
-// router.post('/v1/car-assist/veiculo', cors(), async function (request, response) {
-//     if(!request.files) return response.status(400).json({message:'Arquivo invalido'})
-// });
-
-
 
 /**
  * @swagger
@@ -195,17 +181,6 @@ router.get('/v1/car-assist/veiculo/:id', cors(), async function (request, respon
     response.json(veiculo);
 })
 
-router.get('/v1/car-assist/veiculo/placa/:placa', cors(), async function (request, response) {
-
-    let placaVeiculo = request.params.placa;
-
-    let veiculo = await controllerVeiculo.buscarVeiculoPlaca(placaVeiculo);
-
-    response.status(veiculo.status_code);
-
-    response.json(veiculo);
-})
-
 //Buscar todos os veiculos
 router.get('/v1/car-assist/veiculo', cors(), async function (request, response) {
 
@@ -219,40 +194,45 @@ router.get('/v1/car-assist/veiculo', cors(), async function (request, response) 
 router.delete('/v1/car-assist/veiculo/:id', cors(), async (req, res) => {
     let idVeiculo = req.params.id;
     let veiculo = await controllerVeiculo.deletarVeiculoId(idVeiculo)
-    
+
     res.status(veiculo.status_code).json(veiculo);
 });
 
 //Insere um veiculo
-router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, async function (request, response) {
+router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, upload.single('foto_veiculo'), async function (request, response) {
 
     let dadosBody = request.body;
 
     let contentType = request.headers['content-type'];
 
-    let veiculo = await controllerVeiculo.inserirVeiculo(dadosBody, contentType);
+    //Recebe o arquivo de imagem na req
+    let foto = request.file
+
+    let veiculo = await controllerVeiculo.inserirVeiculo(dadosBody, contentType, foto);
 
     response.status(veiculo.status_code);
 
     response.json(veiculo);
 });
 
-router.post('/v1/car-assist/veiculo-usuario', cors(), bodyParserJSON, async function (request, response) {
+router.post('/v1/car-assist/veiculo-usuario', cors(), bodyParserJSON, upload.single('foto_veiculo'), async function (request, response) {
 
     let dadosBody = request.body;
-    console.log(dadosBody)
+
 
     let contentType = request.headers['content-type'];
 
-    let veiculo = await controllerVeiculo.inserirVeiculoUsuario(dadosBody, contentType);
-    console.log(veiculo)
+    let foto = request.file
+
+    let veiculo = await controllerVeiculo.inserirVeiculoUsuario(dadosBody, contentType, foto);
+
 
     response.status(veiculo.status_code);
 
     response.json(veiculo);
 });
 
-router.put('/v1/car-assist/veiculo/:id', cors(), bodyParserJSON, async function (request, response) {
+router.put('/v1/car-assist/veiculo/:id', cors(), bodyParserJSON,upload.single('foto_veiculo'), async function (request, response) {
 
     let dadosBody = request.body;
 
@@ -260,7 +240,9 @@ router.put('/v1/car-assist/veiculo/:id', cors(), bodyParserJSON, async function 
 
     let contentType = request.headers['content-type'];
 
-    let veiculo = await controllerVeiculo.atualizarVeiculo(dadosBody, idVeiculo, contentType);
+    let foto = request.file
+
+    let veiculo = await controllerVeiculo.atualizarVeiculo(dadosBody, idVeiculo, contentType, foto);
 
     response.status(veiculo.status_code).json(veiculo);
 });

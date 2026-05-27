@@ -225,6 +225,7 @@ INSERT INTO tbl_usuario_veiculo (
 -- =========================================
 INSERT INTO tbl_manutencao (
     data_manutencao,
+    data_criacao,
     custo,
     quilometragem,
     oficina,
@@ -235,6 +236,7 @@ INSERT INTO tbl_manutencao (
 ) VALUES
 (
     '2025-01-20 10:00:00',
+    NOW(),
     250.00,
     50000,
     'Oficina do Zé',
@@ -245,6 +247,7 @@ INSERT INTO tbl_manutencao (
 ),
 (
     '2025-02-10 14:00:00',
+    NOW(),
     600.00,
     70000,
     'Oficina do Zé',
@@ -255,6 +258,7 @@ INSERT INTO tbl_manutencao (
 ),
 (
     '2025-03-05 09:30:00',
+    NOW(),
     1200.00,
     30000,
     'Auto Center Prime',
@@ -405,20 +409,20 @@ INSERT INTO tbl_usuario_servico (
 (
     1,
     2,
-   CURDATE()
+    CURDATE()
 ),
 (
     2,
     2,
-  CURDATE()
+    CURDATE()
 ),
 (
     3,
     3,
-  CURDATE()
+    CURDATE()
 ),
 (
     4,
     1,
-  CURDATE()
+    CURDATE()
 );

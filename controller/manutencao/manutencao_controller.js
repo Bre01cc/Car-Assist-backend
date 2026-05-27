@@ -5,100 +5,128 @@
  * Versão: 1.0
  ***********************************************************************************************************************/
 
-const manutencaoDAO = require('../../model/DAO/manutencao.js')
-const controllerEvidencia = require('../evidencia/evidencia_controller.js')
-const controllerPeca = require('../pecas/pecas_controller.js')
+const manutencaoDAO = require('../../model/DAO/manutencao.js');
 
-const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
+const controllerEvidencia = require('../evidencia/evidencia_controller.js');
+
+const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
 
 
 //Retorna todas as manutenções
 const listarManutencao = async () => {
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
-        let resultManutencao = await manutencaoDAO.getAllMaintenance()
+        let resultManutencao = await manutencaoDAO.getAllMaintenance();
 
         if (resultManutencao) {
 
             if (resultManutencao.length > 0) {
-                const manutencaoFormatada = resultManutencao.map(
-                    manutencao => formatarManutencao(manutencao)
-                )
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.SUCCESS_REQUEST,
+
+                 const manutencaoFormatada = await Promise.all(
+                        resultManutencao.map(async (manutencao) => {
+
+                            let evidencia = await controllerEvidencia
+                                .buscarEvidenciaIdMaintenance(manutencao.id)
+                            
+                            manutencao.evidencia = evidencia.data?.evidencia || []
+                            let manutencaoFormatada = formatarManutencao(manutencao)
+                            return {
+                                manutencaoFormatada
+                            }
+                        })
+                    )
+
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_REQUEST,
                     { manutencoes: manutencaoFormatada }
                 )
 
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )//404
             }
 
         } else {
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_NOT_FOUND
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_NOT_FOUND
             )//404
         }
 
 
     } catch (error) {
-
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL
+        console.log(error)
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 }
 //Retorna uma manutenção pelo id
 const buscarManutencaoId = async (id) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
         //Validação da chegada do ID
         if (!isNaN(id) && id != null && id > 0) {
-            let resultManutencao = await manutencaoDAO.getMaintenanceById(id)
 
+            let resultManutencao = await manutencaoDAO.getMaintenanceById(id)
 
             if (resultManutencao) {
 
                 if (resultManutencao.length > 0) {
-                    const manutencaoFormatada = resultManutencao.map(
-                        manutencao => formatarManutencao(manutencao)
+
+                  const manutencaoFormatada = await Promise.all(
+                        resultManutencao.map(async (manutencao) => {
+
+                            let evidencia = await controllerEvidencia
+                                .buscarEvidenciaIdMaintenance(manutencao.id)
+                            
+                            manutencao.evidencia = evidencia.data?.evidencia || []
+                            let manutencaoFormatada = formatarManutencao(manutencao)
+                            return {
+                                manutencaoFormatada
+                            }
+                        })
                     )
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_REQUEST,
+
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
                         { manutencao: manutencaoFormatada }
                     )
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_NOT_FOUND
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
                     )
 
                 }
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )
             }
         } else {
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_REQUIRED_FIELDS
+
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
             )
         }
 
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 
@@ -107,49 +135,63 @@ const buscarManutencaoId = async (id) => {
 //Retorna uma manutenção pelo id do tipo de manutenção
 const buscarManutencaoIdTipo = async (id) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
         //Validação da chegada do ID
         if (!isNaN(id) && id != null && id > 0) {
-            let resultManutencao = await manutencaoDAO.getMaintenanceByIdType(id)
 
+            let resultManutencao = await manutencaoDAO.getMaintenanceByIdType(id);
 
             if (resultManutencao) {
 
                 if (resultManutencao.length > 0) {
-                    const manutencaoFormatada = resultManutencao.map(
-                        manutencao => formatarManutencao(manutencao)
+
+                     const manutencaoFormatada = await Promise.all(
+                        resultManutencao.map(async (manutencao) => {
+
+                            let evidencia = await controllerEvidencia
+                                .buscarEvidenciaIdMaintenance(manutencao.id)
+                            //criando um n
+                            manutencao.evidencia = evidencia.data?.evidencia || []
+                            let manutencaoFormatada = formatarManutencao(manutencao)
+                            return {
+                                manutencaoFormatada
+                            }
+                        })
                     )
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_REQUEST,
+
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
                         { manutencao: manutencaoFormatada }
                     )
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_NOT_FOUND
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
                     )
-
                 }
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )
             }
+
         } else {
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_REQUIRED_FIELDS
+
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
             )
         }
 
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 
@@ -158,49 +200,64 @@ const buscarManutencaoIdTipo = async (id) => {
 //Retorna uma manutenção pelo id do usuário
 const buscarManutencaoIdUsuario = async (id) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
         //Validação da chegada do ID
         if (!isNaN(id) && id != null && id > 0) {
-            let resultManutencao = await manutencaoDAO.getMaintenanceByIdUser(id)
 
+            let resultManutencao = await manutencaoDAO.getMaintenanceByIdUser(id);
 
             if (resultManutencao) {
 
                 if (resultManutencao.length > 0) {
-                    const manutencaoFormatada = resultManutencao.map(
-                        manutencao => formatarManutencao(manutencao)
+
+                     const manutencaoFormatada = await Promise.all(
+                        resultManutencao.map(async (manutencao) => {
+
+                            let evidencia = await controllerEvidencia
+                                .buscarEvidenciaIdMaintenance(manutencao.id)
+                            //criando um n
+                            manutencao.evidencia = evidencia.data?.evidencia || []
+                            let manutencaoFormatada = formatarManutencao(manutencao)
+                            return {
+                                manutencaoFormatada
+                            }
+                        })
                     )
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_REQUEST,
+
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
                         { manutencao: manutencaoFormatada }
                     )
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_NOT_FOUND
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
                     )
-
                 }
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )
             }
+
         } else {
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_REQUIRED_FIELDS
+
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
             )
         }
 
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 
@@ -209,49 +266,63 @@ const buscarManutencaoIdUsuario = async (id) => {
 //Retorna uma manutenção pelo id do usuário
 const buscarManutencaoIdVeiculo = async (id) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
         //Validação da chegada do ID
         if (!isNaN(id) && id != null && id > 0) {
-            let resultManutencao = await manutencaoDAO.getMaintenanceByIdVehicle(id)
 
+            let resultManutencao = await manutencaoDAO.getMaintenanceByIdVehicle(id);
 
             if (resultManutencao) {
 
                 if (resultManutencao.length > 0) {
-                    const manutencaoFormatada = resultManutencao.map(
-                        manutencao => formatarManutencao(manutencao)
+
+                    const manutencaoFormatada = await Promise.all(
+                        resultManutencao.map(async (manutencao) => {
+
+                            let evidencia = await controllerEvidencia
+                                .buscarEvidenciaIdMaintenance(manutencao.id)
+                            //criando um n
+                            manutencao.evidencia = evidencia.data?.evidencia || []
+                            let manutencaoFormatada = formatarManutencao(manutencao)
+                            return {
+                                manutencaoFormatada
+                            }
+                        })
                     )
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_REQUEST,
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
                         { manutencao: manutencaoFormatada }
                     )
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_NOT_FOUND
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
                     )
-
                 }
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )
             }
+
         } else {
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_REQUIRED_FIELDS
+
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
             )
         }
 
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        console.log(error)
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 
@@ -259,167 +330,145 @@ const buscarManutencaoIdVeiculo = async (id) => {
 //Cadastra uma manutenção no banco de dados
 const inserirManutencao = async (manutencao, contentType) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
             //Validação dos dados da manutenção
-            let validar = validarManutencao(manutencao)
+            let validar = validarManutencao(manutencao);
 
             if (!validar) {
 
-                let resultManutencao = await manutencaoDAO.postManutencao(manutencao)
+                let resultManutencao = await manutencaoDAO.postManutencao(manutencao);
 
                 if (resultManutencao) {
 
-                    let ultimoId = await manutencaoDAO.getSelectLastId()
-
+                    let ultimoId = await manutencaoDAO.getSelectLastId();
 
                     if (ultimoId) {
 
-                        manutencao.id = ultimoId
+                        manutencao.id = ultimoId;
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.SUCCESS_CREATED_ITEM,
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.SUCCESS_CREATED_ITEM,
                             { manutencao: manutencao }
                         )
 
                     } else {
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.ERROR_INTERNAL
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL
                         )
-
                     }
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_INTERNAL
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_INTERNAL_SERVER
                     )
-
                 }
 
             } else {
 
                 return validar
-
             }
 
         } else {
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_CONTENT_TYPE
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
             )
-
         }
 
     } catch (error) {
-
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+      
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
 
     }
+
 }
 
-const inserirManutencaoComEvidenciaComPeca = async (manutencao, contentType) => {
+const inserirManutencaoComEvidencia = async (manutencao, contentType) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
             //Validação dos dados da manutenção
-            let validar = validarManutencao(manutencao)
+            let validar = validarManutencao(manutencao);
 
             if (!validar) {
 
-                let resultManutencao = await manutencaoDAO.postManutencao(manutencao)
+                let resultManutencao = await manutencaoDAO.postManutencao(manutencao);
 
                 if (resultManutencao) {
 
-                    let ultimoId = await manutencaoDAO.getSelectLastId()
+                    let ultimoId = await manutencaoDAO.getSelectLastId();
 
 
                     if (ultimoId) {
 
-                        manutencao.id = ultimoId
+                        manutencao.id = ultimoId;
 
                         if (manutencao.evidencia != undefined) {
+
                             for (evidencia of manutencao.evidencia) {
                                 let evidenciaManutencao = {
                                     url: evidencia.url,
                                     fk_id_manutencao: manutencao.id
                                 }
 
-                                let resultEvidencia = await controllerEvidencia.inserirEvidencia(evidenciaManutencao, contentType)
+                                let resultEvidencia = await controllerEvidencia.inserirEvidencia(evidenciaManutencao, contentType);
 
                                 if (resultEvidencia.status_code != 201) {
-                                    MENSSAGENS.ERROR_RELATION_TABLE.message += 'Evidência'
-                                    return MENSSAGENS.ERROR_RELATION_TABLE
+
+                                    MESSAGES.ERROR_RELATION_TABLE.message += 'Evidência'
+
+                                    return MESSAGES.ERROR_RELATION_TABLE
+
                                 } else {
+
                                     delete manutencao.evidencia
-                                    let resultManutencaoEvidencia = await controllerEvidencia.buscarEvidenciaIdMaintenance(manutencao.id)
 
-                                    manutencao.evidencia = resultManutencaoEvidencia.data.evidencia
+                                    let resultManutencaoEvidencia = await controllerEvidencia.buscarEvidenciaIdMaintenance(manutencao.id);
+
+                                    manutencao.evidencia = resultManutencaoEvidencia.data.evidencia;
 
                                 }
                             }
-                        } else {
-                            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Faltou Evidências]'
 
-                            return DEFAULT_MENSAGENS.criarResposta(
-                                MENSSAGENS.ERROR_REQUIRED_FIELDS
+                        } else {
+
+                            MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Faltou Evidências]';
+
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.ERROR_REQUIRED_FIELDS
                             )
                         }
-                        if (manutencao.peca != undefined) {
-                            for (peca of manutencao.peca) {
-                                let pecaManutencao = {
-                                    fk_id_manutencao: manutencao.id,
-                                    nome: peca.nome
-                                }
-                                let resultPeca = await controllerPeca.inserirPeca(pecaManutencao, contentType)
-                                console.log(resultPeca)
-                                if (resultPeca.status_code != 201) {
 
-                                    MENSSAGENS.ERROR_RELATION_TABLE.message += 'Peças'
-                                    return MENSSAGENS.ERROR_RELATION_TABLE
-                                } else {
-                                    delete manutencao.peca
-
-                                    let resultManutencaoPeca = await controllerPeca.buscarPecaIdMaintenance(manutencao.id)
-
-                                    manutencao.peca = resultManutencaoPeca.data.pecas
-                                }
-                            }
-                        } else {
-                            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Faltou Peças]'
-
-                            return DEFAULT_MENSAGENS.criarResposta(
-                                MENSSAGENS.ERROR_REQUIRED_FIELDS
-                            )
-                        }
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.SUCCESS_CREATED_ITEM,
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.SUCCESS_CREATED_ITEM,
                             { manutencao: manutencao }
                         )
 
                     } else {
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.ERROR_INTERNAL
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
                         )
 
                     }
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_INTERNAL
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_INTERNAL_SERVER
                     )
 
                 }
@@ -432,16 +481,16 @@ const inserirManutencaoComEvidenciaComPeca = async (manutencao, contentType) => 
 
         } else {
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_CONTENT_TYPE
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
             )
 
         }
 
     } catch (error) {
         console.log(error)
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
 
     }
@@ -451,7 +500,7 @@ const inserirManutencaoComEvidenciaComPeca = async (manutencao, contentType) => 
 //Atualiza uma manutenção pelo id
 const atualizarManutencao = async (manutencao, id, contentType) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
@@ -459,32 +508,32 @@ const atualizarManutencao = async (manutencao, id, contentType) => {
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
             //Validação dos dados da manutenção
-            let validar = await validarManutencao(manutencao, true)
+            let validar = await validarManutencao(manutencao, true);
 
             if (!validar) {
 
                 //Verifica se o ID existe
-                let validarId = await buscarManutencaoId(id)
+                let validarId = await buscarManutencaoId(id);
 
                 if (validarId.status_code == 200) {
 
                     //Adiciona o ID no objeto
-                    manutencao.id = Number(id)
+                    manutencao.id = Number(id);
 
                     //Chama a DAO para atualizar
-                    let resultManutencao = await manutencaoDAO.putManutencao(manutencao)
+                    let resultManutencao = await manutencaoDAO.putManutencao(manutencao);
 
                     if (resultManutencao) {
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.SUCCESS_UPDATE_ITEM,
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.SUCCESS_UPDATE_ITEM,
                             { manutencao: manutencao }
                         )
 
                     } else {
 
-                        return DEFAULT_MENSAGENS.criarResposta(
-                            MENSSAGENS.ERROR_INTERNAL
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
                         )
 
                     }
@@ -492,36 +541,32 @@ const atualizarManutencao = async (manutencao, id, contentType) => {
                 } else {
 
                     return validarId
-
                 }
 
             } else {
 
                 return validar
-
             }
 
         } else {
 
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_CONTENT_TYPE
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
             )
-
         }
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
-
     }
 }
 
 //Valida os dados da manutenção
 const validarManutencao = (manutencao) => {
 
-    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MENSAGENS = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     // Validação da data da manutenção
     if (
@@ -533,14 +578,13 @@ const validarManutencao = (manutencao) => {
 
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Data da manutenção incorreta]'
 
-        return DEFAULT_MENSAGENS.criarResposta(
+        return DEFAULT_MESSAGES.criarResposta(
             MENSAGENS.ERROR_REQUIRED_FIELDS
         )
-
     }
 
     // Validação do custo
-    else if (
+    if (
         manutencao.custo == undefined ||
         manutencao.custo == null ||
         manutencao.custo == '' ||
@@ -549,14 +593,13 @@ const validarManutencao = (manutencao) => {
 
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Custo incorreto]'
 
-        return DEFAULT_MENSAGENS.criarResposta(
+        return DEFAULT_MESSAGES.criarResposta(
             MENSAGENS.ERROR_REQUIRED_FIELDS
         )
-
     }
 
     // Validação da quilometragem
-    else if (
+    if (
         manutencao.quilometragem == undefined ||
         manutencao.quilometragem == null ||
         manutencao.quilometragem == '' ||
@@ -565,30 +608,32 @@ const validarManutencao = (manutencao) => {
 
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Quilometragem incorreta]'
 
-        return DEFAULT_MENSAGENS.criarResposta(
+        return DEFAULT_MESSAGES.criarResposta(
             MENSAGENS.ERROR_REQUIRED_FIELDS
         )
-
     }
 
+
     // Validação da oficina (opcional)
-    else if (
-        manutencao.oficina != undefined &&
-        manutencao.oficina != null &&
-        manutencao.oficina != '' &&
-        manutencao.oficina.length > 100
-    ) {
+    if (manutencao.oficina != undefined) {
+        if (
 
-        MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Oficina inválida]'
+            manutencao.oficina != null &&
+            manutencao.oficina != '' &&
+            typeof manutencao.oficina !== 'string' &&
+            manutencao.oficina.length > 100
+        ) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSAGENS.ERROR_REQUIRED_FIELDS
-        )
+            MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Oficina inválida]'
 
+            return DEFAULT_MESSAGES.criarResposta(
+                MENSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
     }
 
     // Validação das observações (opcional)
-    else if (
+    if (
         manutencao.observacoes != undefined &&
         manutencao.observacoes != null &&
         manutencao.observacoes.length > 1000
@@ -596,14 +641,13 @@ const validarManutencao = (manutencao) => {
 
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Observações inválidas]'
 
-        return DEFAULT_MENSAGENS.criarResposta(
+        return DEFAULT_MESSAGES.criarResposta(
             MENSAGENS.ERROR_REQUIRED_FIELDS
         )
-
     }
 
     // Validação do tipo de manutenção
-    else if (
+    if (
         manutencao.fk_id_tipo_manutencao == undefined ||
         manutencao.fk_id_tipo_manutencao == null ||
         manutencao.fk_id_tipo_manutencao == '' ||
@@ -612,14 +656,24 @@ const validarManutencao = (manutencao) => {
 
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Tipo de manutenção incorreto]'
 
-        return DEFAULT_MENSAGENS.criarResposta(
+        return DEFAULT_MESSAGES.criarResposta(
             MENSAGENS.ERROR_REQUIRED_FIELDS
         )
-
     }
 
+    if (manutencao.pecas != undefined) {
+
+        if (manutencao.pecas == null || typeof manutencao.pecas !== 'string' || manutencao.pecas.trim() == "") {
+            MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Peças incorreto]'
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MENSAGENS.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    }
     // Validação do usuário
-    else if (
+    if (
         manutencao.fk_id_usuario == undefined ||
         manutencao.fk_id_usuario == null ||
         manutencao.fk_id_usuario == '' ||
@@ -628,14 +682,13 @@ const validarManutencao = (manutencao) => {
 
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Usuário incorreto]'
 
-        return DEFAULT_MENSAGENS.criarResposta(
+        return DEFAULT_MESSAGES.criarResposta(
             MENSAGENS.ERROR_REQUIRED_FIELDS
         )
-
     }
 
     // Validação do veículo
-    else if (
+    if (
         manutencao.fk_id_veiculo == undefined ||
         manutencao.fk_id_veiculo == null ||
         manutencao.fk_id_veiculo == '' ||
@@ -644,43 +697,40 @@ const validarManutencao = (manutencao) => {
 
         MENSAGENS.ERROR_REQUIRED_FIELDS.message += ' [Veículo incorreto]'
 
-        return DEFAULT_MENSAGENS.criarResposta(
+        return DEFAULT_MESSAGES.criarResposta(
             MENSAGENS.ERROR_REQUIRED_FIELDS
         )
 
     }
 
     return false
+
+
 }
 
 //
 
 const formatarManutencao = (manutencao) => {
+
     return {
         id: manutencao.id,
+        id_usuario: manutencao.id_usuario,
+        id_veiculo: manutencao.id_veiculo,
         data_manutencao: manutencao.data_manutencao,
         custo: manutencao.custo,
         quilometragem: manutencao.quilometragem,
-        oficina: manutencao.oficina,
+        oficina: manutencao.oficina ?? null,
+        pecas: manutencao.pecas,
         observacoes: manutencao.observacoes,
         is_ativo: manutencao.is_ativo,
+        data: manutencao.data_criacao,
         tipo_manutencao: {
-            id: manutencao.id_manutencao,
+            id: manutencao.id_tipo_manutencao,
             nome: manutencao.nome_tipo_manutencao,
         },
-        usuario: {
-            id: manutencao.id_usuario,
-            nome: manutencao.nome_usuario
-        },
-        veiculo: {
-            id: manutencao.id_veiculo,
-            modelo: manutencao.modelo
-        },
-        evidencia: {
-            id: manutencao.id_veiculo,
-            url: manutencao.url
-        }
+        evidencia: manutencao.evidencia
     }
+
 }
 
 module.exports = {
@@ -691,5 +741,5 @@ module.exports = {
     buscarManutencaoIdVeiculo,
     atualizarManutencao,
     inserirManutencao,
-    inserirManutencaoComEvidenciaComPeca
+    inserirManutencaoComEvidencia
 }

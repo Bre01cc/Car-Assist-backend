@@ -4,16 +4,18 @@
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
-const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
-const bodyParserJSON = bodyParser.json()
+const bodyParserJSON = bodyParser.json();
 
-const router = express.Router()
+const router = express.Router();
 
-const controllerUsuario = require('../controller/usuario/usuario_controller.js')
-const controllerUsuarioServico = require('../controller/usuario/usuario_servico_controller.js')
+const upload = require('./upload.js');
+
+const controllerUsuario = require('../controller/usuario/usuario_controller.js');
+
 
 
 /**
@@ -157,7 +159,7 @@ const controllerUsuarioServico = require('../controller/usuario/usuario_servico_
  */
 
 
-router.put('/v1/car-assist/usuario/:id', cors(), bodyParserJSON, async function (request, response) {
+router.put('/v1/car-assist/usuario/:id', cors(), bodyParserJSON, upload.single('foto_usuario'), async function (request, response) {
 
     let dadosBody = request.body;
 
@@ -165,15 +167,10 @@ router.put('/v1/car-assist/usuario/:id', cors(), bodyParserJSON, async function 
 
     let contentType = request.headers['content-type'];
 
-    let usuario = await controllerUsuario.atualizarUsuario(dadosBody, idUsuario, contentType);
+    let foto = request.file
 
-    response.status(usuario.status_code).json(usuario);
-});
+    let usuario = await controllerUsuario.atualizarUsuario(dadosBody, idUsuario, contentType, foto);
 
-router.post('/v1/car-assist/usuario-servico', cors(), bodyParserJSON, async function (request, response) {
-    let dadosBody = request.body;
-    let contentType = request.headers['content-type'];
-    let usuario = await controllerUsuarioServico.inserirUsuarioServico(dadosBody, contentType);
     response.status(usuario.status_code).json(usuario);
 });
 
@@ -184,17 +181,11 @@ router.post('/v1/car-assist/usuario', cors(), bodyParserJSON, async function (re
     response.status(usuario.status_code).json(usuario);
 });
 
-router.post('/v1/car-assist/usuario-servico', cors(), bodyParserJSON, async function (request, response) {
-    let dadosBody = request.body;
-    let contentType = request.headers['content-type'];
-    let usuarioServico = await controllerUsuarioServico.inserirUsuarioServico(dadosBody, contentType);
-    response.status(usuarioServico.status_code).json(usuarioServico);
-});
 
 router.delete('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
     let idUsuario = req.params.id;
     let usuario = await controllerUsuario.deletarUsuarioId(idUsuario)
-    
+
     res.status(usuario.status_code).json(usuario);
 });
 
@@ -208,7 +199,7 @@ router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
 router.get('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
     let idUsuario = req.params.id;
     let usuario = await controllerUsuario.buscarUsuarioId(idUsuario)
-  
+
     res.status(usuario.status_code).json(usuario);
 });
 
@@ -228,35 +219,9 @@ router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
 });
 
 
-router.get('/v1/car-assist/usuario-servico', cors(), async (req, res) => {
 
-    let usuarioServico = await controllerUsuarioServico.listarUsuariosServicos()
 
-    res.status(usuarioServico.status_code).json(usuarioServico);
-});
 
-router.get('/v1/car-assist/usuarios/:idUsuario/servicos/:idServico', cors(), async (req, res) => {
-    let idUsuario = req.params.idUsuario;
-    let idServico = req.params.idServico
-    let usuarioServico = await controllerUsuarioServico.buscarUsuarioServico(idUsuario,idServico)
-
-    res.status(usuarioServico.status_code).json(usuarioServico);
-});
-
-router.delete('/v1/car-assist/usuarios/:idUsuario/servicos/:idServico', cors(), async (req, res) => {
-    let idUsuario = req.params.idUsuario;
-    let idServico = req.params.idServico
-    let usuarioServico = await controllerUsuarioServico.deletarUsuarioServico(idUsuario,idServico)
-
-    res.status(usuarioServico.status_code).json(usuarioServico);
-});
-
-router.delete('/v1/car-assist/usuario-servico/:id', cors(), async (req, res) => {
-    let idUsuario = req.params.id;
-    let usuario = await controllerUsuarioServico.deleteUsuarioServicoByIdUser(idUsuario)
-    
-    res.status(usuario.status_code).json(usuario);
-});
 
 
 module.exports = router

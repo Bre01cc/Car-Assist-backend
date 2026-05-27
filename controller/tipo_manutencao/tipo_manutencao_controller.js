@@ -5,93 +5,97 @@
  * Versão: 1.0
  ***********************************************************************************************************************/
 
-const tipoManutencaoDAO = require('../../model/DAO/tipo_manutencao.js')
+const tipoManutencaoDAO = require('../../model/DAO/tipo_manutencao.js');
 
-const DEFAULT_MENSAGENS = require('../modulo/config_messages.js')
+const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
 
 
 //Retorna todos os tipos de manutenção
 const listarTiposManutencao = async () => {
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
-        let resultTipoManutencao = await tipoManutencaoDAO.getAllMaintenanceType()
+        let resultTipoManutencao = await tipoManutencaoDAO.getAllMaintenanceType();
 
         if (resultTipoManutencao) {
 
             if (resultTipoManutencao.length > 0) {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.SUCCESS_REQUEST,
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_REQUEST,
                     { tipos_manutencao: resultTipoManutencao }
                 )
 
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )//404
             }
 
         } else {
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_NOT_FOUND
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_NOT_FOUND
             )//404
         }
 
 
     } catch (error) {
 
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL
         )
     }
 }
 //Retorna um tipo de manutenção pelo id
 const buscarTipoManutencaoId = async (id) => {
 
-    let MENSSAGENS = JSON.parse(JSON.stringify(DEFAULT_MENSAGENS))
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
         //Validação da chegada do ID
         if (!isNaN(id) && id != null && id > 0) {
-            let resultTipoManutencao = await tipoManutencaoDAO.getMaintenanceTypeById(id)
 
+            let resultTipoManutencao = await tipoManutencaoDAO.getMaintenanceTypeById(id);
 
             if (resultTipoManutencao) {
 
                 if (resultTipoManutencao.length > 0) {
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.SUCCESS_REQUEST,
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
                         { tipos_manutencao: resultTipoManutencao }
                     )
 
                 } else {
 
-                    return DEFAULT_MENSAGENS.criarResposta(
-                        MENSSAGENS.ERROR_NOT_FOUND
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
                     )
-
                 }
 
             } else {
 
-                return DEFAULT_MENSAGENS.criarResposta(
-                    MENSSAGENS.ERROR_NOT_FOUND
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
                 )
             }
+
         } else {
-            MENSSAGENS.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
-            return DEFAULT_MENSAGENS.criarResposta(
-                MENSSAGENS.ERROR_REQUIRED_FIELDS
+
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
             )
         }
 
     } catch (error) {
-        return DEFAULT_MENSAGENS.criarResposta(
-            MENSSAGENS.ERROR_INTERNAL_SERVER
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
         )
     }
 

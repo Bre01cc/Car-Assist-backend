@@ -136,6 +136,7 @@ const postEvidence = async (evidencia) => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
 
     }

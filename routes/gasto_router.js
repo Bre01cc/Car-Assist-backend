@@ -143,6 +143,25 @@ router.get('/v1/car-assist/gasto/:id', cors(), async (req, res) => {
     res.status(result.status_code).json(result)
 })
 
+router.get('/v1/car-assist/gasto/tipo/:id', cors(), async (req, res) => {
+    let id = req.params.id
+    let result = await controllerGasto.buscarGastoIdTipo(id)
+    res.status(result.status_code).json(result)
+})
+
+router.get('/v1/car-assist/gasto/veiculo/:id', cors(), async (req, res) => {
+    let idVeiculo = req.params.id
+    let result = await controllerGasto.buscarGastoIdVeiculo(idVeiculo)
+    res.status(result.status_code).json(result)
+})
+
+router.get('/v1/car-assist/gasto/veiculo/:idVeiculo/gasto/:idGasto', cors(), async (req, res) => {
+    let idVeiculo = req.params.idVeiculo;
+    let idGasto = req.params.idGasto;
+    let result = await controllerGasto.buscarGastoIdVeiculoComTipo(idVeiculo,idGasto)
+    res.status(result.status_code).json(result)
+})
+
 router.post('/v1/car-assist/gasto', cors(), bodyParserJSON, async (req, res) => {
     let dadosBody = req.body
     let contentType = req.headers['content-type']

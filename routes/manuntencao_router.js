@@ -13,6 +13,8 @@ const bodyParserJSON = bodyParser.json()
 
 const router = express.Router()
 
+const upload = require('./upload.js')
+
 const controllerManutencao = require('../controller/manutencao/manutencao_controller')
 
 
@@ -188,10 +190,10 @@ router.post('/v1/car-assist/manutencao', cors(), bodyParserJSON, async function 
     response.status(manutencao.status_code).json(manutencao);
 });
 
-router.post('/v1/car-assist/manutencao-evidencia-peca', cors(), bodyParserJSON, async function (request, response) {
+router.post('/v1/car-assist/manutencao-evidencia', cors(), bodyParserJSON, async function (request, response) {
     let dadosBody = request.body;
     let contentType = request.headers['content-type'];
-    let manutencao = await controllerManutencao.inserirManutencaoComEvidenciaComPeca(dadosBody, contentType);
+    let manutencao = await controllerManutencao.inserirManutencaoComEvidencia(dadosBody, contentType);
     response.status(manutencao.status_code).json(manutencao);
 });
 

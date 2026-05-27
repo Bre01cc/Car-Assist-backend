@@ -5,12 +5,11 @@
  * Versão: 1.0
  ***********************************************************************************************************************/
 
-const express = require('express')
+const express = require('express');
 
 
-const cors = require('cors')
-const bodyParser = require('body-parser')
-
+const cors       = require('cors');
+const bodyParser = require('body-parser');
 
 const bodyParserJSON = bodyParser.json()
 
@@ -21,7 +20,7 @@ const PORT = process.env.PORT || 8080
 //Controle de acesso
 app.use((request, response, next) => {
     response.header('Access-Control-Allow-Origin', '*')
-    response.header('Access-Control-Allow-Methods', '*')
+    response.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
 
     next()
 })
@@ -52,8 +51,9 @@ const manutencao = require('./routes/manuntencao_router.js');
 const pecas = require('./routes/pecas_route.js');
 const gasto = require('./routes/gasto_router.js');
 const lembrete = require('./routes/lembrete_router.js');
-const usuarioVeiculo = require('./routes/usuario_veiculo_router.js');
-const endereco = require('./routes/endereco_router.js')
+const usuarioVeiculo = require('./routes/usuario_veiculo.js');
+const endereco = require('./routes/endereco_router.js');
+const usuarioServico = require('./routes/usuario_servico_router');
 
 app.use(categoriaGastos);
 app.use(veiculo);
@@ -67,7 +67,8 @@ app.use(pecas);
 app.use(gasto);
 app.use(lembrete);
 app.use(usuarioVeiculo);
-app.use(endereco)
+app.use(endereco);
+app.use(usuarioServico);
 
 
 app.listen(PORT, () => {
