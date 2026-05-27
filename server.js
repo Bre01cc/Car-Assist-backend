@@ -54,6 +54,7 @@ const lembrete = require('./routes/lembrete_router.js');
 const usuarioVeiculo = require('./routes/usuario_veiculo.js');
 const endereco = require('./routes/endereco_router.js');
 const usuarioServico = require('./routes/usuario_servico_router');
+const transferencia = require('./routes/transferencia_router.js');
 
 app.use(categoriaGastos);
 app.use(veiculo);
@@ -69,6 +70,7 @@ app.use(lembrete);
 app.use(usuarioVeiculo);
 app.use(endereco);
 app.use(usuarioServico);
+app.use(transferencia);
 
 
 app.listen(PORT, () => {
