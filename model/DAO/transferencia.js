@@ -59,6 +59,16 @@ const executeTransferenciaPropriedade = async (idUsuarioDestino, tokenInfo) => {
     const transacaoBanco = await conexaoKnex.conexao.transaction();
 
     try {
+        if (tokenInfo.papel_concedido === 'Proprietário') {
+            let sqlDesativarAntigos = `update tbl_usuario_veiculo 
+                                       set is_ativo = false, 
+                                           data_desvinculo = curdate() 
+                                       where fk_id_veiculo = ${tokenInfo.fk_id_veiculo} 
+                                         and is_ativo = true`;
+                                         
+            await transacaoBanco.raw(sqlDesativarAntigos);
+        }
+
         let sqlInsertVinculo = `insert into tbl_usuario_veiculo (
                                     fk_id_usuario, 
                                     fk_id_veiculo, 
@@ -73,7 +83,6 @@ const executeTransferenciaPropriedade = async (idUsuarioDestino, tokenInfo) => {
                                     true
                                 )`;
         await transacaoBanco.raw(sqlInsertVinculo);
-
 
         let sqlUpdateToken = `update tbl_token_transferencia 
                               set is_usado = true 
