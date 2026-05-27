@@ -277,3 +277,29 @@ CREATE TABLE tbl_usuario_veiculo (
         REFERENCES tbl_veiculo (id)
         ON DELETE CASCADE
 );
+
+
+-- =====================================================
+-- TABELA: TOKEN TRANSFERÊNCIA VEÍCULO
+-- =====================================================
+CREATE TABLE tbl_token_transferencia (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    codigo_verificacao VARCHAR(6) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_usado BOOLEAN DEFAULT FALSE,
+    fk_id_veiculo INT NOT NULL,
+    fk_id_usuario_origem INT NOT NULL,
+    
+    -- Novo atributo para definir o tipo de transferência
+    papel_concedido ENUM('Proprietário', 'Editor', 'Visualizador') NOT NULL,
+
+    CONSTRAINT FK_token_vei
+        FOREIGN KEY (fk_id_veiculo)
+        REFERENCES tbl_veiculo (id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_token_usu_origem
+        FOREIGN KEY (fk_id_usuario_origem)
+        REFERENCES tbl_usuario (id)
+        ON DELETE CASCADE
+);
