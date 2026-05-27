@@ -51,12 +51,8 @@ const aceitarTransferenciaVeiculo = async (solicitacao, contentType) => {
     try {
         if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
 
-            if (!solicitacao.codigo_verificacao || solicitacao.codigo_verificacao.length !== 6 || isNaN(solicitacao.codigo_verificacao)) {
+            if (!solicitacao.codigo_verificacao || String(solicitacao.codigo_verificacao).length !== 6) {
                 MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Código de verificação inválido]';
-                return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_REQUIRED_FIELDS, null, 'Guilherme Moreira de Souza');
-            }
-            if (!solicitacao.fk_id_veiculo || isNaN(solicitacao.fk_id_veiculo)) {
-                MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [ID do veículo inválido ou não informado]';
                 return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_REQUIRED_FIELDS, null, 'Guilherme Moreira de Souza');
             }
             if (!solicitacao.id_usuario_destino || isNaN(solicitacao.id_usuario_destino)) {
@@ -64,13 +60,12 @@ const aceitarTransferenciaVeiculo = async (solicitacao, contentType) => {
                 return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_REQUIRED_FIELDS, null, 'Guilherme Moreira de Souza');
             }
 
-            let tokenEncontrado = await transferenciaDAO.getTokenValido(solicitacao.codigo_verificacao, solicitacao.fk_id_veiculo);
+            let tokenInfo = await transferenciaDAO.getTokenValido(solicitacao.codigo_verificacao);
 
-            if (tokenEncontrado && tokenEncontrado.length > 0) {
-                let tokenInfo = tokenEncontrado[0];
+            if (tokenInfo) {
 
                 if (tokenInfo.fk_id_usuario_origem === Number(solicitacao.id_usuario_destino)) {
-                    MESSAGES.ERROR_INTERNAL.message = 'O proprietário atual já possui vínculo ativo com este veículo.';
+                    MESSAGES.ERROR_INTERNAL.message = 'Você já possui vínculo ativo com este veículo.';
                     return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_INTERNAL, null, 'Guilherme Moreira de Souza');
                 }
 

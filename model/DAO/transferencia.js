@@ -2,10 +2,11 @@
  * Objetivo: Arquivo responsável pelas operações de dados no MySQL referente às Transferências de Veículos
  * Data: 27/05/2026
  * Autor: Guilherme Moreira de Souza
- * Versão: 1.1
+ * Versão: 1.3
  ***********************************************************************************************************************/
 
 const conexaoKnex = require('../../knex/index.js');
+
 
 const insertTokenTransferencia = async (dados) => {
     try {
@@ -23,42 +24,52 @@ const insertTokenTransferencia = async (dados) => {
 
         let result = await conexaoKnex.conexao.raw(sql);
 
-        if (result[0].affectedRows > 0)
+        if (result && result[0] && result[0].affectedRows > 0)
             return true;
         else
             return false;
 
     } catch (error) {
+        console.error("ERRO NO INSERT_TOKEN_TRANSFERENCIA:", error);
         return false;
     }
 }
 
-
-const getTokenValido = async (codigo, idVeiculo) => {
+const getTokenValido = async (codigo) => {
     try {
+        let codigoString = String(codigo).trim();
+
         let sql = `select * from tbl_token_transferencia 
-                   where codigo_verificacao = '${codigo}' 
-                     and fk_id_veiculo = ${idVeiculo} 
+                   where codigo_verificacao = '${codigoString}' 
                      and is_usado = false 
-                     and criado_em >= now() - interval 5 minute`;
+                     and criado_em >= now() - interval 5 minute limit 1`;
 
         let result = await conexaoKnex.conexao.raw(sql);
 
-        if (result[0].length > 0)
-            return result[0];
-        else
-            return false;
+
+        if (result && result[0] && result[0].length > 0) {
+            return result[0][0];
+        }
+        
+        return false;
 
     } catch (error) {
+        console.error("ERRO NO GET_TOKEN_VALIDO:", error);
         return false;
     }
 }
+
 
 const executeTransferenciaPropriedade = async (idUsuarioDestino, tokenInfo) => {
     
     const transacaoBanco = await conexaoKnex.conexao.transaction();
 
     try {
+        if (!tokenInfo || !tokenInfo.fk_id_veiculo || !tokenInfo.papel_concedido) {
+            throw new Error('Dados do token inválidos para a transferência.');
+        }
+
+
         if (tokenInfo.papel_concedido === 'Proprietário') {
             let sqlDesativarAntigos = `update tbl_usuario_veiculo 
                                        set is_ativo = false, 
@@ -68,6 +79,7 @@ const executeTransferenciaPropriedade = async (idUsuarioDestino, tokenInfo) => {
                                          
             await transacaoBanco.raw(sqlDesativarAntigos);
         }
+
 
         let sqlInsertVinculo = `insert into tbl_usuario_veiculo (
                                     fk_id_usuario, 
@@ -93,6 +105,7 @@ const executeTransferenciaPropriedade = async (idUsuarioDestino, tokenInfo) => {
         return true;
 
     } catch (error) {
+        console.error("ERRO NA TRANSAÇÃO DE TRANSFERÊNCIA:", error);
         await transacaoBanco.rollback();
         return false;
     }
