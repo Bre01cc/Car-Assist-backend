@@ -9,6 +9,7 @@ const conexaoKnex = require('../../knex/index.js');
 
 //Busca todos os endereços
 const getAllAddresses = async () => {
+
     try {
 
         const result = await conexaoKnex.conexao.raw(
@@ -24,10 +25,12 @@ const getAllAddresses = async () => {
     } catch (error) {
         return false
     }
+
 }
 
 //Busca endereço pelo id
 const getAddressById = async (id) => {
+
     try {
 
         const result = await conexaoKnex.conexao.raw(
@@ -44,10 +47,12 @@ const getAddressById = async (id) => {
     } catch (error) {
         return false
     }
+
 }
 
 //Busca endereço pelo id do serviço
 const getAddressByServiceId = async (idServico) => {
+
     try {
 
         const result = await conexaoKnex.conexao.raw(
@@ -64,10 +69,12 @@ const getAddressByServiceId = async (idServico) => {
     } catch (error) {
         return false
     }
+    
 }
 
 //Busca o último id de endereço
 const getSelectLastId = async () => {
+
     try {
 
         let result = await conexaoKnex.conexao
@@ -86,10 +93,12 @@ const getSelectLastId = async () => {
 
         return false
     }
+
 }
 
 //Insere um endereço
 const postAddress = async (endereco) => {
+
     try {
 
         const result = await conexaoKnex.conexao.raw(`
@@ -122,10 +131,12 @@ const postAddress = async (endereco) => {
        
         return false
     }
+
 }
 
 //Atualiza um endereço
 const putAddress = async (endereco) => {
+
     try {
 
         const result = await conexaoKnex.conexao.raw(`
@@ -153,10 +164,12 @@ const putAddress = async (endereco) => {
       
         return false
     }
+
 }
 
 //Deleta um endereço
 const deleteAddress = async (id) => {
+
     try {
 
         const result = await conexaoKnex.conexao.raw(`
@@ -174,6 +187,7 @@ const deleteAddress = async (id) => {
     
         return false
     }
+
 }
 
 //Export das funções

@@ -24,17 +24,41 @@ router.get('/v1/car-assist/usuario-veiculo/:id', cors(), async (req, res) => {
 
 // inserir um novo vínculo
 router.post('/v1/car-assist/usuario-veiculo', cors(), bodyParserJSON, async (req, res) => {
-    console.log('aqui')
+   
     let dadosBody = req.body
+
     let contentType = req.headers['content-type']
+
     let result = await controllerUV.inserirVinculo(dadosBody, contentType)
+
+    res.status(result.status_code).json(result)
+})
+
+// inserir um novo vínculo
+router.put('/v1/car-assist/usuario-veiculo/:idUsuario/:idVeiculo', cors(), bodyParserJSON, async (req, res) => {
+   
+    let dadosBody = req.body
+
+    let idUsuario = params.idUsuario
+
+    let idVeiculo = params.idVeiculo
+    
+    let contentType = req.headers['content-type']
+
+    let result = await controllerUV.atualizerVinculo(dadosBody, contentType)
+
     res.status(result.status_code).json(result)
 })
 
 // deletar um vínculo usando os dois ids
 router.delete('/v1/car-assist/usuario-veiculo/:idUsuario/:idVeiculo', cors(), async (req, res) => {
-    let { idUsuario, idVeiculo } = req.params
+
+    let idUsuario = req.params.idUsuario
+
+    let idVeiculo = req.params.idVeiculo
+    
     let result = await controllerUV.deletarVinculo(idUsuario, idVeiculo)
+
     res.status(result.status_code).json(result)
 })
 

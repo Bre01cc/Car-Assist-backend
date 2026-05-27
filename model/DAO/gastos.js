@@ -93,18 +93,8 @@ const getExpenseByIdType = async (id) => {
 }
 
 const postExpense = async (dados) => {
+    
     try {
-        let sql = `insert into tbl_gastos (
-                        data_gasto, 
-                        valor, 
-                        fk_id_veiculo, 
-                        fk_id_categoria
-                    ) values (
-                        '${dados.data_gasto}', 
-                        ${dados.valor}, 
-                        ${dados.fk_id_veiculo}, 
-                        ${dados.fk_id_categoria}
-                    )`;
 
         let result = await conexaoKnex.conexao.raw(
             `insert into tbl_gastos (

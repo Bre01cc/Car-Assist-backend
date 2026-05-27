@@ -121,8 +121,8 @@ const postUserVehicle = async (dados) => {
                     ? 
                     )
             `, [
-            dados.id_usuario,
-            dados.id_veiculo,
+            dados.fk_id_usuario,
+            dados.fk_id_veiculo,
             dados.papel_usuario,
             dados.data_vinculo
         ]);
@@ -163,8 +163,8 @@ const putUserVehicle = async (usuarioVeiculo) => {
                 usuarioVeiculo.data_vinculo ?? new Date().toISOString().split('T')[0],
                 usuarioVeiculo.data_desvinculo ?? null,
                 usuarioVeiculo.is_ativo ?? true,
-                usuarioVeiculo.id_usuario,
-                usuarioVeiculo.id_veiculo
+                usuarioVeiculo.fk_id_usuario,
+                usuarioVeiculo.fk_id_veiculo
             ])
 
         if (result[0].affectedRows > 0) {
