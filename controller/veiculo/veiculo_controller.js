@@ -327,14 +327,14 @@ const inserirVeiculoUsuario = async (veiculo, contentType, foto) => {
 
 
                                     let vinculoObj = {
-                                        id_veiculo: veiculo.id,
-                                        id_usuario: veiculo.id_usuario,
+                                        fk_id_veiculo: veiculo.id,
+                                        fk_id_usuario: veiculo.id_usuario,
                                         papel_usuario: "Proprietário",
                                         data_vinculo: new Date().toISOString().split('T')[0]
                                     };
 
                                     let resultUsuarioVeiculo = await controllerUsuarioVeiculo.inserirVinculo(vinculoObj, 'APPLICATION/JSON');
-                                    console.log(resultUsuarioVeiculo)
+                                 console.log(resultUsuarioVeiculo)
                                     if (resultUsuarioVeiculo.status_code != 201) {
 
                                         return DEFAULT_MESSAGES.criarResposta(

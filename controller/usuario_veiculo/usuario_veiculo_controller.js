@@ -287,7 +287,7 @@ const inserirVinculo = async (dados, contentType) => {
     }
 }
 
-const atualizerVinculo = async (dados,idUsuario,idVeiculo, contentType) => {
+const atualizerVinculo = async (dados,contentType, idUsuario,idVeiculo) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
@@ -295,13 +295,13 @@ const atualizerVinculo = async (dados,idUsuario,idVeiculo, contentType) => {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
 
-            let validar = validarVinculo(dados);
+            let validar = validarVinculoPut(dados);
 
             if (!validar) {
 
                 let validarIDs = await buscarUsuarioVeiculoIdUsuarioComIdVeiculo(idUsuario, idVeiculo)
-               
-                if ((validarIDs).status == 200) {
+               console.log(validarIDs)
+                if (validarIDs.status_code == 200) {
                     dados.fk_id_usuario = idUsuario
                     dados.fk_id_veiculo = idVeiculo
                     let result = await usuarioVeiculoDAO.putUserVehicle(dados);
@@ -324,7 +324,7 @@ const atualizerVinculo = async (dados,idUsuario,idVeiculo, contentType) => {
 
                 } else {
                     return DEFAULT_MESSAGES.criarResposta(
-                        MESSAGES.DEFAULT_MESSAGES.ERROR_EXISTING
+                        MESSAGES.ERROR_NOT_FOUND
                     )
                 }
 
@@ -342,7 +342,7 @@ const atualizerVinculo = async (dados,idUsuario,idVeiculo, contentType) => {
         }
 
     } catch (error) {
-
+console.log(error)
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER,
             null,
@@ -427,6 +427,34 @@ const validarVinculo = (dados) => {
         )
     //Includes valida se algo existe dentro de um array
     } else if (!papeis.includes(dados.papel_usuario) || dados.papel_usuario == null | dados.papel_usuario == undefined) {
+
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Papel de Usuário]'
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS,
+            null,
+            'Nikolas Fernandes'
+        )
+    }
+
+    else {
+
+        return false
+    }
+
+}
+
+// Validação dos dados de vínculo
+const validarVinculoPut = (dados) => {
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
+    let papeis = [
+        'Proprietário',
+        'Editor',
+        'Visualizador'
+    ]
+
+ if (!papeis.includes(dados.papel_usuario) || dados.papel_usuario == null | dados.papel_usuario == undefined) {
 
         MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Papel de Usuário]'
 

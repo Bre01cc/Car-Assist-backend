@@ -39,13 +39,13 @@ router.put('/v1/car-assist/usuario-veiculo/:idUsuario/:idVeiculo', cors(), bodyP
    
     let dadosBody = req.body
 
-    let idUsuario = params.idUsuario
+    let idUsuario = req.params.idUsuario
 
-    let idVeiculo = params.idVeiculo
+    let idVeiculo = req.params.idVeiculo
     
     let contentType = req.headers['content-type']
 
-    let result = await controllerUV.atualizerVinculo(dadosBody, contentType)
+    let result = await controllerUV.atualizerVinculo(dadosBody, contentType, idUsuario, idVeiculo)
 
     res.status(result.status_code).json(result)
 })

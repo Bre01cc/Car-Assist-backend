@@ -9,6 +9,9 @@ const evidenciaDAO = require('../../model/DAO/evidencia.js');
 
 const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
 
+//Import da controller que faz upload da foto
+const UPLOAD = require('../upload/controller_upload_azure.js');
+
 //Retorna todas as evidências
 const listarEvidencia = async () => {
 
@@ -168,13 +171,13 @@ const buscarEvidenciaIdMaintenance = async (id) => {
 }
 
 // Cadastra uma evidência no banco de dados
-const inserirEvidencia = async (evidencia, contentType) => {
+const inserirEvidencia = async (evidencia, contentType, foto) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
 
             // Validação dos dados da evidência
             let validar = await validarEvidencia(evidencia);
@@ -182,32 +185,40 @@ const inserirEvidencia = async (evidencia, contentType) => {
 
             if (!validar) {
 
-                let resultEvidencia = await evidenciaDAO.postEvidence(evidencia);
+                let urlFoto = await UPLOAD.uploadFiles(foto);
+                if (urlFoto) {
+                    evidencia.url = urlFoto
+                    let resultEvidencia = await evidenciaDAO.postEvidence(evidencia);
 
-                if (resultEvidencia) {
+                    if (resultEvidencia) {
 
-                    let ultimoId = await evidenciaDAO.getSelectLastId();
+                        let ultimoId = await evidenciaDAO.getSelectLastId();
 
-                    if (ultimoId) {
+                        if (ultimoId) {
 
-                        let evidenciaFormatada = formatarEvidencia(ultimoId[0]);
+                            let evidenciaFormatada = formatarEvidencia(ultimoId[0]);
 
-                        return DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.SUCCESS_CREATED_ITEM,
-                            evidenciaFormatada
-                        )
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.SUCCESS_CREATED_ITEM,
+                                evidenciaFormatada
+                            )
+
+                        } else {
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.ERROR_INTERNAL
+                            )
+
+                        }
 
                     } else {
+
                         return DEFAULT_MESSAGES.criarResposta(
                             MESSAGES.ERROR_INTERNAL
                         )
-
                     }
-
                 } else {
-
                     return DEFAULT_MESSAGES.criarResposta(
-                        MESSAGES.ERROR_INTERNAL
+                        MESSAGES.ERROR_UPLOAD_IMAGE
                     )
                 }
 

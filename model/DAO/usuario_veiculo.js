@@ -38,7 +38,7 @@ const getUserVehicleByIDs = async (idUsuario, idVeiculo) => {
             'select * from tbl_usuario_veiculo where fk_id_usuario = ? and fk_id_veiculo = ?',
             [idUsuario, idVeiculo]
         );
-        console.log(result)
+
         if (result[0].length > 0) {
 
             return result[0]
@@ -61,8 +61,8 @@ const getUserVehicleByIDUser = async (id) => {
 
         let result = await conexaoKnex.conexao.raw(
             'select * from vw_usuario_veiculo where id_usuario = ?',
-             [id]
-            );
+            [id]
+        );
 
         if (result[0].length > 0) {
 
@@ -86,7 +86,7 @@ const getSelectLastIdUser = async (id) => {
 
         let result = await conexaoKnex.conexao.raw(
             'select * from vw_usuario_veiculo where id_usuario = ? order by data_vinculo desc limit 1',
-             [id]
+            [id]
         );
 
         if (result[0].length > 0) {
@@ -137,7 +137,7 @@ const postUserVehicle = async (dados) => {
         }
 
     } catch (error) {
-        console.log(error)
+
         return false;
     }
 }
@@ -150,19 +150,13 @@ const putUserVehicle = async (usuarioVeiculo) => {
             
             UPDATE tbl_usuario_veiculo
             SET
-                papel_usuario = ?,
-                data_vinculo = ?,
-                data_desvinculo = ?,
-                is_ativo = ?
+                papel_usuario = ?
             WHERE
                 fk_id_usuario = ?
             AND
                 fk_id_veiculo = ?`,
             [
                 usuarioVeiculo.papel_usuario,
-                usuarioVeiculo.data_vinculo ?? new Date().toISOString().split('T')[0],
-                usuarioVeiculo.data_desvinculo ?? null,
-                usuarioVeiculo.is_ativo ?? true,
                 usuarioVeiculo.fk_id_usuario,
                 usuarioVeiculo.fk_id_veiculo
             ])
@@ -177,7 +171,7 @@ const putUserVehicle = async (usuarioVeiculo) => {
         }
 
     } catch (error) {
-
+        console.log(error)
         return false
     }
 
@@ -193,21 +187,21 @@ const deleteUserVehicle = async (idUsuario, idVeiculo) => {
                         data_desvinculo = current_date 
                    where fk_id_usuario = ? and fk_id_veiculo = ?
             `,
-            [idUsuario,idVeiculo]
+            [idUsuario, idVeiculo]
         );
 
-        if (result[0].affectedRows > 0){
+        if (result[0].affectedRows > 0) {
 
             return true
         }
 
-        else{
+        else {
 
             return false
         }
 
     } catch (error) {
-   
+
         return false;
     }
 
