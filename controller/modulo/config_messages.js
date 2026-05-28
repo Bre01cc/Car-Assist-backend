@@ -41,6 +41,7 @@ const ERROR_NOT_FOUND = {
     message: 'Não foram encontrados dados de retorno!!!'
 };
 
+
 const ERROR_EXISTING = {
     status: false,
     status_code: 409,
@@ -51,7 +52,7 @@ const ERROR_EXISTING = {
 const ERROR_CONTENT_TYPE = {
     status: false,
     status_code: 415,
-    message: 'Não foi possível processar a requisição o tipo de dados enviados no corpo deve ser JSON!!!'
+    message: 'Não foi possível processar a requisição o tipo de dados enviados no corpo deve ser '
 };
 
 //Mensagem caso ocorra erros internos na execução dos arquivos
@@ -59,6 +60,18 @@ const ERROR_INTERNAL_SERVER = {
     status: false,
     status_code: 500,
     message: 'Não foi possível devido a erros internos no servidor!!!'
+};
+
+const ERROR_DELETE_OLD_EVIDENCES = {
+    status: false,
+    status_code: 500,
+    message: 'Erro ao remover as evidências antigas da manutenção.'
+};
+
+const ERROR_INSERT_RELATED_DATA = {
+    status: false,
+    status_code: 500,
+    message: 'Erro ao inserir os dados relacionados.'
 };
 
 const ERROR_UPLOAD_IMAGE = {
@@ -131,5 +144,7 @@ module.exports = {
     ERROR_EXISTING,
     ERROR_UPLOAD_IMAGE,
     ERROR_UPLOAD_IMAGE_DELETE,
+    ERROR_DELETE_OLD_EVIDENCES,
+    ERROR_INSERT_RELATED_DATA,
     criarResposta
 }

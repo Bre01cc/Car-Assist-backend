@@ -148,6 +148,8 @@ const inserirLembrete = async (lembrete, contentType) => {
 
         } else {
 
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[APPLICATION/JSON]'
+
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE,
                 null,
@@ -212,6 +214,8 @@ const atualizarLembrete = async (lembrete, id, contentType) => {
             }
 
         } else {
+            
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[APPLICATION/JSON]'
 
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE,
@@ -350,7 +354,7 @@ const formatarLembrete = (lembrete) => {
             id: lembrete.fk_id_veiculo
         }
     }
-    
+
 }
 
 module.exports = {

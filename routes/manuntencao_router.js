@@ -190,10 +190,17 @@ router.post('/v1/car-assist/manutencao', cors(), bodyParserJSON, async function 
     response.status(manutencao.status_code).json(manutencao);
 });
 
-router.post('/v1/car-assist/manutencao-evidencia', cors(), bodyParserJSON, async function (request, response) {
+router.post('/v1/car-assist/manutencao-evidencia', cors(), bodyParserJSON,upload.array('evidencia'), async function (request, response) {
+
     let dadosBody = request.body;
+
     let contentType = request.headers['content-type'];
+
+    let evidencias = request.files;
+    console.log(evidencias)
+
     let manutencao = await controllerManutencao.inserirManutencaoComEvidencia(dadosBody, contentType);
+
     response.status(manutencao.status_code).json(manutencao);
 });
 

@@ -211,6 +211,8 @@ const inserirEndereco = async (endereco, contentType) => {
             }
 
         } else {
+            
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[APPLICATION/JSON]'
 
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE
@@ -272,6 +274,8 @@ const atualizarEndereco = async (endereco, id, contentType) => {
             }
 
         } else {
+
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[APPLICATION/JSON]'
 
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE

@@ -246,13 +246,13 @@ const inserirVeiculo = async (veiculo, contentType, foto) => {
 
                 } else {
                     MESSAGES.ERROR_EXISTING.message += 'Placa'
-                    console.log(
+                    
                         DEFAULT_MESSAGES.criarResposta(
                             MESSAGES.ERROR_EXISTING,
                             null,
                             'Guilherme Moreira de Souza'
                         )
-                    )
+                    
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.ERROR_EXISTING,
                         null,
@@ -265,6 +265,8 @@ const inserirVeiculo = async (veiculo, contentType, foto) => {
             }
 
         } else {
+
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
 
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE,
@@ -334,7 +336,7 @@ const inserirVeiculoUsuario = async (veiculo, contentType, foto) => {
                                     };
 
                                     let resultUsuarioVeiculo = await controllerUsuarioVeiculo.inserirVinculo(vinculoObj, 'APPLICATION/JSON');
-                                 console.log(resultUsuarioVeiculo)
+
                                     if (resultUsuarioVeiculo.status_code != 201) {
 
                                         return DEFAULT_MESSAGES.criarResposta(
@@ -390,6 +392,8 @@ const inserirVeiculoUsuario = async (veiculo, contentType, foto) => {
 
         } else {
 
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
+
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE,
                 null,
@@ -410,7 +414,7 @@ const inserirVeiculoUsuario = async (veiculo, contentType, foto) => {
 
 // Atualiza um veículo pelo id
 const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
-    console.log(contentType)
+
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
@@ -488,16 +492,18 @@ const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
             }
 
         } else {
+            
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
 
             return DEFAULT_MESSAGES.criarResposta(
-              MESSAGES.ERROR_CONTENT_TYPE,
+                MESSAGES.ERROR_CONTENT_TYPE,
                 null,
                 'Guilherme Moreira de Souza'
             ) // 415
         }
 
     } catch (error) {
-console.log(error)
+        
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER,
             null,

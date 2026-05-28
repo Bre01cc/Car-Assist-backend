@@ -405,6 +405,7 @@ const buscarUsuarioEmailComSenha = async (usuario, contentType) => {
     }
 
 }
+
 //Retorna um usuário pelo email e senha
 const buscarUsuarioIDComSenha = async (usuario, contentType) => {
 
@@ -621,7 +622,7 @@ const inserirUsuario = async (usuario, contentType) => {
             }
 
         } else {
-
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[JSON]'
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE
             )
@@ -638,7 +639,7 @@ const inserirUsuario = async (usuario, contentType) => {
 
 //Atualiza um usuário pelo id
 const atualizarUsuario = async (usuario, id, contentType, foto) => {
-    console.log(contentType)
+  
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
@@ -656,9 +657,7 @@ const atualizarUsuario = async (usuario, id, contentType, foto) => {
 
                 usuario.password = usuario.senha
 
-
                 let validarId = await buscarUsuarioIDComSenha(usuario, 'APPLICATION/JSON');
-                console.log(validarId)
 
                 delete usuario.password
 
@@ -703,7 +702,7 @@ const atualizarUsuario = async (usuario, id, contentType, foto) => {
                                 let urlFoto = await UPLOAD.uploadFiles(foto);
 
                                 if (urlFoto) {
-                                    
+
                                     usuario.foto_usuario = urlFoto
 
                                 } else {
@@ -744,14 +743,14 @@ const atualizarUsuario = async (usuario, id, contentType, foto) => {
             }
 
         } else {
-
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE
             ) // 415
         }
 
     } catch (error) {
-        console.log(error)
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )

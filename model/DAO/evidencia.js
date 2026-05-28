@@ -114,6 +114,23 @@ const deleteEvidence = async (id) => {
     }
 }
 
+const deleteEvidenceMaintenance = async (id) => {
+    try {
+        const result = await conexaoKnex.conexao.raw(
+            'delete from tbl_evidencia where fk_id_manutencao = ?', [id]
+        );
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
+
 const postEvidence = async (evidencia) => {
     try {
         const result = await conexaoKnex.conexao.raw(`
@@ -173,6 +190,7 @@ module.exports = {
     getAllEvidences,
     getEvidenceById,
     deleteEvidence,
+    deleteEvidenceMaintenance,
     postEvidence,
     putEvidence,
     getEvidenceByIdMaintenance,

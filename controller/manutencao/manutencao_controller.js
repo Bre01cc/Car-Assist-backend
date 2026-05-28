@@ -25,19 +25,19 @@ const listarManutencao = async () => {
 
             if (resultManutencao.length > 0) {
 
-                 const manutencaoFormatada = await Promise.all(
-                        resultManutencao.map(async (manutencao) => {
+                const manutencaoFormatada = await Promise.all(
+                    resultManutencao.map(async (manutencao) => {
 
-                            let evidencia = await controllerEvidencia
-                                .buscarEvidenciaIdMaintenance(manutencao.id)
-                            
-                            manutencao.evidencia = evidencia.data?.evidencia || []
-                            let manutencaoFormatada = formatarManutencao(manutencao)
-                            return {
-                                manutencaoFormatada
-                            }
-                        })
-                    )
+                        let evidencia = await controllerEvidencia
+                            .buscarEvidenciaIdMaintenance(manutencao.id)
+
+                        manutencao.evidencia = evidencia.data?.evidencia || []
+                        let manutencaoFormatada = formatarManutencao(manutencao)
+                        return {
+                            manutencaoFormatada
+                        }
+                    })
+                )
 
                 return DEFAULT_MESSAGES.criarResposta(
                     MESSAGES.SUCCESS_REQUEST,
@@ -81,12 +81,12 @@ const buscarManutencaoId = async (id) => {
 
                 if (resultManutencao.length > 0) {
 
-                  const manutencaoFormatada = await Promise.all(
+                    const manutencaoFormatada = await Promise.all(
                         resultManutencao.map(async (manutencao) => {
 
                             let evidencia = await controllerEvidencia
                                 .buscarEvidenciaIdMaintenance(manutencao.id)
-                            
+
                             manutencao.evidencia = evidencia.data?.evidencia || []
                             let manutencaoFormatada = formatarManutencao(manutencao)
                             return {
@@ -147,7 +147,7 @@ const buscarManutencaoIdTipo = async (id) => {
 
                 if (resultManutencao.length > 0) {
 
-                     const manutencaoFormatada = await Promise.all(
+                    const manutencaoFormatada = await Promise.all(
                         resultManutencao.map(async (manutencao) => {
 
                             let evidencia = await controllerEvidencia
@@ -212,7 +212,7 @@ const buscarManutencaoIdUsuario = async (id) => {
 
                 if (resultManutencao.length > 0) {
 
-                     const manutencaoFormatada = await Promise.all(
+                    const manutencaoFormatada = await Promise.all(
                         resultManutencao.map(async (manutencao) => {
 
                             let evidencia = await controllerEvidencia
@@ -383,7 +383,7 @@ const inserirManutencao = async (manutencao, contentType) => {
         }
 
     } catch (error) {
-      
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -525,10 +525,65 @@ const atualizarManutencao = async (manutencao, id, contentType) => {
 
                     if (resultManutencao) {
 
+                        let resultEvidenciaDelete = await controllerEvidencia.deletarEvidenciaIdManutencao(manutencao.id);
+                        console.log(resultEvidenciaDelete)
+                        if (resultEvidenciaDelete.status_code == 200 || resultEvidenciaDelete.status_code == 404) {
+
+                            if (manutencao.evidencia != undefined) {
+
+                                for (evidencia of manutencao.evidencia) {
+                                    let evidenciaManutencao = {
+                                        url: evidencia.url,
+                                        fk_id_manutencao: manutencao.id
+                                    }
+
+                                    let resultEvidencia = await controllerEvidencia.inserirEvidencia(evidenciaManutencao, contentType);
+                                    console.log(resultEvidencia)
+                                    if (resultEvidencia.status_code != 201) {
+
+                                        MESSAGES.ERROR_RELATION_TABLE.message += 'Evidência'
+
+                                        return MESSAGES.ERROR_RELATION_TABLE
+
+                                    } else {
+
+                                        delete manutencao.evidencia
+
+                                        let resultManutencaoEvidencia = await controllerEvidencia.buscarEvidenciaIdMaintenance(manutencao.id);
+
+                                        manutencao.evidencia = resultManutencaoEvidencia.data.evidencia;
+
+                                    }
+                                }
+
+                            } else {
+
+                                MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Faltou Evidências]';
+
+                                return DEFAULT_MESSAGES.criarResposta(
+                                    MESSAGES.ERROR_REQUIRED_FIELDS
+                                )
+                            }
+
+                        } else {
+
+                            return DEFAULT_MESSAGES.criarResposta(
+                                MESSAGES.ERROR_DELETE_OLD_EVIDENCES
+                            )
+                        }
+
+
+
+
                         return DEFAULT_MESSAGES.criarResposta(
                             MESSAGES.SUCCESS_UPDATE_ITEM,
                             { manutencao: manutencao }
                         )
+
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_DELETE_OLD_EVIDENCES
+                        )
+
 
                     } else {
 

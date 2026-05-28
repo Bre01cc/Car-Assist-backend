@@ -50,7 +50,19 @@ router.delete('/v1/car-assist/evidencia/:id', cors(), async function (req, res) 
 
     let idEvidencia = req.params.id;
 
-    let evidencia = await controllerEvidencia.deletarEvidenciad(idEvidencia);
+    let evidencia = await controllerEvidencia.deletarEvidenciaId(idEvidencia);
+
+    res.status(evidencia.status_code);
+
+    res.json(evidencia);
+
+});
+
+router.delete('/v1/car-assist/evidencia/manutencao/:id', cors(), async function (req, res) {
+
+    let idManutencao = req.params.id;
+
+    let evidencia = await controllerEvidencia.deletarEvidenciaIdManutencao(idManutencao);
 
     res.status(evidencia.status_code);
 

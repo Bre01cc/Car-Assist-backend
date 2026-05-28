@@ -183,7 +183,7 @@ const inserirEvidencia = async (evidencia, contentType, foto) => {
             // Validação dos dados da evidência
             let validar = validarEvidencia(evidencia);
 
-           
+
             if (!validar) {
 
                 let urlFoto = await UPLOAD.uploadFiles(foto);
@@ -195,7 +195,7 @@ const inserirEvidencia = async (evidencia, contentType, foto) => {
                     if (resultEvidencia) {
 
                         let ultimoId = await evidenciaDAO.getSelectLastId();
-                 
+
                         if (ultimoId) {
 
                             let evidenciaFormatada = formatarEvidencia(ultimoId[0]);
@@ -231,13 +231,15 @@ const inserirEvidencia = async (evidencia, contentType, foto) => {
 
         } else {
 
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
+
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE
             )
         }
 
     } catch (error) {
-    
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -262,7 +264,7 @@ const atualizarEvidencia = async (evidencia, id, contentType, foto) => {
 
                 // Verifica se o ID existe no banco
                 let validarId = await buscarEvidenciaId(id);
-            
+
                 if (validarId.status_code == 200) {
 
                     // Adiciona o ID no objeto
@@ -310,13 +312,15 @@ const atualizarEvidencia = async (evidencia, id, contentType, foto) => {
 
         } else {
 
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
+
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE
             )
         }
 
     } catch (error) {
-       
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -324,7 +328,7 @@ const atualizarEvidencia = async (evidencia, id, contentType, foto) => {
 }
 
 //Desativa um usuário pelo id
-const deletarEvidenciad = async (id) => {
+const deletarEvidenciaId = async (id) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
@@ -335,6 +339,45 @@ const deletarEvidenciad = async (id) => {
         if (validarId.status_code == 200) {
 
             let deletarEvidencia = await evidenciaDAO.deleteEvidence(id);
+
+            if (deletarEvidencia) {
+
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_DELETE
+                )
+
+            } else {
+
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_INTERNAL_SERVER
+                )
+            }
+
+        } else {
+
+            return validarId
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
+        )
+    }
+}
+
+//Desativa um usuário pelo id
+const deletarEvidenciaIdManutencao = async (id) => {
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
+
+    try {
+
+        let validarId = await buscarEvidenciaId(id);
+
+        if (validarId.status_code == 200) {
+
+            let deletarEvidencia = await evidenciaDAO.deleteEvidenceMaintenance(id);
 
             if (deletarEvidencia) {
 
@@ -401,7 +444,8 @@ module.exports = {
     buscarEvidenciaId,
     listarEvidencia,
     buscarEvidenciaIdMaintenance,
-    deletarEvidenciad,
+    deletarEvidenciaId,
+    deletarEvidenciaIdManutencao,
     inserirEvidencia,
     atualizarEvidencia
 }
