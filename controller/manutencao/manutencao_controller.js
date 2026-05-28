@@ -25,7 +25,7 @@ const listarManutencao = async () => {
 
             if (resultManutencao.length > 0) {
 
-                const manutencaoFormatada = await Promise.all(
+                const manutencao = await Promise.all(
                     resultManutencao.map(async (manutencao) => {
 
                         let evidencia = await controllerEvidencia
@@ -33,15 +33,14 @@ const listarManutencao = async () => {
 
                         manutencao.evidencia = evidencia.data?.evidencia || []
                         let manutencaoFormatada = formatarManutencao(manutencao)
-                        return {
-                            manutencaoFormatada
-                        }
+                        return manutencaoFormatada
+
                     })
                 )
 
                 return DEFAULT_MESSAGES.criarResposta(
                     MESSAGES.SUCCESS_REQUEST,
-                    { manutencoes: manutencaoFormatada }
+                    { manutencoes: manutencao }
                 )
 
 
@@ -81,23 +80,23 @@ const buscarManutencaoId = async (id) => {
 
                 if (resultManutencao.length > 0) {
 
-                    const manutencaoFormatada = await Promise.all(
+                    const manutencao = await Promise.all(
                         resultManutencao.map(async (manutencao) => {
 
                             let evidencia = await controllerEvidencia
                                 .buscarEvidenciaIdMaintenance(manutencao.id)
 
                             manutencao.evidencia = evidencia.data?.evidencia || []
+
                             let manutencaoFormatada = formatarManutencao(manutencao)
-                            return {
-                                manutencaoFormatada
-                            }
+
+                            return manutencaoFormatada
                         })
                     )
 
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.SUCCESS_REQUEST,
-                        { manutencao: manutencaoFormatada }
+                        { manutencao: manutencao }
                     )
 
                 } else {
@@ -152,12 +151,11 @@ const buscarManutencaoIdTipo = async (id) => {
 
                             let evidencia = await controllerEvidencia
                                 .buscarEvidenciaIdMaintenance(manutencao.id)
-                            //criando um n
+
                             manutencao.evidencia = evidencia.data?.evidencia || []
                             let manutencaoFormatada = formatarManutencao(manutencao)
-                            return {
-                                manutencaoFormatada
-                            }
+                            return manutencaoFormatada
+
                         })
                     )
 
@@ -217,12 +215,13 @@ const buscarManutencaoIdUsuario = async (id) => {
 
                             let evidencia = await controllerEvidencia
                                 .buscarEvidenciaIdMaintenance(manutencao.id)
-                            //criando um n
+
                             manutencao.evidencia = evidencia.data?.evidencia || []
+
                             let manutencaoFormatada = formatarManutencao(manutencao)
-                            return {
-                                manutencaoFormatada
-                            }
+
+                            return manutencaoFormatada
+
                         })
                     )
 
@@ -283,12 +282,13 @@ const buscarManutencaoIdVeiculo = async (id) => {
 
                             let evidencia = await controllerEvidencia
                                 .buscarEvidenciaIdMaintenance(manutencao.id)
-                            //criando um n
+
                             manutencao.evidencia = evidencia.data?.evidencia || []
+
                             let manutencaoFormatada = formatarManutencao(manutencao)
-                            return {
-                                manutencaoFormatada
-                            }
+
+                            return manutencaoFormatada
+
                         })
                     )
                     return DEFAULT_MESSAGES.criarResposta(
@@ -334,7 +334,7 @@ const inserirManutencao = async (manutencao, contentType) => {
 
     try {
 
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (String(contentType).toUpperCase() == 'MULTIPART/FORM-DATA') {
 
             //Validação dos dados da manutenção
             let validar = validarManutencao(manutencao);
@@ -392,13 +392,13 @@ const inserirManutencao = async (manutencao, contentType) => {
 
 }
 
-const inserirManutencaoComEvidencia = async (manutencao, contentType) => {
+const inserirManutencaoComEvidencia = async (manutencao, contentType, evidencias) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
 
             //Validação dos dados da manutenção
             let validar = validarManutencao(manutencao);
@@ -416,15 +416,15 @@ const inserirManutencaoComEvidencia = async (manutencao, contentType) => {
 
                         manutencao.id = ultimoId;
 
-                        if (manutencao.evidencia != undefined) {
+                        if (evidencias != undefined) {
 
-                            for (evidencia of manutencao.evidencia) {
+                            for (let evidencia of evidencias) {
+
                                 let evidenciaManutencao = {
-                                    url: evidencia.url,
                                     fk_id_manutencao: manutencao.id
                                 }
 
-                                let resultEvidencia = await controllerEvidencia.inserirEvidencia(evidenciaManutencao, contentType);
+                                let resultEvidencia = await controllerEvidencia.inserirEvidencia(evidenciaManutencao, contentType, evidencia);
 
                                 if (resultEvidencia.status_code != 201) {
 
@@ -481,6 +481,8 @@ const inserirManutencaoComEvidencia = async (manutencao, contentType) => {
 
         } else {
 
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
+
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE
             )
@@ -498,23 +500,23 @@ const inserirManutencaoComEvidencia = async (manutencao, contentType) => {
 
 
 //Atualiza uma manutenção pelo id
-const atualizarManutencao = async (manutencao, id, contentType) => {
+const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
 
         //Validação do content-type
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
 
             //Validação dos dados da manutenção
-            let validar = await validarManutencao(manutencao, true);
+            let validar = validarManutencao(manutencao, true);
 
             if (!validar) {
 
                 //Verifica se o ID existe
                 let validarId = await buscarManutencaoId(id);
-
+                console.log(validarId)
                 if (validarId.status_code == 200) {
 
                     //Adiciona o ID no objeto
@@ -525,19 +527,32 @@ const atualizarManutencao = async (manutencao, id, contentType) => {
 
                     if (resultManutencao) {
 
+                        let deleteEvidencia = validarId.data.manutencao.forEa
+                           if (validarId.data.veiculo) {
+
+                                                       let deleteImg = await UPLOAD.deleteUploadFiles(validarId.data.veiculo[0].foto_veiculo.split('/').pop())
+
+                                                       if (!deleteImg) {
+
+                                                           return DEFAULT_MESSAGES.criarResposta(
+                                                               MESSAGES.ERROR_UPLOAD_IMAGE_DELETE,
+                                                           )
+                                                       }
+                        //                            }
                         let resultEvidenciaDelete = await controllerEvidencia.deletarEvidenciaIdManutencao(manutencao.id);
-                        console.log(resultEvidenciaDelete)
+
+
                         if (resultEvidenciaDelete.status_code == 200 || resultEvidenciaDelete.status_code == 404) {
 
-                            if (manutencao.evidencia != undefined) {
+                            if (evidencias != undefined) {
 
-                                for (evidencia of manutencao.evidencia) {
+                                for (let evidencia of evidencias) {
+
                                     let evidenciaManutencao = {
-                                        url: evidencia.url,
                                         fk_id_manutencao: manutencao.id
                                     }
 
-                                    let resultEvidencia = await controllerEvidencia.inserirEvidencia(evidenciaManutencao, contentType);
+                                    let resultEvidencia = await controllerEvidencia.inserirEvidencia(evidenciaManutencao, contentType, evidencia);
                                     console.log(resultEvidencia)
                                     if (resultEvidencia.status_code != 201) {
 
@@ -572,21 +587,13 @@ const atualizarManutencao = async (manutencao, id, contentType) => {
                             )
                         }
 
-
-
-
                         return DEFAULT_MESSAGES.criarResposta(
                             MESSAGES.SUCCESS_UPDATE_ITEM,
                             { manutencao: manutencao }
                         )
 
-                        return DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.ERROR_DELETE_OLD_EVIDENCES
-                        )
-
-
                     } else {
-
+                        MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
                         return DEFAULT_MESSAGES.criarResposta(
                             MESSAGES.ERROR_INTERNAL_SERVER
                         )
@@ -611,7 +618,7 @@ const atualizarManutencao = async (manutencao, id, contentType) => {
         }
 
     } catch (error) {
-
+        console.log(error)
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )

@@ -6,6 +6,7 @@
  ***********************************************************************************************************************/
 
 //Import do knex
+const e = require('express');
 const conexaoKnex = require('../../knex/index.js');
 
 //Busca uma categoria pelo id
@@ -92,7 +93,7 @@ const getEvidenceByIdNotMaintenance = async (id) => {
         }
 
     } catch (error) {
-        
+        console.log(error)
         return false
     }
 }
@@ -119,6 +120,7 @@ const deleteEvidenceMaintenance = async (id) => {
         const result = await conexaoKnex.conexao.raw(
             'delete from tbl_evidencia where fk_id_manutencao = ?', [id]
         );
+        console.log(result)
 
         if (result[0].affectedRows > 0) {
             return true
@@ -127,6 +129,7 @@ const deleteEvidenceMaintenance = async (id) => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }

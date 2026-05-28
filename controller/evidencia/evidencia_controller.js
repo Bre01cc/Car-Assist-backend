@@ -6,6 +6,7 @@
  ***********************************************************************************************************************/
 
 const evidenciaDAO = require('../../model/DAO/evidencia.js');
+const manutencaoDAO = require('../../model/DAO/manutencao.js');
 
 const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
 
@@ -373,9 +374,9 @@ const deletarEvidenciaIdManutencao = async (id) => {
 
     try {
 
-        let validarId = await buscarEvidenciaId(id);
+        let validarId = await manutencaoDAO.getMaintenanceById(id);
 
-        if (validarId.status_code == 200) {
+        if (validarId) {
 
             let deletarEvidencia = await evidenciaDAO.deleteEvidenceMaintenance(id);
 

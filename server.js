@@ -28,8 +28,6 @@ app.use((request, response, next) => {
   app.use(cors())
   app.use(express.json())
 
-const veiculoRouter = require('./routes/veiculo_router.js')
-
 
 
 // Documentação do swagger

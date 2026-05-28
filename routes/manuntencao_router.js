@@ -170,7 +170,7 @@ const controllerManutencao = require('../controller/manutencao/manutencao_contro
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
 
-router.put('/v1/car-assist/manutencao/:id', cors(), bodyParserJSON, async function (request, response) {
+router.put('/v1/car-assist/manutencao/:id', cors(), bodyParserJSON,upload.array('evidencias'), async function (request, response) {
 
     let dadosBody = request.body;
 
@@ -178,7 +178,9 @@ router.put('/v1/car-assist/manutencao/:id', cors(), bodyParserJSON, async functi
 
     let contentType = request.headers['content-type'];
 
-    let manutencao = await controllerManutencao.atualizarManutencao(dadosBody, idManutencao, contentType);
+     let evidencias = request.files;
+
+    let manutencao = await controllerManutencao.atualizarManutencao(dadosBody, idManutencao, contentType,evidencias);
 
     response.status(manutencao.status_code).json(manutencao);
 });
@@ -190,16 +192,15 @@ router.post('/v1/car-assist/manutencao', cors(), bodyParserJSON, async function 
     response.status(manutencao.status_code).json(manutencao);
 });
 
-router.post('/v1/car-assist/manutencao-evidencia', cors(), bodyParserJSON,upload.array('evidencia'), async function (request, response) {
+router.post('/v1/car-assist/manutencao-evidencia', cors(), bodyParserJSON,upload.array('evidencias'), async function (request, response) {
 
     let dadosBody = request.body;
 
     let contentType = request.headers['content-type'];
 
     let evidencias = request.files;
-    console.log(evidencias)
 
-    let manutencao = await controllerManutencao.inserirManutencaoComEvidencia(dadosBody, contentType);
+    let manutencao = await controllerManutencao.inserirManutencaoComEvidencia(dadosBody, contentType, evidencias);
 
     response.status(manutencao.status_code).json(manutencao);
 });
