@@ -16,6 +16,8 @@ const bodyParserJSON = bodyParser.json()
 
 const app = express()
 
+const verificarTokenAzure = require('./middlewares/middlewareJWT.js');
+
 const PORT = process.env.PORT || 8080
 //Controle de acesso
 app.use((request, response, next) => {
