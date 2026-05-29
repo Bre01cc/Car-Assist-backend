@@ -68,7 +68,7 @@ router.get('/v1/car-assist/tipo-servico', cors(), async (req, res) => {
 router.get('/v1/car-assist/tipo-servico/:id', cors(), async (req, res) => {
     let idTipoServico = req.params.id;
     let tipoServico = await controllerTipoServico.buscarTipoServicoId(idTipoServico)
-    console.log(tipoServico)
+    
     res.status(tipoServico.status_code).json(tipoServico);
 });
 

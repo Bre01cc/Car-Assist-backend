@@ -22,7 +22,7 @@ router.post('/v1/car-assist/usuario-servico', cors(), bodyParserJSON, async func
 });
 
 router.get('/v1/car-assist/usuario-servico', cors(), async (req, res) => {
-console.log(usuarioServico)
+
     let usuarioServico = await controllerUsuarioServico.listarUsuariosServicos()
 
     res.status(usuarioServico.status_code).json(usuarioServico);

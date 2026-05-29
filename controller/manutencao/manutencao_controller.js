@@ -11,6 +11,8 @@ const controllerEvidencia = require('../evidencia/evidencia_controller.js');
 
 const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
 
+//Import da controller que faz upload da foto
+const UPLOAD = require('../upload/controller_upload_azure.js');
 
 //Retorna todas as manutenções
 const listarManutencao = async () => {
@@ -501,7 +503,7 @@ const inserirManutencaoComEvidencia = async (manutencao, contentType, evidencias
 
 //Atualiza uma manutenção pelo id
 const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
-
+console.log(manutencao)
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
@@ -516,7 +518,7 @@ const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
 
                 //Verifica se o ID existe
                 let validarId = await buscarManutencaoId(id);
-                console.log(validarId)
+               
                 if (validarId.status_code == 200) {
 
                     //Adiciona o ID no objeto
@@ -527,18 +529,23 @@ const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
 
                     if (resultManutencao) {
 
-                        let deleteEvidencia = validarId.data.manutencao.forEa
-                           if (validarId.data.veiculo) {
+                        if (validarId.data.manutencao[0].evidencia) {
 
-                                                       let deleteImg = await UPLOAD.deleteUploadFiles(validarId.data.veiculo[0].foto_veiculo.split('/').pop())
+                            for (let evidencia of validarId.data.manutencao[0].evidencia) {
 
-                                                       if (!deleteImg) {
+                                let nomeArquivo = evidencia.url.split('/').pop()
 
-                                                           return DEFAULT_MESSAGES.criarResposta(
-                                                               MESSAGES.ERROR_UPLOAD_IMAGE_DELETE,
-                                                           )
-                                                       }
-                        //                            }
+                                let deleteImg = await UPLOAD.deleteUploadFiles(nomeArquivo)
+
+                                if (!deleteImg) {
+
+                                    return DEFAULT_MESSAGES.criarResposta(
+                                        MESSAGES.ERROR_UPLOAD_IMAGE_DELETE
+                                    )
+                                }
+                            }
+                        }
+
                         let resultEvidenciaDelete = await controllerEvidencia.deletarEvidenciaIdManutencao(manutencao.id);
 
 
@@ -553,7 +560,7 @@ const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
                                     }
 
                                     let resultEvidencia = await controllerEvidencia.inserirEvidencia(evidenciaManutencao, contentType, evidencia);
-                                    console.log(resultEvidencia)
+
                                     if (resultEvidencia.status_code != 201) {
 
                                         MESSAGES.ERROR_RELATION_TABLE.message += 'Evidência'
@@ -593,30 +600,25 @@ const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
                         )
 
                     } else {
-                        MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
-                        return DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.ERROR_INTERNAL_SERVER
-                        )
 
+                        return validarId
                     }
 
                 } else {
 
-                    return validarId
+                    return validar
                 }
 
             } else {
 
-                return validar
+                MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
+
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_INTERNAL_SERVER
+                )
             }
 
-        } else {
-
-            return DEFAULT_MESSAGES.criarResposta(
-                MESSAGES.ERROR_CONTENT_TYPE
-            )
         }
-
     } catch (error) {
         console.log(error)
         return DEFAULT_MESSAGES.criarResposta(
@@ -624,7 +626,6 @@ const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
         )
     }
 }
-
 //Valida os dados da manutenção
 const validarManutencao = (manutencao) => {
 
