@@ -360,11 +360,9 @@ const buscarUsuarioEmailComSenha = async (usuario, contentType) => {
 
                         let usuarioFiltrado = usuarioFormatado(resultUsuario[0]);
 
-                        console.log(usuarioFiltrado)
+                        let tokenUser = await jwt.createJWT(usuarioFiltrado.id);
 
-                        //Gera o token pelo JWT
-                        let tokenUser = await jwt.createJWT(usuarioFiltrado.id)
-                        //Adiciona uma chave no JSON com o token do usuário
+                        // Adiciona uma chave no JSON com o token do usuário
                         usuarioFiltrado.token = tokenUser;
 
                         return DEFAULT_MESSAGES.criarResposta(
@@ -712,7 +710,7 @@ const atualizarUsuario = async (usuario, id, contentType, foto) => {
                                 let urlFoto = await UPLOAD.uploadFiles(foto);
 
                                 if (urlFoto) {
-                                    
+
                                     usuario.foto_usuario = urlFoto
 
                                 } else {

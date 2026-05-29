@@ -6,6 +6,7 @@ const bodyParserJSON = bodyParser.json()
 
 const router = express.Router()
 
+const { verifyJWT } = require('../middlewares/authMiddleware.js');
 
 const controllerUV = require('../controller/usuario_veiculo/usuario_veiculo_controller.js')
 
@@ -15,7 +16,8 @@ router.get('/v1/car-assist/usuario-veiculo', cors(), async (req, res) => {
     res.status(result.status_code).json(result)
 })
 
-router.get('/v1/car-assist/usuario-veiculo/:id', cors(), async (req, res) => {
+//Rota que busca todos os veiculos de um usuario
+router.get('/v1/car-assist/usuario-veiculo/:id', verifyJWT, cors(), async (req, res) => {
     let idUsuarioVeiculo = req.params.id;
     let usuario = await controllerUV.buscarUsuarioVeiculoIdUsuario(idUsuarioVeiculo)
   

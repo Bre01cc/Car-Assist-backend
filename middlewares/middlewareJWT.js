@@ -13,24 +13,34 @@ const SECRET = '5618527411f4dcd5854d24ec945fa24e9609a403e5ba5b2e2c86e7790a5e209c
 const EXPIRES = 60
 
 //Criação do JWT (retorna um TOKEN)
-const createJWT = async function(payLoad) {
-    const token = jwt.sign({userId: payLoad}, SECRET, {expiresIN: EXPIRES})
+const createJWT = async function (payLoad) {
+    const token = jwt.sign({ userId: payLoad }, SECRET, { expiresIn: EXPIRES })
 
     return token;
 }
 
 //Validaão de autenticidade do JWT (recebe o TOKEN para validação)
-const validateJWT = async function(token) {
-    let status = false;
+// const validateJWT = async function (token) {
+//     let status;
 
-    //Valida a autenticidade do token
-    jwt.verify(token, SECRET, async function (err, decode) {
+//     //Valida a autenticidade do token
+//     jwt.verify(token, SECRET, async function (err, decode) {
+//         if (err)
+//             status = false;
+//         else
+//             status = true
+//     });
+//     return status;
+// }
 
-        if (!err)
-            status = true;
-
-        return status;
-    });
+const validateJWT = async function (token) {
+    try {
+        // Tenta abrir o token. Se der erro (expirado ou falso), ele pula pro catch
+        jwt.verify(token, SECRET);
+        return true; 
+    } catch (error) {
+        return false;
+    }
 }
 
 module.exports = {
