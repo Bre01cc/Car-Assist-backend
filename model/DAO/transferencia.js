@@ -2,11 +2,10 @@
  * Objetivo: Arquivo responsável pelas operações de dados no MySQL referente às Transferências de Veículos
  * Data: 27/05/2026
  * Autor: Guilherme Moreira de Souza
- * Versão: 1.3
+ * Versão: 1.0
  ***********************************************************************************************************************/
 
 const conexaoKnex = require('../../knex/index.js');
-
 
 const insertTokenTransferencia = async (dados) => {
     try {
@@ -15,14 +14,14 @@ const insertTokenTransferencia = async (dados) => {
                         fk_id_veiculo, 
                         fk_id_usuario_origem, 
                         papel_concedido
-                    ) values (
-                        '${dados.codigo_verificacao}', 
-                        ${dados.fk_id_veiculo}, 
-                        ${dados.fk_id_usuario_origem}, 
-                        '${dados.papel_concedido}'
-                    )`;
+                    ) values (?, ?, ?, ?)`;
 
-        let result = await conexaoKnex.conexao.raw(sql);
+        let result = await conexaoKnex.conexao.raw(sql, [
+            dados.codigo_verificacao,
+            dados.fk_id_veiculo,
+            dados.fk_id_usuario_origem,
+            dados.papel_concedido
+        ]);
 
         if (result && result[0] && result[0].affectedRows > 0)
             return true;
@@ -35,17 +34,18 @@ const insertTokenTransferencia = async (dados) => {
     }
 }
 
+// Busca um token válido parametrizando o código recebido do usuário externo
 const getTokenValido = async (codigo) => {
     try {
         let codigoString = String(codigo).trim();
 
         let sql = `select * from tbl_token_transferencia 
-                   where codigo_verificacao = '${codigoString}' 
+                   where codigo_verificacao = ? 
                      and is_usado = false 
                      and criado_em >= now() - interval 5 minute limit 1`;
 
-        let result = await conexaoKnex.conexao.raw(sql);
-
+        // Passando a variável no array de parâmetros para neutralizar SQL Injection
+        let result = await conexaoKnex.conexao.raw(sql, [codigoString]);
 
         if (result && result[0] && result[0].length > 0) {
             return result[0][0];
@@ -59,7 +59,6 @@ const getTokenValido = async (codigo) => {
     }
 }
 
-
 const executeTransferenciaPropriedade = async (idUsuarioDestino, tokenInfo) => {
     
     const transacaoBanco = await conexaoKnex.conexao.transaction();
@@ -69,17 +68,15 @@ const executeTransferenciaPropriedade = async (idUsuarioDestino, tokenInfo) => {
             throw new Error('Dados do token inválidos para a transferência.');
         }
 
-
         if (tokenInfo.papel_concedido === 'Proprietário') {
             let sqlDesativarAntigos = `update tbl_usuario_veiculo 
                                        set is_ativo = false, 
                                            data_desvinculo = curdate() 
-                                       where fk_id_veiculo = ${tokenInfo.fk_id_veiculo} 
+                                       where fk_id_veiculo = ? 
                                          and is_ativo = true`;
                                          
-            await transacaoBanco.raw(sqlDesativarAntigos);
+            await transacaoBanco.raw(sqlDesativarAntigos, [tokenInfo.fk_id_veiculo]);
         }
-
 
         let sqlInsertVinculo = `insert into tbl_usuario_veiculo (
                                     fk_id_usuario, 
@@ -87,19 +84,19 @@ const executeTransferenciaPropriedade = async (idUsuarioDestino, tokenInfo) => {
                                     papel_usuario, 
                                     data_vinculo, 
                                     is_ativo
-                                ) values (
-                                    ${idUsuarioDestino}, 
-                                    ${tokenInfo.fk_id_veiculo}, 
-                                    '${tokenInfo.papel_concedido}', 
-                                    curdate(), 
-                                    true
-                                )`;
-        await transacaoBanco.raw(sqlInsertVinculo);
+                                ) values (?, ?, ?, curdate(), true)`;
+                                
+        await transacaoBanco.raw(sqlInsertVinculo, [
+            idUsuarioDestino,
+            tokenInfo.fk_id_veiculo,
+            tokenInfo.papel_concedido
+        ]);
 
         let sqlUpdateToken = `update tbl_token_transferencia 
                               set is_usado = true 
-                              where id = ${tokenInfo.id}`;
-        await transacaoBanco.raw(sqlUpdateToken);
+                              where id = ?`;
+                              
+        await transacaoBanco.raw(sqlUpdateToken, [tokenInfo.id]);
 
         await transacaoBanco.commit();
         return true;
