@@ -20,7 +20,7 @@ router.get('/v1/car-assist/usuario-veiculo', cors(), async (req, res) => {
 })
 
 //Rota que busca todos os veiculos de um usuario
-router.get('/v1/car-assist/usuario-veiculo/:id', verifyJWT, cors(), async (req, res) => {
+router.get('/v1/car-assist/usuario-veiculo/:id', cors(), async (req, res) => {
     let idUsuarioVeiculo = req.params.id;
     let usuario = await controllerUV.buscarUsuarioVeiculoIdUsuario(idUsuarioVeiculo)
   
