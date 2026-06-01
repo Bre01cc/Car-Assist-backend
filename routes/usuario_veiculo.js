@@ -6,7 +6,10 @@ const bodyParserJSON = bodyParser.json()
 
 const router = express.Router()
 
-const { verifyJWT } = require('../middlewares/authMiddleware.js');
+/*  Chama o verify caso queira usar sessao do usuario (implementação futura, cookie)
+    const { verifyJWT } = require('../middlewares/authMiddleware.js');
+    Exemplo de rota router.get('/v1/car-assist/usuario-veiculo/:id', verifyJWT, cors(), async (req, res)
+*/
 
 const controllerUV = require('../controller/usuario_veiculo/usuario_veiculo_controller.js')
 
