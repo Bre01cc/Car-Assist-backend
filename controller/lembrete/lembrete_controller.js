@@ -111,6 +111,63 @@ const buscarLembreteId = async (id) => {
 
 }
 
+// Retorna um lembrete pelo id do veículo
+const buscarLembreteIdUsuario = async (id) => {
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
+
+    try {
+
+        if (!isNaN(id) && id != null && id > 0) {
+
+            let resultLembrete = await lembreteDAO.getReminderById(id);
+
+            if (resultLembrete) {
+
+                if (resultLembrete.length > 0) {
+
+                    let lembreteFormatado = formatarLembrete(resultLembrete[0]);
+
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
+                        { lembrete: lembreteFormatado }
+                    )
+
+                } else {
+
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND,
+                        null,
+                        'Nikolas Fernandes')
+                }
+            } else {
+
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND,
+                    null,
+                    'Nikolas Fernandes')
+            }
+
+        } else {
+
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS,
+                null,
+                'Nikolas Fernandes')
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER,
+            null,
+            'Nikolas Fernandes')
+    }
+
+}
+
 // Cadastra um lembrete no banco de dados
 const inserirLembrete = async (lembrete, contentType) => {
 

@@ -350,13 +350,15 @@ INSERT INTO tbl_lembretes (
     descricao,
     data_vencimento,
     status,
-    fk_id_veiculo
+    fk_id_veiculo,
+    fk_id_usuario
 ) VALUES
 (
     'Trocar óleo',
     'Lembrete de troca de óleo',
     '2025-06-01 10:00:00',
     'pendente',
+    1,
     1
 ),
 (
@@ -364,6 +366,7 @@ INSERT INTO tbl_lembretes (
     'Levar na oficina',
     '2025-07-01 10:00:00',
     'ativo',
+    1,
     2
 ),
 (
@@ -371,6 +374,7 @@ INSERT INTO tbl_lembretes (
     'Verificar pressão',
     '2025-08-01 09:00:00',
     'ativo',
+    1,
     3
 );
 

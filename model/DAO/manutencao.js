@@ -190,7 +190,7 @@ const postManutencao = async (manutencao) => {
         }
 
     } catch (error) {
-
+console.log(error)
         return false
 
     }
