@@ -8,3 +8,5 @@
 8-npm install node-fetch
 9-
 10-
+
+trigger score, gasto e manutenção quilometragem
