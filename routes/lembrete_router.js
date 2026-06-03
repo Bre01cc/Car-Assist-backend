@@ -144,6 +144,13 @@ router.get('/v1/car-assist/lembrete/:id', cors(), async (req, res) => {
     res.status(result.status_code).json(result)
 })
 
+// Rota para buscar um lembrete pelo ID do usuário
+router.get('/v1/car-assist/lembrete/usuario/:id', cors(), async (req, res) => {
+    let id = req.params.id
+    let result = await controllerLembretes.buscarLembreteIdUsuario(id)
+    res.status(result.status_code).json(result)
+})
+
 // Rota para inserir um novo lembrete
 router.post('/v1/car-assist/lembrete', cors(), bodyParserJSON, async (req, res) => {
     let dadosBody = req.body
