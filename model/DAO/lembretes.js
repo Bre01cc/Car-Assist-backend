@@ -43,11 +43,11 @@ const getReminderById = async (id) => {
 }
 
 // Selecionar um lembrete pelo ID do veículo
-const getReminderByIdVehicle = async (idVeiculo) => {
+const getReminderByIdUser = async (idVeiculo) => {
 
     try {
 
-        let result = await conexaoKnex.conexao.raw(`select * from tbl_lembretes where fk_id_veiculo = ? `);
+        let result = await conexaoKnex.conexao.raw(`select * from tbl_lembretes where fk_id_usuario = ? `);
 
         if (result[0].length > 0)
             return result[0];
@@ -158,5 +158,6 @@ module.exports = {
     getReminderById,
     insertReminder,
     updateReminder,
-    deleteReminder
+    deleteReminder,
+
 }

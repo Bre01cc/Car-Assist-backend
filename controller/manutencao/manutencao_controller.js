@@ -406,9 +406,9 @@ const inserirManutencaoComEvidencia = async (manutencao, contentType, evidencias
             let validar = validarManutencao(manutencao);
 
             if (!validar) {
-
+console.log(manutencao)
                 let resultManutencao = await manutencaoDAO.postManutencao(manutencao);
-
+console.log(resultManutencao)
                 if (resultManutencao) {
 
                     let ultimoId = await manutencaoDAO.getSelectLastId();

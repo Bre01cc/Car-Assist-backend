@@ -130,12 +130,18 @@ CREATE TABLE tbl_lembretes (
         'pendente'
     ) NOT NULL,
     fk_id_veiculo INT NOT NULL,
-
+    fk_id_usuario INT NOT NULL,
     CONSTRAINT FK_lembr_vei
         FOREIGN KEY (fk_id_veiculo)
         REFERENCES tbl_veiculo (id)
+        ON DELETE CASCADE,
+         CONSTRAINT FK_lembr_user
+        FOREIGN KEY (fk_id_usuario)
+        REFERENCES tbl_usuario (id)
         ON DELETE CASCADE
 );
+
+
 
 -- =====================================================
 -- TABELA: GASTOS
