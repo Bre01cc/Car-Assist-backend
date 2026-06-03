@@ -27,7 +27,7 @@ const listarUsuariosServicos = async () => {
         if (resultUsuarioServico) {
 
             if (resultUsuarioServico.length > 0) {
-console.log(resultUsuarioServico)
+
                 resultFormatado = resultUsuarioServico.map(
                     usuarioServico => formatarUsuarioServico(usuarioServico)
                 );
@@ -65,6 +65,7 @@ console.log(resultUsuarioServico)
 const buscarUsuarioServicoByIdUsuario = async (idUsuario) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
     try {
         if (!isNaN(idUsuario) && idUsuario != null && idUsuario > 0) {
 
@@ -150,7 +151,7 @@ const inserirUsuarioServico = async (usuarioServico, contentType) => {
             }
 
         } else {
-
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[JSON]'
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE
             )

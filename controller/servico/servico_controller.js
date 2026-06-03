@@ -11,7 +11,7 @@ const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
 
 //Retorna todos os serviços
 const listarServicos = async () => {
-    
+
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
@@ -210,6 +210,8 @@ const inserirServico = async (servico, contentType) => {
             }
 
         } else {
+            
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[APPLICATION/JSON]'
 
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE
@@ -277,6 +279,8 @@ const atualizarServico = async (servico, id, contentType) => {
             }
 
         } else {
+
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[APPLICATION/JSON]'
 
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE

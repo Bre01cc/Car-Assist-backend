@@ -209,6 +209,8 @@ const inserirPeca = async (peca, contentType) => {
             }
 
         } else {
+            
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[APPLICATION/JSON]'
 
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE
@@ -269,6 +271,8 @@ const atualizarPeca = async (peca, id, contentType) => {
             }
 
         } else {
+
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[APPLICATION/JSON]'
 
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE

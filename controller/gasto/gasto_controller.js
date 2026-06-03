@@ -219,7 +219,7 @@ const buscarGastoIdVeiculoComTipo = async (id_veiculo, id_tipo) => {
             let resultGasto = await gastoDAO.getExpenseByIdVehicleAndType(id_veiculo, id_tipo);
 
             if (resultGasto) {
-                
+
                 let gastoFormato = resultGasto.map(
                     gasto => formatarGasto(gasto)
                 )
@@ -304,6 +304,8 @@ const inserirGasto = async (gasto, contentType) => {
             }
 
         } else {
+            
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[APPLICATION/JSON]'
 
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE,
@@ -371,6 +373,8 @@ const atualizarGasto = async (gasto, id, contentType) => {
             }
 
         } else {
+
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[APPLICATION/JSON]'
 
             return DEFAULT_MESSAGES.criarResposta(
                 MENSSAGES.ERROR_CONTENT_TYPE,

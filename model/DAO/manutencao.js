@@ -190,7 +190,7 @@ const postManutencao = async (manutencao) => {
         }
 
     } catch (error) {
-console.log(error)
+
         return false
 
     }
@@ -209,9 +209,8 @@ const putManutencao = async (manutencao) => {
                 quilometragem = ?,
                 oficina = ?,
                 observacoes = ?,
-                is_ativo = ?,
                 fk_id_tipo_manutencao = ?,
-                pecas,
+                pecas= ?,
                 fk_id_usuario = ?,
                 fk_id_veiculo = ?
             WHERE id = ?

@@ -17,6 +17,18 @@ CREATE TABLE tbl_usuario (
 );
 
 -- =====================================================
+-- TABELA: RESET_SENHA
+-- =====================================================
+CREATE TABLE tbl_reset_senha(
+    id int not null AUTO_INCREMENT PRIMARY KEY,
+    id_usuario int not null,
+    token_hash VARCHAR(64) not null,
+    data_expiracao dateTime DEFAULT(CURRENT_TIMESTAMP + INTERVAL 15 MINUTE),
+    data_uso DATETIME null,
+    FOREIGN KEY (id_usuario) REFERENCES tbl_usuario(id)
+);
+
+-- =====================================================
 -- TABELA: VEÍCULO
 -- =====================================================
 CREATE TABLE tbl_veiculo (

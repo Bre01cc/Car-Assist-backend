@@ -241,10 +241,10 @@ const inserirVinculo = async (dados, contentType) => {
                 let validarIDs = await buscarUsuarioVeiculoIdUsuarioComIdVeiculo(dados.fk_id_usuario, dados.fk_id_veiculo)
           
                 if (validarIDs.status_code != 200) {
+
                     let result = await usuarioVeiculoDAO.postUserVehicle(dados);
 
                     if (result) {
-
 
                         return DEFAULT_MESSAGES.criarResposta(
                             MESSAGES.SUCCESS_CREATED_ITEM,
@@ -271,7 +271,7 @@ const inserirVinculo = async (dados, contentType) => {
             }
 
         } else {
-
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[JSON]'
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE,
                 null,
@@ -300,10 +300,13 @@ const atualizerVinculo = async (dados,contentType, idUsuario,idVeiculo) => {
             if (!validar) {
 
                 let validarIDs = await buscarUsuarioVeiculoIdUsuarioComIdVeiculo(idUsuario, idVeiculo)
-               console.log(validarIDs)
+              
                 if (validarIDs.status_code == 200) {
+
                     dados.fk_id_usuario = idUsuario
+
                     dados.fk_id_veiculo = idVeiculo
+
                     let result = await usuarioVeiculoDAO.putUserVehicle(dados);
 
                     if (result) {
@@ -334,7 +337,7 @@ const atualizerVinculo = async (dados,contentType, idUsuario,idVeiculo) => {
             }
 
         } else {
-
+             MESSAGES.ERROR_CONTENT_TYPE.message += '[JSON]'
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_CONTENT_TYPE,
                 null,
@@ -342,7 +345,7 @@ const atualizerVinculo = async (dados,contentType, idUsuario,idVeiculo) => {
         }
 
     } catch (error) {
-console.log(error)
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER,
             null,
