@@ -5,6 +5,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "knex": "^3.2.10",
     "multer": "^2.1.1",
     "mysql2": "^3.22.3",
@@ -16,7 +17,6 @@
   "version": "1.0.0",
   "description": "![API REST](https://img.shields.io/badge/API-REST-blue) ![Node.js](https://img.shields.io/badge/Node.js-green?logo=node.js) ![Status](https://img.shields.io/badge/Status-em%20desenvolvimento-orange)",
   "main": "server.js",
-  "devDependencies": {},
   "scripts": {
     "dev": "node --watch server.js"
   },

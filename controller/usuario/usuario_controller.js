@@ -329,6 +329,9 @@ const buscarUsuarioEmailComSenha = async (usuario, contentType) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
+    // IMport para retornar o token de acesso
+    // const jwt = require('../../middlewares/middlewareJWT.js')
+
     try {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
@@ -357,6 +360,11 @@ const buscarUsuarioEmailComSenha = async (usuario, contentType) => {
                     if (resultUsuario.length > 0) {
 
                         let usuarioFiltrado = usuarioFormatado(resultUsuario[0]);
+
+                        // let tokenUser = await jwt.createJWT(usuarioFiltrado.id);
+
+                        // Adiciona uma chave no JSON com o token do usuário
+                        // usuarioFiltrado.token = tokenUser;
 
                         return DEFAULT_MESSAGES.criarResposta(
                             MESSAGES.SUCCESS_REQUEST,
