@@ -21,11 +21,11 @@ const listarLembretes = async () => {
 
             if (resultLembretes.length > 0) {
 
-                let lembretesFormatados = resultLembretes.map(lembrete => formatarLembrete(lembrete));
+
 
                 return DEFAULT_MESSAGES.criarResposta(
                     MESSAGES.SUCCESS_REQUEST,
-                    { lembretes: lembretesFormatados },
+                    { lembretes: resultLembretes },
                     'Nikolas Fernandes'
                 )
 
@@ -69,11 +69,12 @@ const buscarLembreteId = async (id) => {
 
                 if (resultLembrete.length > 0) {
 
-                    let lembreteFormatado = formatarLembrete(resultLembrete[0]);
+
+
 
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.SUCCESS_REQUEST,
-                        { lembrete: lembreteFormatado }
+                        { lembrete: resultLembrete[0] }
                     )
 
                 } else {
@@ -111,7 +112,7 @@ const buscarLembreteId = async (id) => {
 
 }
 
-// Retorna um lembrete pelo id do veículo
+// Retorna um lembrete pelo id do usuário
 const buscarLembreteIdUsuario = async (id) => {
 
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
@@ -120,32 +121,30 @@ const buscarLembreteIdUsuario = async (id) => {
 
         if (!isNaN(id) && id != null && id > 0) {
 
-            let resultLembrete = await lembreteDAO.getReminderById(id);
+            let resultLembrete = await lembreteDAO.getReminderByIdUser(id);
 
             if (resultLembrete) {
 
                 if (resultLembrete.length > 0) {
 
-                    let lembreteFormatado = formatarLembrete(resultLembrete[0]);
+
 
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.SUCCESS_REQUEST,
-                        { lembrete: lembreteFormatado }
+                        { lembrete: resultLembrete }
                     )
 
                 } else {
 
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.ERROR_NOT_FOUND,
-                        null,
-                        'Nikolas Fernandes')
+                        null)
                 }
             } else {
 
                 return DEFAULT_MESSAGES.criarResposta(
                     MESSAGES.ERROR_NOT_FOUND,
-                    null,
-                    'Nikolas Fernandes')
+                    null)
             }
 
         } else {
@@ -154,16 +153,14 @@ const buscarLembreteIdUsuario = async (id) => {
 
             return DEFAULT_MESSAGES.criarResposta(
                 MESSAGES.ERROR_REQUIRED_FIELDS,
-                null,
-                'Nikolas Fernandes')
+                null)
         }
 
     } catch (error) {
 
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER,
-            null,
-            'Nikolas Fernandes')
+            null)
     }
 
 }
@@ -184,18 +181,31 @@ const inserirLembrete = async (lembrete, contentType) => {
                 let resultLembrete = await lembreteDAO.insertReminder(lembrete);
 
                 if (resultLembrete) {
-                    // Nota: se você tiver a função getSelectLastId na DAO de lembretes, use-a aqui
-                    return DEFAULT_MESSAGES.criarResposta(
-                        MESSAGES.SUCCESS_CREATED_ITEM,
-                        lembrete,
-                        'Nikolas Fernandes'
-                    )
-                } else {
 
+                    let ultimoId = await lembreteDAO.getSelectLastId();
+                    
+                    if (ultimoId) {
+                        // Nota: se você tiver a função getSelectLastId na DAO de lembretes, use-a aqui
+                        lembrete.id = ultimoId
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.SUCCESS_CREATED_ITEM,
+                            lembrete,
+                            'Nikolas Fernandes'
+                        )
+                    } else {
+
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL,
+                            null,
+                            'Nikolas Fernandes'
+                        )
+                    }
+                } else {
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.ERROR_INTERNAL,
                         null,
-                        'Nikolas Fernandes')
+                        'Nikolas Fernandes'
+                    )
                 }
 
             } else {
@@ -214,7 +224,7 @@ const inserirLembrete = async (lembrete, contentType) => {
         }
 
     } catch (error) {
-
+        console.log(error)
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER,
             null,
@@ -271,7 +281,7 @@ const atualizarLembrete = async (lembrete, id, contentType) => {
             }
 
         } else {
-            
+
             MESSAGES.ERROR_CONTENT_TYPE.message += '[APPLICATION/JSON]'
 
             return DEFAULT_MESSAGES.criarResposta(
@@ -390,26 +400,22 @@ const validarLembrete = (lembrete) => {
             null,
             'Nikolas Fernandes')
 
-    } else {
+    }
+    else if (!lembrete.fk_id_usuario || isNaN(lembrete.fk_id_usuario)) {
 
-        return false
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Usuario incorreto]'
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS,
+            null,
+            'Nikolas Fernandes'
+        )
+
     }
 
-}
+    else {
 
-// Formatar a saída do lembrete
-const formatarLembrete = (lembrete) => {
-
-    return {
-        id: lembrete.id,
-        titulo: lembrete.titulo,
-        descricao: lembrete.descricao,
-        data_criacao: lembrete.data_criacao,
-        data_vencimento: lembrete.data_vencimento,
-        status: lembrete.status,
-        veiculo: {
-            id: lembrete.fk_id_veiculo
-        }
+        return false
     }
 
 }
@@ -419,5 +425,6 @@ module.exports = {
     buscarLembreteId,
     inserirLembrete,
     atualizarLembrete,
-    deletarLembreteId
+    deletarLembreteId,
+    buscarLembreteIdUsuario
 }

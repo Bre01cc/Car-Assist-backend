@@ -12,8 +12,8 @@ const conexaoKnex = require('../../knex/index.js');
 const getAllReminders = async () => {
 
     try {
-   
-        let result = await conexaoKnex.conexao.raw('select * from tbl_lembretes order by id desc');
+
+        let result = await conexaoKnex.conexao.raw('select * from tbl_lembretes order by id');
 
         if (result[0].length > 0)
             return result[0];
@@ -30,7 +30,7 @@ const getReminderById = async (id) => {
 
     try {
 
-        let result = await conexaoKnex.conexao.raw(`select * from tbl_lembretes where id = ? `);
+        let result = await conexaoKnex.conexao.raw(`select * from tbl_lembretes where id = ?`,[id]);
 
         if (result[0].length > 0)
             return result[0];
@@ -43,18 +43,19 @@ const getReminderById = async (id) => {
 }
 
 // Selecionar um lembrete pelo ID do veículo
-const getReminderByIdUser = async (idVeiculo) => {
+const getReminderByIdUser = async (idUsuario) => {
 
     try {
 
-        let result = await conexaoKnex.conexao.raw(`select * from tbl_lembretes where fk_id_usuario = ? `);
-
+        let result = await conexaoKnex.conexao.raw(`select * from tbl_lembretes where fk_id_usuario = ? `,[idUsuario]);
+        console.log(result)
         if (result[0].length > 0)
             return result[0];
         else
             return false;
 
     } catch (error) {
+        console.log(error)
         return false;
     }
 }
@@ -71,8 +72,10 @@ const insertReminder = async (dados) => {
                         descricao, 
                         data_vencimento, 
                         status, 
-                        fk_id_veiculo
+                        fk_id_veiculo,
+                        fk_id_usuario
                     ) values (
+                        ?,
                         ?,
                         ?,
                         ?,
@@ -83,7 +86,8 @@ const insertReminder = async (dados) => {
             dados.descricao,
             dados.data_vencimento,
             dados.status,
-            dados.fk_id_veiculo
+            dados.fk_id_veiculo,
+            dados.fk_id_usuario
         ]
         );
 
@@ -93,7 +97,35 @@ const insertReminder = async (dados) => {
             return false;
 
     } catch (error) {
+        console.log(error)
         return false;
+    }
+
+}
+
+//Busca o último id do lembretes
+const getSelectLastId = async () => {
+
+    try {
+
+        let result = await conexaoKnex.conexao
+            .select('id')
+            .from('tbl_lembretes')
+            .orderBy('id', 'desc')
+            .limit(1)
+
+        if (result.length > 0) {
+
+            return Number(result[0].id)
+
+        } else {
+
+            return false
+        }
+
+    } catch (error) {
+
+        return false
     }
 
 }
@@ -135,11 +167,11 @@ const updateReminder = async (id, dados) => {
 const deleteReminder = async (id) => {
 
     try {
-        
+
 
         let result = await conexaoKnex.raw(
             `delete from tbl_lembretes where id = ?`,
-        [id]
+            [id]
         );
 
         if (result[0].affectedRows > 0)
@@ -150,7 +182,7 @@ const deleteReminder = async (id) => {
     } catch (error) {
         return false;
     }
-    
+
 }
 
 module.exports = {
@@ -159,5 +191,6 @@ module.exports = {
     insertReminder,
     updateReminder,
     deleteReminder,
-
+    getReminderByIdUser,
+    getSelectLastId
 }
