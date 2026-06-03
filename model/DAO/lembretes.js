@@ -42,6 +42,24 @@ const getReminderById = async (id) => {
     }
 }
 
+// Selecionar um lembrete pelo ID do veículo
+const getReminderByIdVehicle = async (idVeiculo) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(`select * from tbl_lembretes where fk_id_veiculo = ? `);
+
+        if (result[0].length > 0)
+            return result[0];
+        else
+            return false;
+
+    } catch (error) {
+        return false;
+    }
+}
+
+
 // Inserir um novo lembrete
 const insertReminder = async (dados) => {
 
