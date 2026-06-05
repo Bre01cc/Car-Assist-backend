@@ -25,3 +25,5 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+trigger score, gasto e manutenção quilometragem

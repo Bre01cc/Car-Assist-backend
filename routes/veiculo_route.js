@@ -59,78 +59,6 @@ const controllerVeiculo = require('../controller/veiculo/veiculo_controller.js')
  * 
  */
 
-/**
- * @swagger
- * /v1/car-assist/veiculo:
- *   post:
- *     summary: Cria um novo Veículo
- *     description: Cadastra um novo Veículo no sistema.
- *     tags:
- *       - Veículos
- *     requestBody:
- *       required: true
- *       content:
- *        multipart/form-data:
- *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
- *     responses:
- *       201:
- *         description: Veículo criado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/SUCCESS_CREATED_ITEM'
- *       400:
- *         description: Dados obrigatórios não informados ou inválidos
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
- *       500: 
- *         description: Erro interno do servidor
- *         content:  
- *            application/json:
- *              schema:
- *                $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
- * 
- *  
- */
-
-/**
- * @swagger
- * /v1/car-assist/veiculo/{id}:
- *   delete:
- *     summary: Deleta um Veículo pelo ID
- *     description: Deleta um Veículo pelo ID.
- *     tags:
- *       - Veículos
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID do veículo
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Veículo deletado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
- *       404:
- *         description: Veículo não encontrado
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
- *       500:
- *         description: Erro interno do servidor
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
- */
 
 /**
  * @swagger
@@ -191,12 +119,85 @@ router.get('/v1/car-assist/veiculo', cors(), async function (request, response) 
     response.json(veiculo);
 });
 
+/**
+ * @swagger
+ * /v1/car-assist/veiculo/{id}:
+ *   delete:
+ *     summary: Deleta um Veículo pelo ID
+ *     description: Deleta um Veículo pelo ID.
+ *     tags:
+ *       - Veículos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID do veículo
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Veículo deletado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
+ *       404:
+ *         description: Veículo não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ */
+
 router.delete('/v1/car-assist/veiculo/:id', cors(), async (req, res) => {
     let idVeiculo = req.params.id;
     let veiculo = await controllerVeiculo.deletarVeiculoId(idVeiculo)
 
     res.status(veiculo.status_code).json(veiculo);
 });
+
+/**
+ * @swagger
+ * /v1/car-assist/veiculo:
+ *   post:
+ *     summary: Cria um novo Veículo
+ *     description: Cadastra um novo Veículo no sistema.
+ *     tags:
+ *       - Veículos
+ *     requestBody:
+ *       required: true
+ *       content:
+ *        multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/VeiculoRequest'
+ *     responses:
+ *       201:
+ *         description: Veículo criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_CREATED_ITEM'
+ *       400:
+ *         description: Dados obrigatórios não informados ou inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
+ *       500: 
+ *         description: Erro interno do servidor
+ *         content:  
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ * 
+ *  
+ */
 
 //Insere um veiculo
 router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, upload.single('foto_veiculo'), async function (request, response) {
@@ -214,6 +215,43 @@ router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, upload.single('fot
 
     response.json(veiculo);
 });
+
+/**
+ * @swagger
+ * /v1/car-assist/veiculo:
+ *   post:
+ *     summary: Cria um novo Veículo
+ *     description: Cadastra um novo Veículo no sistema.
+ *     tags:
+ *       - Veículos
+ *     requestBody:
+ *       required: true
+ *       content:
+ *        multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/VeiculoRequest'
+ *     responses:
+ *       201:
+ *         description: Veículo criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_CREATED_ITEM'
+ *       400:
+ *         description: Dados obrigatórios não informados ou inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
+ *       500: 
+ *         description: Erro interno do servidor
+ *         content:  
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ * 
+ *  
+ */
 
 router.post('/v1/car-assist/veiculo-usuario', cors(), bodyParserJSON, upload.single('foto_veiculo'), async function (request, response) {
 

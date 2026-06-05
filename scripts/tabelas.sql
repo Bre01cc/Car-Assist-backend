@@ -201,22 +201,8 @@ ALTER TABLE tbl_manutencao
 ADD COLUMN pecas TEXT NULL;
 
 
-
 ALTER TABLE tbl_manutencao
 MODIFY COLUMN data_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
--- =====================================================
--- TABELA: PEÇAS
--- =====================================================
-CREATE TABLE tbl_pecas (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(200) NOT NULL,
-    fk_id_manutencao INT NOT NULL,
-
-    CONSTRAINT FK_manu_pecas_manu
-        FOREIGN KEY (fk_id_manutencao)
-        REFERENCES tbl_manutencao (id)
-        ON DELETE CASCADE
-);
 
 -- =====================================================
 -- TABELA: EVIDÊNCIA
