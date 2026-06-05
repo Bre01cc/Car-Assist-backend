@@ -14,51 +14,7 @@ const upload = require('./upload.js')
 
 const router = express.Router()
 
-const controllerVeiculo = require('../controller/veiculo/veiculo_controller.js')
-
-/**
- * @swagger
- * /v1/car-assist/veiculo/{id}:
- *   put:
- *     summary: Atualiza um Veículo pelo ID
- *     description: Atualiza um Veículo no sistema
- *     tags:
- *       - Veículos
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do Veículo
- *     requestBody:
- *       required: true
- *       content:
- *        multipart/form-data:
- *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
- *     responses:
- *       200:
- *         description: Usuário atualizado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/SUCCESS_UPDATE_ITEM'
- *       400:
- *         description: Dados obrigatórios não informados ou inválidos
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
- *       500:
- *          description: Erro interno do servidor
- *          content:  
- *             application/json:
- *               schema:
- *                 $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
- * 
- */
-
+const controllerVeiculo = require('../controller/veiculo/veiculo_controller.js');
 
 /**
  * @swagger
@@ -103,16 +59,6 @@ router.get('/v1/car-assist/veiculo/:id', cors(), async function (request, respon
     let idVeiculo = request.params.id;
 
     let veiculo = await controllerVeiculo.buscarVeiculoId(idVeiculo);
-
-    response.status(veiculo.status_code);
-
-    response.json(veiculo);
-})
-
-//Buscar todos os veiculos
-router.get('/v1/car-assist/veiculo', cors(), async function (request, response) {
-
-    let veiculo = await controllerVeiculo.listarVeiculos();
 
     response.status(veiculo.status_code);
 
@@ -218,21 +164,21 @@ router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, upload.single('fot
 
 /**
  * @swagger
- * /v1/car-assist/veiculo:
+ * /v1/car-assist/veiculo-usuario:
  *   post:
- *     summary: Cria um novo Veículo
- *     description: Cadastra um novo Veículo no sistema.
+ *     summary: Cadastra um veículo e vincula a um usuário
+ *     description: Cria um novo veículo e realiza o vínculo com um usuário.
  *     tags:
  *       - Veículos
  *     requestBody:
  *       required: true
  *       content:
- *        multipart/form-data:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/VeiculoRequest'
+ *             $ref: '#/components/schemas/VeiculoUsuarioRequest'
  *     responses:
  *       201:
- *         description: Veículo criado com sucesso
+ *         description: Veículo cadastrado e vinculado com sucesso
  *         content:
  *           application/json:
  *             schema:
@@ -243,16 +189,19 @@ router.post('/v1/car-assist/veiculo', cors(), bodyParserJSON, upload.single('fot
  *           application/json:
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
- *       500: 
+ *       404:
+ *         description: Usuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
  *         description: Erro interno do servidor
- *         content:  
- *            application/json:
- *              schema:
- *                $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
- * 
- *  
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
-
 router.post('/v1/car-assist/veiculo-usuario', cors(), bodyParserJSON, upload.single('foto_veiculo'), async function (request, response) {
 
     let dadosBody = request.body;
@@ -270,6 +219,48 @@ router.post('/v1/car-assist/veiculo-usuario', cors(), bodyParserJSON, upload.sin
     response.json(veiculo);
 });
 
+/**
+ * @swagger
+ * /v1/car-assist/veiculo/{id}:
+ *   put:
+ *     summary: Atualiza um Veículo pelo ID
+ *     description: Atualiza um Veículo no sistema
+ *     tags:
+ *       - Veículos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do Veículo
+ *     requestBody:
+ *       required: true
+ *       content:
+ *        multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/VeiculoRequest'
+ *     responses:
+ *       200:
+ *         description: Usuário atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_UPDATE_ITEM'
+ *       400:
+ *         description: Dados obrigatórios não informados ou inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
+ *       500:
+ *          description: Erro interno do servidor
+ *          content:  
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ * 
+ */
 router.put('/v1/car-assist/veiculo/:id', cors(), bodyParserJSON,upload.single('foto_veiculo'), async function (request, response) {
 
     let dadosBody = request.body;

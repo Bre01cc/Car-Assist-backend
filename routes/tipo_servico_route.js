@@ -15,6 +15,35 @@ const router = express.Router()
 const controllerTipoServico = require('../controller/tipo_servico/tipo_servico_controller.js')
 
 
+/**
+ * @swagger
+ * /v1/car-assist/tipo-servico:
+ *   get:
+ *     summary: Lista todos os tipos de serviço
+ *     description: Retorna uma lista com todos os tipos de serviço cadastrados no sistema.
+ *     tags:
+ *       - Tipo serviço
+ *     responses:
+ *       200:
+ *         description: Lista de tipos de serviço retornada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TipoServicoListResponse'
+ *       404:
+ *         description: Nenhum tipo de serviço encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ */
+
 router.get('/v1/car-assist/tipo-servico', cors(), async function (request, response) {
 
     let dados = await controllerTipoServico.listarTodosTiposServicos()
@@ -58,12 +87,6 @@ router.get('/v1/car-assist/tipo-servico', cors(), async function (request, respo
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  *         
  */
-router.get('/v1/car-assist/tipo-servico', cors(), async (req, res) => {
-
-    let tipoServico = await controllerTipoServico.listarTipoServico()
-
-    res.status(tipoServico.status_code).json(tipoServico);
-});
 
 router.get('/v1/car-assist/tipo-servico/:id', cors(), async (req, res) => {
     let idTipoServico = req.params.id;

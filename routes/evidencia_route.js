@@ -17,6 +17,46 @@ const router = express.Router()
 
 const controllerEvidencia = require('../controller/evidencia/evidencia_controller.js')
 
+/**
+ * @swagger
+ * /v1/car-assist/evidencia:
+ *   post:
+ *     summary: Cadastra uma evidência
+ *     description: Cria uma nova evidência associada a uma manutenção, permitindo o envio de uma imagem.
+ *     tags:
+ *       - Evidência
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/EvidenciaRequest'
+ *     responses:
+ *       201:
+ *         description: Evidência cadastrada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_CREATED_ITEM'
+ *       400:
+ *         description: Dados obrigatórios não informados ou inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
+ *       404:
+ *         description: Manutenção não encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ */
 router.post('/v1/car-assist/evidencia', cors(), bodyParserJSON, upload.single('url'), async function (request, response) {
 
     let dadosBody = request.body;
