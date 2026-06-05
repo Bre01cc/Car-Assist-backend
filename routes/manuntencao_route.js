@@ -17,6 +17,42 @@ const upload = require('./upload.js')
 
 const controllerManutencao = require('../controller/manutencao/manutencao_controller.js')
 
+/**
+ * @swagger
+ * /v1/car-assist/manutencao/{id}:
+ *   delete:
+ *     summary: Deleta uma Manutenção pelo ID
+ *     description: Deleta uma Manuntenção pelo ID.
+ *     tags:
+ *       - Manuntenção
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID da Manuntenção
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Manutenção deletada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
+ *       404:
+ *         description: Manutenção não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ */
+
 
 /**
  * @swagger
@@ -61,6 +97,21 @@ const controllerManutencao = require('../controller/manutencao/manutencao_contro
  * 
  */
 
+router.put('/v1/car-assist/manutencao/:id', cors(), bodyParserJSON, upload.array('evidencias'), async function (request, response) {
+
+    let dadosBody = request.body;
+    
+    let idManutencao = request.params.id;
+
+    let contentType = request.headers['content-type'];
+
+    let evidencias = request.files;
+
+    let manutencao = await controllerManutencao.atualizarManutencao(dadosBody, idManutencao, contentType, evidencias);
+ 
+    response.status(manutencao.status_code).json(manutencao);
+});
+
 /**
  * @swagger
  * /v1/car-assist/manutencao:
@@ -72,7 +123,7 @@ const controllerManutencao = require('../controller/manutencao/manutencao_contro
  *     requestBody:
  *       required: true
  *       content:
- *        multipart/form-data:
+ *        application/json:
  *           schema:
  *             $ref: '#/components/schemas/ManutencaoRequest'
  *     responses:
@@ -97,42 +148,25 @@ const controllerManutencao = require('../controller/manutencao/manutencao_contro
  * 
  *  
  */
+router.post('/v1/car-assist/manutencao', cors(), bodyParserJSON, async function (request, response) {
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type'];
+    let manutencao = await controllerManutencao.inserirManutencao(dadosBody, contentType);
+    response.status(manutencao.status_code).json(manutencao);
+});
 
-/**
- * @swagger
- * /v1/car-assist/manutencao/{id}:
- *   delete:
- *     summary: Deleta uma Manutenção pelo ID
- *     description: Deleta uma Manuntenção pelo ID.
- *     tags:
- *       - Manuntenção
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID da Manuntenção
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Manutenção deletada com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
- *       404:
- *         description: Manutenção não encontrado
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
- *       500:
- *         description: Erro interno do servidor
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
- */
+router.post('/v1/car-assist/manutencao-evidencia', cors(), bodyParserJSON, upload.array('evidencias'), async function (request, response) {
+
+    let dadosBody = request.body;
+
+    let contentType = request.headers['content-type'];
+
+    let evidencias = request.files;
+
+    let manutencao = await controllerManutencao.inserirManutencaoComEvidencia(dadosBody, contentType, evidencias);
+
+    response.status(manutencao.status_code).json(manutencao);
+});
 
 /**
  * @swagger
@@ -169,49 +203,6 @@ const controllerManutencao = require('../controller/manutencao/manutencao_contro
  *             schema:
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
-
-router.put('/v1/car-assist/manutencao/:id', cors(), bodyParserJSON, upload.array('evidencias'), async function (request, response) {
-
-    let dadosBody = request.body;
-    
-    let idManutencao = request.params.id;
-
-    let contentType = request.headers['content-type'];
-
-    let evidencias = request.files;
-
-    let manutencao = await controllerManutencao.atualizarManutencao(dadosBody, idManutencao, contentType, evidencias);
- 
-    response.status(manutencao.status_code).json(manutencao);
-});
-
-router.post('/v1/car-assist/manutencao', cors(), bodyParserJSON, async function (request, response) {
-    let dadosBody = request.body;
-    let contentType = request.headers['content-type'];
-    let manutencao = await controllerManutencao.inserirManutencao(dadosBody, contentType);
-    response.status(manutencao.status_code).json(manutencao);
-});
-
-router.post('/v1/car-assist/manutencao-evidencia', cors(), bodyParserJSON, upload.array('evidencias'), async function (request, response) {
-
-    let dadosBody = request.body;
-
-    let contentType = request.headers['content-type'];
-
-    let evidencias = request.files;
-
-    let manutencao = await controllerManutencao.inserirManutencaoComEvidencia(dadosBody, contentType, evidencias);
-
-    response.status(manutencao.status_code).json(manutencao);
-});
-
-router.get('/v1/car-assist/manutencao', cors(), async (req, res) => {
-
-    let manutencao = await controllerManutencao.listarManutencao()
-
-    res.status(manutencao.status_code).json(manutencao);
-});
-
 router.get('/v1/car-assist/manutencao/:id', cors(), async (req, res) => {
     let idManutencao = req.params.id;
     let manutencao = await controllerManutencao.buscarManutencaoId(idManutencao)

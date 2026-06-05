@@ -169,7 +169,7 @@ const deleteReminder = async (id) => {
     try {
 
 
-        let result = await conexaoKnex.raw(
+        let result = await conexaoKnex.conexao.raw(
             `delete from tbl_lembretes where id = ?`,
             [id]
         );
@@ -180,6 +180,7 @@ const deleteReminder = async (id) => {
             return false;
 
     } catch (error) {
+        console.log(error)
         return false;
     }
 

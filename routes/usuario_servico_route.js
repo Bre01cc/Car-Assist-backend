@@ -112,7 +112,49 @@ router.get('/v1/car-assist/usuarios/:idUsuario/servicos/:idServico', cors(), asy
     res.status(usuarioServico.status_code).json(usuarioServico);
 });
 
-//Deleta um vínculo pelo id do serviço
+/**
+ * @swagger
+ * /v1/car-assist/usuarios/{idUsuario}/servicos/{idServico}:
+ *   delete:
+ *     summary: Remove o vínculo entre um usuário e um serviço
+ *     description: Remove um vínculo existente entre um usuário e um serviço pelos IDs informados.
+ *     tags:
+ *       - Usuário serviço
+ *     parameters:
+ *       - in: path
+ *         name: idUsuario
+ *         required: true
+ *         description: ID do usuário
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: idServico
+ *         required: true
+ *         description: ID do serviço
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Vínculo removido com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
+ *       404:
+ *         description: Vínculo não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ */
+
+//Deleta um vínculo pelo id do serviço e id do usuário
 router.delete('/v1/car-assist/usuarios/:idUsuario/servicos/:idServico', cors(), async (req, res) => {
     let idUsuario = req.params.idUsuario;
     let idServico = req.params.idServico
@@ -120,6 +162,42 @@ router.delete('/v1/car-assist/usuarios/:idUsuario/servicos/:idServico', cors(), 
 
     res.status(usuarioServico.status_code).json(usuarioServico);
 });
+
+/**
+ * @swagger
+ * /v1/car-assist/usuario-servico/{id}:
+ *   delete:
+ *     summary: Remove todos os vínculos de serviço de um usuário
+ *     description: Remove todos os vínculos entre o usuário informado e seus serviços.
+ *     tags:
+ *       - Usuário serviço
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID do usuário
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Vínculos removidos com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
+ *       404:
+ *         description: Usuário ou vínculos não encontrados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ */
 
 //Deleta um vínculo pelo id
 router.delete('/v1/car-assist/usuario-servico/:id', cors(), async (req, res) => {

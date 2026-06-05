@@ -629,6 +629,49 @@ const options = {
                         'ano'
                     ]
                 },
+                VeiculoUsuarioRequest: {
+                    type: 'object',
+                    properties: {
+                        id_usuario: {
+                            type: 'integer',
+                            description: 'ID do usuário proprietário do veículo',
+                            example: 1
+                        },
+                        placa: {
+                            type: 'string',
+                            example: 'ABC1D23'
+                        },
+                        modelo: {
+                            type: 'string',
+                            example: 'Civic'
+                        },
+                        marca: {
+                            type: 'string',
+                            example: 'Honda'
+                        },
+                        cor: {
+                            type: 'string',
+                            example: 'PRETO'
+                        },
+                        ano: {
+                            type: 'integer',
+                            example: 2020
+                        },
+                        foto_veiculo: {
+                            type: 'string',
+                            format: 'binary',
+                            description: 'Imagem do veículo'
+                        }
+                    },
+                    required: [
+                        'id_usuario',
+                        'placa',
+                        'modelo',
+                        'marca',
+                        'cor',
+                        'ano'
+                    ]
+                },
                 ManutencaoResponse: {
                     allOf: [
                         {
@@ -1141,6 +1184,34 @@ const options = {
                         }
                     ]
                 },
+                TipoServicoListResponse: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Requisição bem sucedida!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                tipos_servico: {
+                                    type: 'array',
+                                    items: {
+                                        $ref: '#/components/schemas/TipoServicoResponse'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 EnderecosResponse: {
                     allOf: [
                         {
@@ -1279,6 +1350,11 @@ const options = {
                                                         type: 'integer',
                                                         description: 'ID do veículo',
                                                         example: 3
+                                                    },
+                                                    fk_id_usuario: {
+                                                        type: 'integer',
+                                                        description: 'ID do usuário',
+                                                        example: 3
                                                     }
                                                 },
                                                 required: [
@@ -1288,7 +1364,8 @@ const options = {
                                                     'data_criacao',
                                                     'data_vencimento',
                                                     'status',
-                                                    'fk_id_veiculo'
+                                                    'fk_id_veiculo',
+                                                    'fk_id_usuario'
                                                 ]
                                             }
                                         }
@@ -1326,6 +1403,11 @@ const options = {
                             type: 'integer',
                             description: 'ID do veículo',
                             example: 3
+                        },
+                        fk_id_usuario: {
+                            type: 'integer',
+                            description: 'ID do usuário',
+                            example: 3
                         }
                     },
                     required: [
@@ -1333,9 +1415,34 @@ const options = {
                         'descricao',
                         'data_vencimento',
                         'status',
-                        'fk_id_veiculo'
+                        'fk_id_veiculo',
+                        'fk_id_usuario'
                     ]
-                }
+                },
+                EvidenciaRequest: {
+                    type: 'object',
+                    properties: {
+                        descricao: {
+                            type: 'string',
+                            description: 'Descrição da evidência',
+                            example: 'Troca de óleo realizada'
+                        },
+                        fk_id_manutencao: {
+                            type: 'integer',
+                            description: 'ID da manutenção associada',
+                            example: 1
+                        },
+                        url: {
+                            type: 'string',
+                            format: 'binary',
+                            description: 'Imagem da evidência'
+                        }
+                    },
+                    required: [
+                        'fk_id_manutencao',
+                        'url'
+                    ]
+                },
             },
             ResponseApi: {
                 ERROR_NOT_FOUND: {

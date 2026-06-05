@@ -269,26 +269,6 @@ INSERT INTO tbl_manutencao (
 );
 
 -- =========================================
--- PEÇAS
--- =========================================
-INSERT INTO tbl_pecas (
-    nome,
-    fk_id_manutencao
-) VALUES
-(
-    'Filtro de óleo',
-    1
-),
-(
-    'Freios',
-    1
-),
-(
-    'Pneu Michelin',
-    1
-);
-
--- =========================================
 -- GASTOS
 -- =========================================
 INSERT INTO tbl_gastos (
