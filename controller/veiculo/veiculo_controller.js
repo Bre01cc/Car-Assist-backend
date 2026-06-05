@@ -246,13 +246,13 @@ const inserirVeiculo = async (veiculo, contentType, foto) => {
 
                 } else {
                     MESSAGES.ERROR_EXISTING.message += 'Placa'
-                    
-                        DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.ERROR_EXISTING,
-                            null,
-                            'Guilherme Moreira de Souza'
-                        )
-                    
+
+                    DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_EXISTING,
+                        null,
+                        'Guilherme Moreira de Souza'
+                    )
+
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.ERROR_EXISTING,
                         null,
@@ -492,7 +492,7 @@ const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
             }
 
         } else {
-            
+
             MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
 
             return DEFAULT_MESSAGES.criarResposta(
@@ -503,7 +503,7 @@ const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
         }
 
     } catch (error) {
-        
+        console.log(error)
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER,
             null,
@@ -663,7 +663,22 @@ const validarDadosVeiculo = async function (veiculo) {
             'Guilherme Moreira de Souza'
         )
 
-    } else {
+    } else if (
+        veiculo.quilometragem == null ||
+        veiculo.quilometragem == undefined ||
+        veiculo.quilometragem < 0 ||
+        veiculo.quilometragem > 9999999
+    ) {
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Quilometragem incorreto]'
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS,
+            null,
+            'Guilherme Moreira de Souza'
+        )
+
+    }
+    else {
 
         return false
     }

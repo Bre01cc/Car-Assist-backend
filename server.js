@@ -30,29 +30,27 @@ app.use((request, response, next) => {
 
 
 
-// Documentação do swagger
+// Adicionando rota para acessar a documentação da API
 const swaggerUi = require('swagger-ui-express');
 
 const swaggerDocument = require('./swagger.js');
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-//Imports 
+//Imports das rotas
 const categoriaGastos = require('./routes/categoria_gasto_route.js');
-const veiculo = require('./routes/veiculo_router.js');
-const usuario = require('./routes/usuario_router.js');
+const veiculo = require('./routes/veiculo_route.js');
+const usuario = require('./routes/usuario_route.js');
 const evidencia = require('./routes/evidencia_route.js');
-const tipoServico = require('./routes/tipo_servico_router.js');
-const servico = require('./routes/servico_router.js');
-const tipoManutencao = require('./routes/tipo_manutecao_router.js');
-const manutencao = require('./routes/manuntencao_router.js');
-const pecas = require('./routes/pecas_route.js');
-const gasto = require('./routes/gasto_router.js');
-const lembrete = require('./routes/lembrete_router.js');
-const usuarioVeiculo = require('./routes/usuario_veiculo.js');
-const endereco = require('./routes/endereco_router.js');
-const usuarioServico = require('./routes/usuario_servico_router');
-const transferencia = require('./routes/transferencia_router.js');
+const tipoServico = require('./routes/tipo_servico_route.js');
+const servico = require('./routes/servico_route.js');
+const tipoManutencao = require('./routes/tipo_manutecao_route.js');
+const manutencao = require('./routes/manuntencao_route.js');
+const gasto = require('./routes/gasto_route.js');
+const lembrete = require('./routes/lembrete_route.js');
+const usuarioVeiculo = require('./routes/usuario_veiculo_route.js');
+const endereco = require('./routes/endereco_route.js');
+const usuarioServico = require('./routes/usuario_servico_route.js');
 
 app.use(categoriaGastos);
 app.use(veiculo);
@@ -62,15 +60,13 @@ app.use(tipoServico);
 app.use(servico);
 app.use(tipoManutencao);
 app.use(manutencao);
-app.use(pecas);
 app.use(gasto);
 app.use(lembrete);
 app.use(usuarioVeiculo);
 app.use(endereco);
 app.use(usuarioServico);
-app.use(transferencia);
 
-
+//Randando a API na porta definida
 app.listen(PORT, () => {
     console.log('API aguardando requisições na porta ' + PORT)
 });

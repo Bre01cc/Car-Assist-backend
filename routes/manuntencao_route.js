@@ -15,7 +15,7 @@ const router = express.Router()
 
 const upload = require('./upload.js')
 
-const controllerManutencao = require('../controller/manutencao/manutencao_controller')
+const controllerManutencao = require('../controller/manutencao/manutencao_controller.js')
 
 
 /**
