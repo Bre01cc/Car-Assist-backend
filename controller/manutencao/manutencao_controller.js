@@ -810,6 +810,41 @@ const deletarManutencao = async function (id) {
     }
 }
 
+// Deleta uma manutenção pelo ID
+const deletarManutencaoStatus = async function (id) {
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+
+        let validarId = await buscarManutencaoId(id)
+
+        if (validarId.status_code == 200) {
+
+            let result = await manutencaoDAO.deleteMaintenanceStatus(id)
+
+            if (result) {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_DELETE
+                )
+            } else {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_INTERNAL_SERVER
+                )
+            }
+
+        } else {
+            return validarId
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
+        )
+    }
+}
+
 // Deleta todas as manutenções de um veículo
 const deletarManutencaoPorVeiculo = async function (idVeiculo) {
 
@@ -904,5 +939,6 @@ module.exports = {
     inserirManutencaoComEvidencia,
     deletarManutencao,
     deletarManutencaoPorUsuario,
-    deletarManutencaoPorVeiculo
+    deletarManutencaoPorVeiculo,
+    deletarManutencaoStatus
 }

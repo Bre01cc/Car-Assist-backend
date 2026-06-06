@@ -64,6 +64,48 @@ router.delete('/v1/car-assist/manutencao/:id', cors(), async (req, res) => {
 
 /**
  * @swagger
+ * /v1/car-assist/manutencao/status/{id}:
+ *   delete:
+ *     summary: Deleta uma Manutenção pelo ID
+ *     description: Deleta uma Manutenção pelo ID.
+ *     tags:
+ *       - Manutenção
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID da Manutenção
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Manutenção deletada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_DELETE'
+ *       404:
+ *         description: Manutenção não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ */
+router.delete('/v1/car-assist/manutencao/status/:id', cors(), async (req, res) => {
+    let idManutencao = req.params.id;
+    let manutencao = await controllerManutencao.deletarManutencaoStatus(idManutencao);
+
+    res.status(manutencao.status_code).json(manutencao);
+})
+
+/**
+ * @swagger
  * /v1/car-assist/veiculo/{id}/manutencoes:
  *   delete:
  *     summary: Deleta todas as Manutenções de um Veículo
