@@ -279,7 +279,7 @@ const inserirVinculo = async (dados, contentType) => {
         }
 
     } catch (error) {
-        console.log(error)
+       
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER,
             null,

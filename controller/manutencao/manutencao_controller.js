@@ -61,7 +61,7 @@ const listarManutencao = async () => {
 
 
     } catch (error) {
-        console.log(error)
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -322,7 +322,7 @@ const buscarManutencaoIdVeiculo = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -406,9 +406,9 @@ const inserirManutencaoComEvidencia = async (manutencao, contentType, evidencias
             let validar = validarManutencao(manutencao);
 
             if (!validar) {
-console.log(manutencao)
+
                 let resultManutencao = await manutencaoDAO.postManutencao(manutencao);
-console.log(resultManutencao)
+
                 if (resultManutencao) {
 
                     let ultimoId = await manutencaoDAO.getSelectLastId();
@@ -492,7 +492,7 @@ console.log(resultManutencao)
         }
 
     } catch (error) {
-        console.log(error)
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -511,13 +511,14 @@ const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
         if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
 
             //Validação dos dados da manutenção
+            console.log(manutencao)
             let validar = validarManutencao(manutencao, true);
-
+            console.log(validar)
             if (!validar) {
 
                 //Verifica se o ID existe
                 let validarId = await buscarManutencaoId(id);
-               
+                console.log(validarId)
                 if (validarId.status_code == 200) {
 
                     //Adiciona o ID no objeto
@@ -525,7 +526,7 @@ const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
 
                     //Chama a DAO para atualizar
                     let resultManutencao = await manutencaoDAO.putManutencao(manutencao);
-
+                    console.log(resultManutencao)
                     if (resultManutencao) {
 
                         if (validarId.data.manutencao[0].evidencia) {
@@ -546,7 +547,7 @@ const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
                         }
 
                         let resultEvidenciaDelete = await controllerEvidencia.deletarEvidenciaIdManutencao(manutencao.id);
-
+                        console.log(resultEvidenciaDelete)
 
                         if (resultEvidenciaDelete.status_code == 200 || resultEvidenciaDelete.status_code == 404) {
 
@@ -600,23 +601,27 @@ const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
 
                     } else {
 
-                        return validarId
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
+                        )
                     }
 
                 } else {
 
-                    return validar
+                    return validarId
                 }
 
             } else {
 
-                MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
-
-                return DEFAULT_MESSAGES.criarResposta(
-                    MESSAGES.ERROR_INTERNAL_SERVER
-                )
+                return validar
             }
 
+        } else {
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
+            )
         }
     } catch (error) {
         console.log(error)
@@ -798,7 +803,7 @@ const deletarManutencao = async function (id) {
         }
 
     } catch (error) {
-console.log(error)
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
