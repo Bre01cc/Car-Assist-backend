@@ -1,44 +1,73 @@
 /***********************************************************************************************************************
- * Objetivo: Arquivo responsável pela manipulação de dados entre o APP e a MODEL do reset de senha
- * Data: 04/06/2026
+ * Objetivo: Arquivo responsável pela manipulação de dados entre o APP e a MODEL do reset de senha com envio de e-mail
+ * Data: 06/06/2026
  * Autor: Breno Oliveira Assis Reis
- * Versão: 1.0
+ * Versão: 1.1
  ***********************************************************************************************************************/
-
 
 const DEFAULT_MESSAGES = require('../modulo/config_messages.js');
 const crypto = require('crypto');
-const usuarioDAO = require('../../model/DAO/usuario.js')
+const nodemailer = require('nodemailer'); // Importado para o serviço interno
+const usuarioDAO = require('../../model/DAO/usuario.js');
+const passwordResetDAO = require('../../model/DAO/reset_senha.js'); // Faltava importar este DAO aqui
+
+//Responsavl pr enviar o codigo para o email do usuário
+const enviarEmailToken = async (emailDestinatario, nomeUsuario, tokenPuro) => {
+    try {
+        const transport = nodemailer.createTransport({
+            host: "sandbox.smtp.mailtrap.io",
+            port: 2525,
+            auth: {
+                user: "2f70bbd96f422e",
+                pass: "fb79643ca60864"
+            }
+        });
+
+        await transport.sendMail({
+            from: '"Suporte MeuApp" <suporte@meuapp.com>',
+            to: emailDestinatario,
+            subject: "Seu Token de Recuperação de Senha",
+            text: `Olá, ${nomeUsuario}. Use o seguinte token para redefinir sua senha: ${tokenPuro}`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                    <h2 style="color: #333;">Olá, ${nomeUsuario}!</h2>
+                    <p style="color: #555; font-size: 16px;">Recebemos uma solicitação para redefinir a senha da sua conta.</p>
+                    <p style="color: #555; font-size: 16px;">Utilize o código de verificação abaixo para prosseguir. Ele é válido por 15 minutos:</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <span style="background-color: #f4f4f4; color: #333; padding: 12px 24px; font-family: monospace; font-size: 18px; border: 1px dashed #007BFF; border-radius: 5px; font-weight: bold; display: inline-block; letter-spacing: 1px;">
+                            ${tokenPuro}
+                        </span>
+                    </div>
+                    <p style="color: #999; font-size: 12px;">Se você não solicitou essa alteração, pode ignorar este e-mail com segurança.</p>
+                </div>
+            `
+        });
+
+        return true;
+    } catch (error) {
+        console.error("Erro interno ao enviar e-mail:", error);
+        return false;
+    }
+};
 
 const generateToken = () => {
-
     try {
-        //utilizando biblioteca nativa do node pra gerar um token e=hexadecimal
-        const token = crypto.randomBytes(64).toString('hex');
-
-        //gerando uma hash e passando para ela o token, por fim gera token que será guardado no banco
+        const token = crypto.randomBytes(32).toString('hex'); // Reduzido para 32 bytes (64 caracteres) para ficar mais amigável como texto puro
         const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
-        return {
-            token,
-            tokenHash
-        }
-
+        return { token, tokenHash };
     } catch (error) {
-        return false
+        return false;
     }
-
-}
+};
 
 const solicitarResetSenha = async (dados, contentType) => {
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
-        // Validação do Content-Type
         if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
             let email = dados.email;
 
-          
             if (
                 email !== undefined &&
                 email !== null &&
@@ -46,36 +75,41 @@ const solicitarResetSenha = async (dados, contentType) => {
                 email.length < 100 &&
                 email.includes('@')
             ) {
-                
+                // Busca o usuário completo para conseguir pegar o Nome e o ID dele
                 let resultUsuario = await usuarioDAO.getUserByEmail(email);
+console.log(resultUsuario)
+                // No Knex, o select costuma retornar um Array. Verificamos se ele achou alguém.
+                if (resultUsuario && resultUsuario.length > 0) {
+                    const usuarioEncontrado = resultUsuario[0];
 
-                if (resultUsuario) {
-                 
+                    let tokenGerado = generateToken();
+                    
+                    // Prepara o objeto para a Model salvar no banco
+                    let dadosToken = {
+                        id_usuario: usuarioEncontrado.id,
+                        token_hash: tokenGerado.tokenHash
+                    };
 
-                    let tokenGerado = generateToken()
-                    dados.tokenHash = tokenGerado.tokenHash
-
-                    let resultToken = await passwordResetDAO.postPasswordReset(dados);
-
+                    let resultToken = await passwordResetDAO.postPasswordReset(dadosToken);
+console.log(resultToken)
                     if (resultToken) {
-                        //  { 
-                        //         mensagem: "Token gerado com sucesso.",
-                        //         email_usuario: usuario.email,
-                        //         nome_usuario: usuario.nome,
-                        //         token: tokenPuro // Este cara vai para o e-mail
-                        //     }
+                        // O token foi salvo no banco? Disparamos o e-mail com o token puro!
+                        // Deixamos rodando em background para não atrasar a resposta HTTP da API
+                        enviarEmailToken(usuarioEncontrado.email, usuarioEncontrado.nome, tokenGerado.token);
 
-                        // IMPORTANTE: Retornamos o tokenPuro aqui para que sua rota/serviço possa 
-                        // capturá-lo e enviar no corpo do e-mail do usuário.
+                        // Retorna os dados de sucesso seguindo seu padrão
                         return DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.SUCCESS_REQUEST            
+                            MESSAGES.SUCCESS_REQUEST,
+                            { 
+                                mensagem: "Token enviado com sucesso para o e-mail cadastrado.",
+                                email: usuarioEncontrado.email 
+                            }
                         );
                     } else {
                         return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_INTERNAL_SERVER);
                     }
 
                 } else {
-                   
                     return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_NOT_FOUND);
                 }
 
@@ -90,10 +124,10 @@ const solicitarResetSenha = async (dados, contentType) => {
         }
 
     } catch (error) {
+        console.log(error)
         return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_INTERNAL_SERVER);
     }
-};
-
+}
 
 const efetuarResetSenha = async (dados, contentType) => {
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));

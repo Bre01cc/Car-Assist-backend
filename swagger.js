@@ -24,6 +24,10 @@ const options = {
                 description: 'Operações relacionadas a usuário'
             },
             {
+                name: 'Reset senha',
+                description: 'Operações relacionadas ao reset da senha do usuário'
+            },
+            {
                 name: 'Usuário veículo',
                 description: 'Operações relacionadas ao Usuário veículo'
             },
@@ -36,7 +40,7 @@ const options = {
                 description: 'Operações relacionadas a veículos'
             },
             {
-                name: 'Manuntenção',
+                name: 'Manutenção',
                 description: 'Operações relacionadas a manuntenção'
             },
             {
@@ -64,16 +68,8 @@ const options = {
                 description: 'Operações relacionadas ao tipo do serviço'
             },
             {
-                name: 'Endereço',
-                description: 'Operações relacionadas a endereço'
-            },
-            {
                 name: 'Lembretes',
                 description: 'Operações relacionadas a lembretes'
-            },
-            {
-                name: 'Reset senha',
-                description: 'Operações relacionadas ao reset da senha do usuário'
             }
         ],
         components: {
@@ -672,170 +668,185 @@ const options = {
                         'ano'
                     ]
                 },
-                ManutencaoResponse: {
-                    allOf: [
-                        {
-                            $ref: '#/components/schemas/BaseResponse'
-                        },
-                        {
+                ManutencaoListResponse: {
+                    type: 'object',
+                    properties: {
+                        meta: {
                             type: 'object',
                             properties: {
-                                data: {
-                                    type: 'object',
-                                    properties: {
-                                        manutencao: {
-                                            type: 'array',
-                                            items: {
+                                api_description: {
+                                    type: 'string',
+                                    example: 'API da Car Assist'
+                                },
+                                request_date: {
+                                    type: 'string',
+                                    format: 'date-time'
+                                },
+                                development: {
+                                    type: 'string',
+                                    example: 'Breno Oliveira Assis Reis'
+                                }
+                            }
+                        },
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Requisição bem sucedida!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                manutencao: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            id: {
+                                                type: 'integer',
+                                                example: 1
+                                            },
+                                            id_usuario: {
+                                                type: 'integer',
+                                                example: 1
+                                            },
+                                            id_veiculo: {
+                                                type: 'integer',
+                                                example: 1
+                                            },
+                                            data_manutencao: {
+                                                type: 'string',
+                                                format: 'date-time'
+                                            },
+                                            custo: {
+                                                type: 'string',
+                                                example: '250.00'
+                                            },
+                                            quilometragem: {
+                                                type: 'integer',
+                                                example: 50000
+                                            },
+                                            oficina: {
+                                                type: 'string',
+                                                example: 'Oficina do Zé'
+                                            },
+                                            pecas: {
+                                                type: 'string',
+                                                nullable: true,
+                                                example: null
+                                            },
+                                            observacoes: {
+                                                type: 'string',
+                                                example: 'Tudo ok'
+                                            },
+                                            is_ativo: {
+                                                type: 'boolean',
+                                                example: true
+                                            },
+                                            data: {
+                                                type: 'string',
+                                                format: 'date-time'
+                                            },
+                                            tipo_manutencao: {
                                                 type: 'object',
                                                 properties: {
                                                     id: {
                                                         type: 'integer',
-                                                        description: 'ID da manutenção',
-                                                        example: 10
-                                                    },
-                                                    evidencias: {
-                                                        type: 'string',
-                                                        description: 'Evidências da manutenção',
-                                                        example: 'https://img.com/foto1.jpg'
-                                                    },
-                                                    data_manutencao: {
-                                                        type: 'string',
-                                                        format: 'date-time',
-                                                        description: 'Data e hora da manutenção',
-                                                        example: '2026-05-05T14:30:00Z'
-                                                    },
-                                                    custo: {
-                                                        type: 'number',
-                                                        format: 'float',
-                                                        description: 'Custo da manutenção',
-                                                        example: 350.75
-                                                    },
-                                                    quilometragem: {
-                                                        type: 'integer',
-                                                        description: 'Quilometragem registrada',
-                                                        example: 85000
-                                                    },
-                                                    pecas: {
-                                                        type: 'string',
-                                                        description: 'Peças utilizadas',
-                                                        example: 'Filtro de óleo, pastilha de freio'
-                                                    },
-                                                    oficina: {
-                                                        type: 'string',
-                                                        description: 'Oficina responsável',
-                                                        example: 'Oficina do João'
-                                                    },
-                                                    observacoes: {
-                                                        type: 'string',
-                                                        description: 'Observações',
-                                                        example: 'Troca preventiva realizada'
-                                                    },
-                                                    is_ativo: {
-                                                        type: 'boolean',
-                                                        description: 'Status da manutenção',
-                                                        example: true
-                                                    },
-                                                    fk_id_tipo_manutencao: {
-                                                        type: 'integer',
-                                                        description: 'ID do tipo de manutenção',
                                                         example: 1
                                                     },
-                                                    fk_id_usuario: {
-                                                        type: 'integer',
-                                                        description: 'ID do usuário',
-                                                        example: 2
-                                                    },
-                                                    fk_id_veiculo: {
-                                                        type: 'integer',
-                                                        description: 'ID do veículo',
-                                                        example: 3
+                                                    nome: {
+                                                        type: 'string',
+                                                        example: 'Troca de óleo'
                                                     }
-                                                },
-                                                required: [
-                                                    'id',
-                                                    'data_manutencao',
-                                                    'custo',
-                                                    'quilometragem',
-                                                    'fk_id_tipo_manutencao',
-                                                    'fk_id_usuario',
-                                                    'fk_id_veiculo'
-                                                ]
+                                                }
+                                            },
+                                            evidencia: {
+                                                type: 'array',
+                                                items: {
+                                                    type: 'object',
+                                                    properties: {
+                                                        id: {
+                                                            type: 'integer',
+                                                            example: 1
+                                                        },
+                                                        url: {
+                                                            type: 'string',
+                                                            example: 'evidencia1.jpg'
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                    ]
+                    }
                 },
                 ManutencaoRequest: {
                     type: 'object',
                     properties: {
-                        evidencias: {
-                            type: 'string',
-                            description: 'Evidências da manutenção (ex: URL de imagem)',
-                            example: 'https://img.com/foto1.jpg'
-                        },
-                        data_manutencao: {
-                            type: 'string',
-                            format: 'date-time',
-                            description: 'Data e hora da manutenção',
-                            example: '2026-05-05T14:30:00Z'
-                        },
-                        custo: {
-                            type: 'number',
-                            format: 'float',
-                            description: 'Custo da manutenção',
-                            example: 350.75
-                        },
-                        quilometragem: {
+                        id_usuario: {
                             type: 'integer',
-                            description: 'Quilometragem do veículo no momento da manutenção',
-                            example: 85000
+                            description: 'ID do usuário responsável pela manutenção',
+                            example: 1
                         },
-                        pecas: {
-                            type: 'string',
-                            description: 'Peças utilizadas',
-                            example: 'Filtro de óleo, pastilha de freio'
+                        id_veiculo: {
+                            type: 'integer',
+                            description: 'ID do veículo que recebeu a manutenção',
+                            example: 1
                         },
-                        oficina: {
-                            type: 'string',
-                            description: 'Nome da oficina',
-                            example: 'Oficina do João'
-                        },
-                        observacoes: {
-                            type: 'string',
-                            description: 'Observações adicionais',
-                            example: 'Troca preventiva realizada'
-                        },
-                        is_ativo: {
-                            type: 'boolean',
-                            description: 'Indica se a manutenção está ativa',
-                            example: true
-                        },
-                        fk_id_tipo_manutencao: {
+                        id_tipo_manutencao: {
                             type: 'integer',
                             description: 'ID do tipo de manutenção',
                             example: 1
                         },
-                        fk_id_usuario: {
-                            type: 'integer',
-                            description: 'ID do usuário',
-                            example: 2
+                        data_manutencao: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Data em que a manutenção foi realizada',
+                            example: '2025-01-20T13:00:00.000Z'
                         },
-                        fk_id_veiculo: {
+                        custo: {
+                            type: 'number',
+                            format: 'float',
+                            description: 'Valor gasto na manutenção',
+                            example: 250.00
+                        },
+                        quilometragem: {
                             type: 'integer',
-                            description: 'ID do veículo',
-                            example: 3
+                            description: 'Quilometragem do veículo no momento da manutenção',
+                            example: 50000
+                        },
+                        oficina: {
+                            type: 'string',
+                            description: 'Nome da oficina onde a manutenção foi realizada',
+                            example: 'Oficina do Zé'
+                        },
+                        pecas: {
+                            type: 'string',
+                            description: 'Peças utilizadas na manutenção',
+                            example: 'Filtro de óleo, óleo 5W30'
+                        },
+                        observacoes: {
+                            type: 'string',
+                            description: 'Observações adicionais sobre a manutenção',
+                            example: 'Troca realizada sem intercorrências'
                         }
                     },
                     required: [
+                        'id_usuario',
+                        'id_veiculo',
+                        'id_tipo_manutencao',
                         'data_manutencao',
                         'custo',
-                        'quilometragem',
-                        'fk_id_tipo_manutencao',
-                        'fk_id_usuario',
-                        'fk_id_veiculo'
+                        'quilometragem'
                     ]
                 },
                 TipoManutencaoResponse: {
@@ -1442,6 +1453,31 @@ const options = {
                         'fk_id_manutencao',
                         'url'
                     ]
+                },
+                EvidenciaResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'integer',
+                            description: 'ID da evidência',
+                            example: 1
+                        },
+                        descricao: {
+                            type: 'string',
+                            description: 'Descrição da evidência',
+                            example: 'Troca de óleo realizada'
+                        },
+                        url: {
+                            type: 'string',
+                            description: 'URL da imagem da evidência',
+                            example: 'https://uploadcarassist.blob.core.windows.net/uploadcarassist/evidencia.jpg'
+                        },
+                        fk_id_manutencao: {
+                            type: 'integer',
+                            description: 'ID da manutenção associada',
+                            example: 1
+                        }
+                    }
                 },
             },
             ResponseApi: {

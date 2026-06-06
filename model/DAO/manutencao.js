@@ -105,7 +105,39 @@ const getAllMaintenance = async () => {
 
 const deleteMaintenance = async (id) => {
     try {
-        const result = conexaoKnex.conexao.raw('delete * from tbl_manutencao where id = ?', [id])
+        const result = await conexaoKnex.conexao.raw('delete  from tbl_manutencao where id = ?', [id])
+
+        if (result[0].affectedRows > 0) {
+
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+const deleteMaintenanceByIdVehicle = async (id) => {
+    try {
+        const result = await conexaoKnex.conexao.raw('delete from tbl_manutencao where fk_id_veiculo = ?', [id])
+
+        if (result[0].affectedRows > 0) {
+
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+        
+        return false
+    }
+}
+
+const deleteMaintenanceByIdUser = async (id) => {
+    try {
+        const result = await conexaoKnex.conexao.raw('delete from tbl_manutencao where fk_id_usuario = ?', [id])
 
         if (result[0].affectedRows > 0) {
 
@@ -140,7 +172,6 @@ const statusMaintenance = async (id, status) => {
 
     }
 }
-
 
 // Inserir uma manutenção
 const postManutencao = async (manutencao) => {
@@ -275,5 +306,7 @@ module.exports = {
     statusMaintenance,
     postManutencao,
     putManutencao,
+    deleteMaintenanceByIdUser,
+    deleteMaintenanceByIdVehicle,
     getSelectLastId
 }

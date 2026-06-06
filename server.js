@@ -51,7 +51,8 @@ const lembrete = require('./routes/lembrete_route.js');
 const usuarioVeiculo = require('./routes/usuario_veiculo_route.js');
 const endereco = require('./routes/endereco_route.js');
 const usuarioServico = require('./routes/usuario_servico_route.js');
-const transferencia = require('./routes/transferencia_route.js')
+const transferencia = require('./routes/transferencia_route.js');
+const reset_senha = require('./routes/reset_senha_route.js');
 
 app.use(categoriaGastos);
 app.use(veiculo);
@@ -67,6 +68,7 @@ app.use(usuarioVeiculo);
 app.use(endereco);
 app.use(usuarioServico);
 app.use(transferencia);
+app.use(reset_senha);
 
 //Randando a API na porta definida
 app.listen(PORT, () => {

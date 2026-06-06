@@ -92,7 +92,7 @@ const buscarVeiculoId = async (id) => {
             } else {
 
                 return DEFAULT_MESSAGES.criarResposta(
-                    MESSAGES.ERROR_INTERNAL,
+                    MESSAGES.ERROR_INTERNAL_SERVER,
                     null,
                     'Guilherme Moreira de Souza'
                 )
@@ -503,7 +503,7 @@ const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER,
             null,

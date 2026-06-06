@@ -279,7 +279,7 @@ const inserirVinculo = async (dados, contentType) => {
         }
 
     } catch (error) {
-        console.log(error)
+       
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER,
             null,
@@ -488,6 +488,7 @@ const formatarUsuarioVeiculo = (usuarioVeiculo) => {
             modelo: usuarioVeiculo.modelo,
             marca: usuarioVeiculo.marca,
             cor: usuarioVeiculo.cor,
+            quilometragem:usuarioVeiculo.quilometragem,
             score: usuarioVeiculo.score,
             ano: usuarioVeiculo.ano,
             foto: usuarioVeiculo.foto_veiculo

@@ -25,6 +25,7 @@ const getPasswordResetByIdUser = async (idUsuario) => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -32,7 +33,7 @@ const getPasswordResetByIdUser = async (idUsuario) => {
 const postPasswordReset = async (dados) => {
 
     try {
-
+console.log(dados)
             let result = await conexaoKnex.conexao.raw(
                 `insert into tbl_reset_senha(
              id_usuario,
@@ -43,7 +44,7 @@ const postPasswordReset = async (dados) => {
             )`,
                 [
                     dados.id_usuario,
-                    dados.tokenHash
+                    dados.token_hash
                 ]
             );
 
@@ -54,13 +55,14 @@ const postPasswordReset = async (dados) => {
             }
 
     } catch (error) {
-
+console.log(error)
         return false
     }
 }
 
 const validateResetToken = async (tokenHash) => {
     try {
+        console.log(tokenHash)
         let result = await conexaoKnex.conexao.raw(`
             SELECT * FROM tbl_reset_senha 
             WHERE token_hash = ? 
@@ -76,6 +78,7 @@ const validateResetToken = async (tokenHash) => {
             return false;
         }
     } catch (error) {
+        console.log(error)
         return false;
     }
 }
@@ -106,7 +109,7 @@ const resetUserPassword = async (idUsuario, idToken, novaSenha) => {
         }
 
     } catch (error) {
-
+console.log(error)
         return false;
     }
 }
@@ -129,6 +132,7 @@ const invalidateToken = async (idToken) => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 
@@ -137,5 +141,7 @@ const invalidateToken = async (idToken) => {
 module.exports = {
 getPasswordResetByIdUser,
 postPasswordReset,
-resetUserPassword
+resetUserPassword,
+validateResetToken
 }
+
