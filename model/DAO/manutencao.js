@@ -12,7 +12,7 @@ const conexaoKnex = require('../../knex/index.js');
 const getMaintenanceById = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from vw_manutencao where id = ?', [id]
+            'select * from vw_manutencao where id = ? and is_ativo = TRUE', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -31,7 +31,7 @@ const getMaintenanceById = async (id) => {
 const getMaintenanceByIdType = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from vw_manutencao where id_tipo_manutencao = ?', [id]
+            'select * from vw_manutencao where id_tipo_manutencao = ? and is_ativo = TRUE', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -50,7 +50,7 @@ const getMaintenanceByIdType = async (id) => {
 const getMaintenanceByIdUser = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from vw_manutencao where id_usuario = ?', [id]
+            'select * from vw_manutencao where id_usuario = ? and is_ativo = TRUE', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -69,7 +69,7 @@ const getMaintenanceByIdUser = async (id) => {
 const getMaintenanceByIdVehicle = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from vw_manutencao where id_veiculo = ?', [id]
+            'select * from vw_manutencao where id_veiculo = ? and is_ativo = TRUE' , [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -114,8 +114,30 @@ const deleteMaintenance = async (id) => {
             return false
         }
     } catch (error) {
-        console.log(error)
+     
         return false
+    }
+}
+
+const deleteMaintenanceStatus = async (id) => {
+    try {
+
+        const result = await conexaoKnex.conexao.raw(
+            `UPDATE tbl_manutencao
+             SET is_ativo = FALSE
+             WHERE id = ?`,
+            [id]
+        );
+
+        if (result[0].affectedRows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+        console.log(error);
+        return false;
     }
 }
 
@@ -308,5 +330,6 @@ module.exports = {
     putManutencao,
     deleteMaintenanceByIdUser,
     deleteMaintenanceByIdVehicle,
-    getSelectLastId
+    getSelectLastId,
+    deleteMaintenanceStatus
 }
