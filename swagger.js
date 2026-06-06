@@ -225,6 +225,130 @@ const options = {
                         'foto_usuario'
                     ]
                 },
+                PasswordResetRequest: {
+                    type: 'object',
+                    properties: {
+                        email: {
+                            type: 'string',
+                            description: 'E-mail do usuário que receberá o token de recuperação de senha',
+                            example: 'usuario@email.com'
+                        }
+                    },
+                    required: [
+                        'email'
+                    ]
+                },
+                PasswordResetResponse: {
+                    type: 'object',
+                    properties: {
+                        meta: {
+                            type: 'object',
+                            properties: {
+                                api_description: {
+                                    type: 'string',
+                                    example: 'API da Car Assist'
+                                },
+                                request_date: {
+                                    type: 'string',
+                                    format: 'date-time'
+                                },
+                                development: {
+                                    type: 'string',
+                                    example: 'Breno Oliveira Assis Reis'
+                                }
+                            }
+                        },
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Requisição bem sucedida!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                mensagem: {
+                                    type: 'string',
+                                    example: 'Token enviado com sucesso para o e-mail cadastrado.'
+                                },
+                                email: {
+                                    type: 'string',
+                                    example: 'usuario@email.com'
+                                }
+                            }
+                        }
+                    }
+                },
+                PasswordResetConfirmRequest: {
+                    type: 'object',
+                    properties: {
+                        token: {
+                            type: 'string',
+                            description: 'Token de recuperação de senha enviado por e-mail',
+                            example: 'a162e451f0d0e18a2247868b81d182eb9487dea02d1d6a4ecd492cec29fd3971'
+                        },
+                        senha: {
+                            type: 'string',
+                            description: 'Nova senha do usuário',
+                            minLength: 6,
+                            maxLength: 255,
+                            example: 'NovaSenhaSegura2025'
+                        }
+                    },
+                    required: [
+                        'token',
+                        'senha'
+                    ]
+                },
+                PasswordResetConfirmResponse: {
+                    type: 'object',
+                    properties: {
+                        meta: {
+                            type: 'object',
+                            properties: {
+                                api_description: {
+                                    type: 'string',
+                                    example: 'API da Car Assist'
+                                },
+                                request_date: {
+                                    type: 'string',
+                                    format: 'date-time'
+                                },
+                                development: {
+                                    type: 'string',
+                                    example: 'Breno Oliveira Assis Reis'
+                                }
+                            }
+                        },
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Item atualizado com sucesso!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                mensagem: {
+                                    type: 'string',
+                                    example: 'Senha redefinida com sucesso!'
+                                }
+                            }
+                        }
+                    }
+                },
                 UsuarioLoginRequest:
                 {
                     "type": "object",
