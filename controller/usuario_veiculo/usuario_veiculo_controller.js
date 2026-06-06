@@ -488,6 +488,7 @@ const formatarUsuarioVeiculo = (usuarioVeiculo) => {
             modelo: usuarioVeiculo.modelo,
             marca: usuarioVeiculo.marca,
             cor: usuarioVeiculo.cor,
+            quilometragem:usuarioVeiculo.quilometragem,
             score: usuarioVeiculo.score,
             ano: usuarioVeiculo.ano,
             foto: usuarioVeiculo.foto_veiculo

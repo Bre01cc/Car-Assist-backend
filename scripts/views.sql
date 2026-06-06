@@ -159,6 +159,7 @@ veiculo.cor,
 veiculo.score,
 veiculo.ano,
 veiculo.foto_veiculo,
+veiculo.quilometragem,
 veiculo.is_ativo veiculo_is_ativo
 from tbl_usuario_veiculo usuario_veiculo join
 tbl_veiculo veiculo on 
