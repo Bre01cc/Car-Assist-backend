@@ -52,7 +52,7 @@ const enviarEmailToken = async (emailDestinatario, nomeUsuario, tokenPuro) => {
 
 const generateToken = () => {
     try {
-        const token = crypto.randomBytes(32).toString('hex'); // Reduzido para 32 bytes (64 caracteres) para ficar mais amigável como texto puro
+        const token = crypto.randomBytes(32).toString('hex'); 
         const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
         return { token, tokenHash };
@@ -75,16 +75,16 @@ const solicitarResetSenha = async (dados, contentType) => {
                 email.length < 100 &&
                 email.includes('@')
             ) {
-                // Busca o usuário completo para conseguir pegar o Nome e o ID dele
+               
                 let resultUsuario = await usuarioDAO.getUserByEmail(email);
 console.log(resultUsuario)
-                // No Knex, o select costuma retornar um Array. Verificamos se ele achou alguém.
+                
                 if (resultUsuario && resultUsuario.length > 0) {
                     const usuarioEncontrado = resultUsuario[0];
 
                     let tokenGerado = generateToken();
                     
-                    // Prepara o objeto para a Model salvar no banco
+                  
                     let dadosToken = {
                         id_usuario: usuarioEncontrado.id,
                         token_hash: tokenGerado.tokenHash
@@ -93,11 +93,10 @@ console.log(resultUsuario)
                     let resultToken = await passwordResetDAO.postPasswordReset(dadosToken);
 console.log(resultToken)
                     if (resultToken) {
-                        // O token foi salvo no banco? Disparamos o e-mail com o token puro!
-                        // Deixamos rodando em background para não atrasar a resposta HTTP da API
+                       
                         enviarEmailToken(usuarioEncontrado.email, usuarioEncontrado.nome, tokenGerado.token);
 
-                        // Retorna os dados de sucesso seguindo seu padrão
+                     
                         return DEFAULT_MESSAGES.criarResposta(
                             MESSAGES.SUCCESS_REQUEST,
                             { 

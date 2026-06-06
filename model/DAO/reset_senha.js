@@ -33,7 +33,7 @@ const getPasswordResetByIdUser = async (idUsuario) => {
 const postPasswordReset = async (dados) => {
 
     try {
-console.log(dados)
+
             let result = await conexaoKnex.conexao.raw(
                 `insert into tbl_reset_senha(
              id_usuario,
