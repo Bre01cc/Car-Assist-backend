@@ -41,7 +41,7 @@ const getUserVehicleByIDs = async (idUsuario, idVeiculo) => {
 
         if (result[0].length > 0) {
 
-            return result[0]
+            return result[0][0]
         }
 
         else {
@@ -118,13 +118,12 @@ const postUserVehicle = async (dados) => {
                     ?,
                     ?,
                     ?,
-                    ? 
+                    curdate()
                     )
             `, [
             dados.fk_id_usuario,
             dados.fk_id_veiculo,
-            dados.papel_usuario,
-            dados.data_vinculo
+            dados.papel_usuario
         ]);
 
         if (result[0].affectedRows > 0) {
@@ -171,7 +170,7 @@ const putUserVehicle = async (usuarioVeiculo) => {
         }
 
     } catch (error) {
-        console.log(error)
+    
         return false
     }
 

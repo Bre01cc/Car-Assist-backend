@@ -27,7 +27,7 @@ const getAllVehicles = async () => {
         }
 
     } catch (error) {
-console.log(error)
+
         return false
     }
 
@@ -134,7 +134,7 @@ const setInsertVehicle = async function (veiculo) {
         }
 
     } catch (error) {
-       console.log(error)
+     
         return false
     }
 
@@ -177,7 +177,7 @@ const putVeiculo = async (veiculo) => {
         }
 
     } catch (error) {
- console.log(error)
+
         return false
     }
 

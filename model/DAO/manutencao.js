@@ -22,7 +22,7 @@ const getMaintenanceById = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
@@ -41,7 +41,7 @@ const getMaintenanceByIdType = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
@@ -60,7 +60,7 @@ const getMaintenanceByIdUser = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
@@ -79,7 +79,7 @@ const getMaintenanceByIdVehicle = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
@@ -98,7 +98,7 @@ const getAllMaintenance = async () => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
@@ -136,7 +136,7 @@ const deleteMaintenanceStatus = async (id) => {
         }
 
     } catch (error) {
-        console.log(error);
+        ;
         return false;
     }
 }
@@ -168,7 +168,7 @@ const deleteMaintenanceByIdUser = async (id) => {
             return false
         }
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
@@ -189,7 +189,7 @@ const statusMaintenance = async (id, status) => {
             return false
         }
     } catch (error) {
-        console.log(error)
+        
         return false
 
     }
@@ -243,7 +243,7 @@ const postManutencao = async (manutencao) => {
         }
 
     } catch (error) {
-console.log(error)
+
         return false
 
     }
@@ -287,7 +287,7 @@ const putManutencao = async (manutencao) => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
