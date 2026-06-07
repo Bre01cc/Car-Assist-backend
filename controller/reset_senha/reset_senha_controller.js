@@ -84,20 +84,27 @@ const enviarEmailToken = async (emailDestinatario, nomeUsuario, tokenPuro) => {
 
 
 const generateToken = () => {
+
     try {
         const token = crypto.randomBytes(32).toString('hex');
+
         const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
         return { token, tokenHash };
+
     } catch (error) {
+
         return false;
     }
+
 };
 
 const solicitarResetSenha = async (dados, contentType) => {
+
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
+
         if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
             let email = dados.email;
 
@@ -138,37 +145,52 @@ const solicitarResetSenha = async (dados, contentType) => {
                             }
                         );
                     } else {
-                        return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_INTERNAL_SERVER);
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
+                        );
                     }
 
                 } else {
-                    return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_NOT_FOUND);
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
+                    );
                 }
 
             } else {
+
                 MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Email incorreto ou ausente]';
-                return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_REQUIRED_FIELDS);
+
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_REQUIRED_FIELDS
+                );
             }
 
         } else {
+
             MESSAGES.ERROR_CONTENT_TYPE.message += ' [JSON]';
-            return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_CONTENT_TYPE);
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
+            );
         }
 
     } catch (error) {
 
-        return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_INTERNAL_SERVER);
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
+        );
     }
 }
 
 const efetuarResetSenha = async (dados, contentType) => {
+
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
         if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
+
             let tokenPuro = dados.token;
             let novaSenha = dados.senha;
-
 
             if (
                 tokenPuro !== undefined && tokenPuro !== null && tokenPuro !== '' &&
@@ -177,7 +199,6 @@ const efetuarResetSenha = async (dados, contentType) => {
             ) {
 
                 const hashParaBuscar = crypto.createHash('sha256').update(tokenPuro).digest('hex');
-
 
                 let tokenInformacoes = await passwordResetDAO.validateResetToken(hashParaBuscar);
 
@@ -195,27 +216,44 @@ const efetuarResetSenha = async (dados, contentType) => {
                             { mensagem: "Senha redefinida com sucesso!" }
                         );
                     } else {
-                        return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_INTERNAL_SERVER);
+
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
+                        );
                     }
 
                 } else {
 
                     MESSAGES.ERROR_REQUIRED_FIELDS.message = 'Este link de recuperação é inválido ou já expirou.';
-                    return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_REQUIRED_FIELDS);
+
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_REQUIRED_FIELDS
+                    );
                 }
 
             } else {
+
                 MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Token ou Senha inválidos]';
-                return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_REQUIRED_FIELDS);
+
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_REQUIRED_FIELDS
+                );
             }
 
         } else {
+            
             MESSAGES.ERROR_CONTENT_TYPE.message += ' [JSON]';
-            return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_CONTENT_TYPE);
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
+            );
         }
 
     } catch (error) {
-        return DEFAULT_MESSAGES.criarResposta(MESSAGES.ERROR_INTERNAL_SERVER);
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
+        );
     }
 };
 

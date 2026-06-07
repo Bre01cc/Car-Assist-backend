@@ -7,6 +7,8 @@
 
 const conexaoKnex = require('../../knex/index.js');
 
+const usuarioVeiculoDAO = require('./usuario_veiculo.js');
+
 const insertTokenTransferencia = async (dados) => {
     try {
         let sql = `insert into tbl_token_transferencia (
@@ -29,14 +31,16 @@ const insertTokenTransferencia = async (dados) => {
             return false;
 
     } catch (error) {
-        console.error("ERRO NO INSERT_TOKEN_TRANSFERENCIA:", error);
+  
         return false;
     }
 }
 
-// Busca um token válido parametrizando o código recebido do usuário externo
+
 const getTokenValido = async (codigo) => {
+
     try {
+
         let codigoString = String(codigo).trim();
 
         let sql = `select * from tbl_token_transferencia 
@@ -44,24 +48,44 @@ const getTokenValido = async (codigo) => {
                      and is_usado = false 
                      and criado_em >= now() - interval 5 minute limit 1`;
 
-        // Passando a variável no array de parâmetros para neutralizar SQL Injection
         let result = await conexaoKnex.conexao.raw(sql, [codigoString]);
 
         if (result && result[0] && result[0].length > 0) {
             return result[0][0];
-        }
-        
+        }else{
         return false;
+        }
+
+
 
     } catch (error) {
-        console.error("ERRO NO GET_TOKEN_VALIDO:", error);
+
         return false;
     }
 }
 
+const desativarAntigos = async (tokenInfo) => {
+    try {
+
+        let sqlDesativarAntigos = `update tbl_usuario_veiculo 
+                                       set is_ativo = false, 
+                                           data_desvinculo = curdate() 
+                                       where fk_id_veiculo = ? 
+                                         and is_ativo = true`;
+
+        let result = await conexaoKnex.conexao.raw(sqlDesativarAntigos, [tokenInfo.fk_id_veiculo]);
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+}
 const executeTransferenciaPropriedade = async (idUsuarioDestino, tokenInfo) => {
-    
-    const transacaoBanco = await conexaoKnex.conexao.transaction();
 
     try {
         if (!tokenInfo || !tokenInfo.fk_id_veiculo || !tokenInfo.papel_concedido) {
@@ -69,41 +93,37 @@ const executeTransferenciaPropriedade = async (idUsuarioDestino, tokenInfo) => {
         }
 
         if (tokenInfo.papel_concedido === 'Proprietário') {
-            let sqlDesativarAntigos = `update tbl_usuario_veiculo 
-                                       set is_ativo = false, 
-                                           data_desvinculo = curdate() 
-                                       where fk_id_veiculo = ? 
-                                         and is_ativo = true`;
-                                         
-            await transacaoBanco.raw(sqlDesativarAntigos, [tokenInfo.fk_id_veiculo]);
+            let resultDesativar = await desativarAntigos(tokenInfo)
+            if (!resultDesativar) {
+                return false
+            }
         }
+        tokenInfo.fk_id_usuario = idUsuarioDestino
+        tokenInfo.papel_usuario = tokenInfo.papel_concedido
+        delete tokenInfo.papel_concedido
 
-        let sqlInsertVinculo = `insert into tbl_usuario_veiculo (
-                                    fk_id_usuario, 
-                                    fk_id_veiculo, 
-                                    papel_usuario, 
-                                    data_vinculo, 
-                                    is_ativo
-                                ) values (?, ?, ?, curdate(), true)`;
-                                
-        await transacaoBanco.raw(sqlInsertVinculo, [
-            idUsuarioDestino,
-            tokenInfo.fk_id_veiculo,
-            tokenInfo.papel_concedido
-        ]);
+        let resultUsuarioVeiculo = await usuarioVeiculoDAO.postUserVehicle(tokenInfo)
 
-        let sqlUpdateToken = `update tbl_token_transferencia 
+        if (resultUsuarioVeiculo) {
+
+            let sqlUpdateToken = `update tbl_token_transferencia 
                               set is_usado = true 
                               where id = ?`;
-                              
-        await transacaoBanco.raw(sqlUpdateToken, [tokenInfo.id]);
 
-        await transacaoBanco.commit();
-        return true;
+            let resultUpdate = await conexaoKnex.conexao.raw(sqlUpdateToken, [tokenInfo.id]);
+
+            if (resultUpdate[0].affectedRows > 0) {
+                return true
+            } else {
+                return false
+            }
+
+        } else {
+            return false
+        }
 
     } catch (error) {
-        console.error("ERRO NA TRANSAÇÃO DE TRANSFERÊNCIA:", error);
-        await transacaoBanco.rollback();
+        
         return false;
     }
 }

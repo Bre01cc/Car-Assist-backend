@@ -293,7 +293,7 @@ CREATE TABLE tbl_usuario_veiculo (
 -- =====================================================
 CREATE TABLE tbl_token_transferencia (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    codigo_verificacao VARCHAR(6) NOT NULL,
+    codigo_verificacao VARCHAR(255) NOT NULL,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_usado BOOLEAN DEFAULT FALSE,
     fk_id_veiculo INT NOT NULL,

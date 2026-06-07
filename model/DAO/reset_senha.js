@@ -25,7 +25,7 @@ const getPasswordResetByIdUser = async (idUsuario) => {
         }
 
     } catch (error) {
-        console.log(error)
+    
         return false
     }
 }
@@ -55,14 +55,14 @@ const postPasswordReset = async (dados) => {
             }
 
     } catch (error) {
-console.log(error)
+
         return false
     }
 }
 
 const validateResetToken = async (tokenHash) => {
     try {
-        console.log(tokenHash)
+       
         let result = await conexaoKnex.conexao.raw(`
             SELECT * FROM tbl_reset_senha 
             WHERE token_hash = ? 
@@ -78,7 +78,7 @@ const validateResetToken = async (tokenHash) => {
             return false;
         }
     } catch (error) {
-        console.log(error)
+       
         return false;
     }
 }
@@ -89,12 +89,14 @@ const resetUserPassword = async (idUsuario, idToken, novaSenha) => {
        
         let senhaCriptografada = await bcrypt.hash(novaSenha, 10);
 
-        // Atualiza a senha do usuário
+     
         let result = await conexaoKnex.conexao.raw(`
             UPDATE tbl_usuario 
             SET senha = ? 
             WHERE id = ?
-        `, [senhaCriptografada, idUsuario]);
+        `, 
+        [senhaCriptografada, idUsuario]
+    );
 
 
         if (result[0].affectedRows>0) {
@@ -109,7 +111,7 @@ const resetUserPassword = async (idUsuario, idToken, novaSenha) => {
         }
 
     } catch (error) {
-console.log(error)
+
         return false;
     }
 }
@@ -132,7 +134,7 @@ const invalidateToken = async (idToken) => {
         }
 
     } catch (error) {
-        console.log(error)
+   
         return false
     }
 

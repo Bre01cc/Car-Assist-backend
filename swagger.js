@@ -70,6 +70,10 @@ const options = {
             {
                 name: 'Lembretes',
                 description: 'Operações relacionadas a lembretes'
+            },
+            {
+                name: 'Transferência',
+                description: 'Operações relacionadas a transferencia de veículo'
             }
         ],
         components: {
@@ -1600,6 +1604,139 @@ const options = {
                             type: 'integer',
                             description: 'ID da manutenção associada',
                             example: 1
+                        }
+                    }
+                },
+                TransferenciaGerarRequest: {
+                    type: 'object',
+                    properties: {
+                        fk_id_veiculo: {
+                            type: 'integer',
+                            description: 'ID do veículo que será compartilhado',
+                            example: 2
+                        },
+                        fk_id_usuario_origem: {
+                            type: 'integer',
+                            description: 'ID do proprietário que está concedendo acesso ao veículo',
+                            example: 5
+                        },
+                        papel_concedido: {
+                            type: 'string',
+                            description: 'Papel que será concedido ao usuário destinatário',
+                            enum: [
+                                'Proprietário',
+                                'Editor',
+                                'Visualizador'
+                            ],
+                            example: 'Visualizador'
+                        }
+                    },
+                    required: [
+                        'fk_id_veiculo',
+                        'fk_id_usuario_origem',
+                        'papel_concedido'
+                    ]
+                },
+                TransferenciaGerarResponse: {
+                    type: 'object',
+                    properties: {
+                        meta: {
+                            type: 'object',
+                            properties: {
+                                api_description: {
+                                    type: 'string',
+                                    example: 'API da Car Assist'
+                                },
+                                request_date: {
+                                    type: 'string',
+                                    format: 'date-time',
+                                    example: '2026-06-07T02:41:27.328Z'
+                                },
+                                development: {
+                                    type: 'string',
+                                    example: 'Guilherme Moreira de Souza'
+                                }
+                            }
+                        },
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 201
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Item criado com sucesso!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                fk_id_veiculo: {
+                                    type: 'integer',
+                                    example: 2
+                                },
+                                codigo_verificacao: {
+                                    type: 'string',
+                                    example: '495714a354603352015d3de56678cc6aef5933fa0dd41eec8c0eb0fef8d8b5d6'
+                                },
+                                papel_concedido: {
+                                    type: 'string',
+                                    example: 'Visualizador'
+                                },
+                                expira_em_minutos: {
+                                    type: 'integer',
+                                    example: 5
+                                }
+                            }
+                        }
+                    }
+                },
+                TransferenciaAceitarRequest: {
+                    type: 'object',
+                    properties: {
+                        codigo_verificacao: {
+                            type: 'string',
+                            description: 'Código de verificação gerado pelo proprietário',
+                            example: '495714a354603352015d3de56678cc6aef5933fa0dd41eec8c0eb0fef8d8b5d6'
+                        },
+                        id_usuario_destino: {
+                            type: 'integer',
+                            description: 'ID do usuário que receberá o acesso ao veículo',
+                            example: 6
+                        }
+                    },
+                    required: [
+                        'codigo_verificacao',
+                        'id_usuario_destino'
+                    ]
+                }, TransferenciaAceitarResponse: {
+                    type: 'object',
+                    properties: {
+                        meta: {
+                            type: 'object'
+                        },
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Requisição bem sucedida!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                mensagem: {
+                                    type: 'string',
+                                    example: 'Vínculo de veículo processado com sucesso!'
+                                }
+                            }
                         }
                     }
                 },
