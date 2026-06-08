@@ -52,7 +52,7 @@ CREATE TABLE tbl_veiculo (
         'VERMELHO',
         'FANTASIA'
     ) NOT NULL,
-    score DECIMAL(5,2) DEFAULT 100.00,
+    score DECIMAL(5,2) DEFAULT 0.0,
     ano INT NOT NULL,
     foto_veiculo VARCHAR(255),
     is_ativo BOOLEAN DEFAULT TRUE

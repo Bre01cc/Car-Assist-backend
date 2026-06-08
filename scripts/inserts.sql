@@ -71,31 +71,6 @@ INSERT INTO tbl_veiculo (
     2022,
     'corolla.jpg'
 );
-
--- =========================================
--- TIPOS DE MANUTENÇÃO
--- =========================================
-INSERT INTO tbl_tipo_manutencao (
-    nome,
-    valor_score,
-    descricao
-) VALUES
-(
-    'Troca de óleo',
-    -5,
-    'Manutenção preventiva'
-),
-(
-    'Revisão geral',
-    -10,
-    'Revisão completa'
-),
-(
-    'Troca de pneus',
-    -7,
-    'Substituição dos pneus'
-);
-
 -- =========================================
 -- TIPOS DE SERVIÇO
 -- =========================================

@@ -57,7 +57,7 @@ const loginController = require('../controller/reset_senha/reset_senha_controlle
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
 router.post('/v1/car-assist/usuario/password-reset/gerar', async (req, res) => {
-   
+ 
     const contentType = req.headers['content-type'];
     
     const dadosBody = req.body;

@@ -55,6 +55,31 @@ const getUserVehicleByIDs = async (idUsuario, idVeiculo) => {
     }
 }
 
+const getUserVehicleByIDVehicle = async (idVeiculo) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(
+            'select * from vw_usuario_veiculo where id_veiculo = ?',
+            [idVeiculo]
+        );
+
+        if (result[0].length > 0) {
+
+            return result[0]
+        }
+
+        else {
+
+            return false
+        }
+
+    } catch (error) {
+
+        return false;
+    }
+}
+
 const getUserVehicleByIDUser = async (id) => {
 
     try {
@@ -136,7 +161,7 @@ const postUserVehicle = async (dados) => {
         }
 
     } catch (error) {
-
+       
         return false;
     }
 }
@@ -170,7 +195,7 @@ const putUserVehicle = async (usuarioVeiculo) => {
         }
 
     } catch (error) {
-    
+
         return false
     }
 
@@ -213,5 +238,6 @@ module.exports = {
     putUserVehicle,
     deleteUserVehicle,
     getUserVehicleByIDUser,
-    getSelectLastIdUser
+    getSelectLastIdUser,
+    getUserVehicleByIDVehicle
 }

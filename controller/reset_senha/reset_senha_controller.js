@@ -73,11 +73,11 @@ const enviarEmailToken = async (emailDestinatario, nomeUsuario, tokenPuro) => {
             text: template.text,
             html: template.html
         });
-
+console.log(transport)
         return true;
 
     } catch (error) {
-       
+       console.log(error)
         return false;
     }
 };
@@ -134,8 +134,8 @@ const solicitarResetSenha = async (dados, contentType) => {
 
                     if (resultToken) {
 
-                        enviarEmailToken(usuarioEncontrado.email, usuarioEncontrado.nome, tokenGerado.token);
-
+                       let resultEmail = await enviarEmailToken(usuarioEncontrado.email, usuarioEncontrado.nome, tokenGerado.token);
+console.log(resultEmail)
 
                         return DEFAULT_MESSAGES.criarResposta(
                             MESSAGES.SUCCESS_REQUEST,

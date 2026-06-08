@@ -52,6 +52,17 @@ router.get('/v1/car-assist/usuario-veiculo/:id', cors(), async (req, res) => {
     res.status(usuario.status_code).json(usuario);
 });
 
+
+
+
+
+//Busca vínculo pelo id do 
+router.get('/v1/car-assist/usuario-veiculo/veiculo/:id', cors(), async (req, res) => {
+    let idUsuarioVeiculo = req.params.id;
+    let usuario = await controllerUV.buscarUsuarioVeiculoIdVeiculo(idUsuarioVeiculo)
+  
+    res.status(usuario.status_code).json(usuario);
+});
 /**
  * @swagger
  * /v1/car-assist/usuario-veiculo:
