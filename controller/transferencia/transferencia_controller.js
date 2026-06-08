@@ -14,7 +14,7 @@ const usuarioVeiculoDAO = require('../../model/DAO/usuario_veiculo.js');
 const generateToken = () => {
 
     try {
-        const token = crypto.randomBytes(32).toString('hex');
+        const token = crypto.randomBytes(6).toString('hex');
 
         return { token };
 
@@ -81,7 +81,7 @@ const aceitarTransferenciaVeiculo = async (solicitacao, contentType) => {
 
         if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
 
-            if (!solicitacao.codigo_verificacao || String(solicitacao.codigo_verificacao).length > 255) {
+            if (!solicitacao.codigo_verificacao || String(solicitacao.codigo_verificacao).length > 12) {
 
                 MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Código de verificação inválido]';
 
@@ -122,7 +122,7 @@ const aceitarTransferenciaVeiculo = async (solicitacao, contentType) => {
                     solicitacao.id_usuario_destino,
                     tokenInfo
                 );
-                
+
                 if (transferidoComSucesso) {
 
                     return DEFAULT_MESSAGES.criarResposta(
