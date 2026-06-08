@@ -54,9 +54,42 @@ router.get('/v1/car-assist/usuario-veiculo/:id', cors(), async (req, res) => {
 
 
 
+/**
+ * @swagger
+ * /v1/car-assist/usuario-veiculo/veiculo/{veiculo}:
+ *   get:
+ *     summary: Busca os usuários vinculados a um veículo
+ *     description: Retorna todos os veículos associados ao usuário informado.
+ *     tags:
+ *       - Usuário veículo
+ *     parameters:
+ *       - in: path
+ *         name: idUsuario
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Usuários encontrados com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UsuarioVeiculoByUsuarioResponse'
+ *       404:
+ *         description: Usuário ou veículo não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ */
 
-
-//Busca vínculo pelo id do 
+//Busca vínculo pelo id do usuário
 router.get('/v1/car-assist/usuario-veiculo/veiculo/:id', cors(), async (req, res) => {
     let idUsuarioVeiculo = req.params.id;
     let usuario = await controllerUV.buscarUsuarioVeiculoIdVeiculo(idUsuarioVeiculo)
