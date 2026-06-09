@@ -140,3 +140,36 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER trg_manutencao_para_gasto
+AFTER INSERT ON tbl_manutencao
+FOR EACH ROW
+BEGIN
+    DECLARE v_categoria_manutencao INT;
+
+    -- Busca o ID da categoria "Manutenção"
+    SELECT id
+    INTO v_categoria_manutencao
+    FROM tbl_categoria_gasto
+    WHERE nome_categoria = 'Manutenção'
+    LIMIT 1;
+
+    -- Insere automaticamente o gasto
+    INSERT INTO tbl_gastos (
+        data_gasto,
+        valor,
+        fk_id_veiculo,
+        fk_id_categoria
+    )
+    VALUES (
+        DATE(NEW.data_manutencao),
+        NEW.custo,
+        NEW.fk_id_veiculo,
+        v_categoria_manutencao
+    );
+
+END$$
+
+DELIMITER ;
