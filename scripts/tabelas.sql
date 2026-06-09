@@ -52,11 +52,14 @@ CREATE TABLE tbl_veiculo (
         'VERMELHO',
         'FANTASIA'
     ) NOT NULL,
-    score DECIMAL(5,2) DEFAULT 100.00,
+    score DECIMAL(5,2) DEFAULT 0.0,
     ano INT NOT NULL,
     foto_veiculo VARCHAR(255),
     is_ativo BOOLEAN DEFAULT TRUE
 );
+
+ALTER TABLE tbl_veiculo
+ADD COLUMN quilometragem INT NULL;
 
 -- =====================================================
 -- TABELA: TIPO MANUTENÇÃO
@@ -197,21 +200,9 @@ CREATE TABLE tbl_manutencao (
 ALTER TABLE tbl_manutencao
 ADD COLUMN pecas TEXT NULL;
 
+
 ALTER TABLE tbl_manutencao
 MODIFY COLUMN data_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
--- =====================================================
--- TABELA: PEÇAS
--- =====================================================
-CREATE TABLE tbl_pecas (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(200) NOT NULL,
-    fk_id_manutencao INT NOT NULL,
-
-    CONSTRAINT FK_manu_pecas_manu
-        FOREIGN KEY (fk_id_manutencao)
-        REFERENCES tbl_manutencao (id)
-        ON DELETE CASCADE
-);
 
 -- =====================================================
 -- TABELA: EVIDÊNCIA
@@ -302,7 +293,7 @@ CREATE TABLE tbl_usuario_veiculo (
 -- =====================================================
 CREATE TABLE tbl_token_transferencia (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    codigo_verificacao VARCHAR(6) NOT NULL,
+    codigo_verificacao VARCHAR(255) NOT NULL,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_usado BOOLEAN DEFAULT FALSE,
     fk_id_veiculo INT NOT NULL,

@@ -13,6 +13,10 @@ const options = {
                 name: "servidor local",
                 url: 'http://localhost:8080'
             },
+            {
+                name: "servidor online",
+                url: 'http://localhost:8080'
+            }
         ],
         tags: [
             {
@@ -20,18 +24,30 @@ const options = {
                 description: 'Operações relacionadas a usuário'
             },
             {
+                name: 'Reset senha',
+                description: 'Operações relacionadas ao reset da senha do usuário'
+            },
+            {
+                name: 'Usuário veículo',
+                description: 'Operações relacionadas ao Usuário veículo'
+            },
+            {
+                name: 'Usuário serviço',
+                description: 'Operações relacionadas ao Usuário serviço'
+            },
+            {
                 name: 'Veículos',
                 description: 'Operações relacionadas a veículos'
             },
             {
-                name: 'Manuntenção',
+                name: 'Manutenção',
                 description: 'Operações relacionadas a manuntenção'
             },
             {
                 name: 'Tipo manutenção',
                 description: 'Operações relacionadas a tipo de manutenção'
             },
-              {
+            {
                 name: 'Evidência',
                 description: 'Operações relacionadas a evidência de uma manutenção'
             },
@@ -52,16 +68,12 @@ const options = {
                 description: 'Operações relacionadas ao tipo do serviço'
             },
             {
-                name: 'Endereço',
-                description: 'Operações relacionadas a endereço'
-            },
-            {
                 name: 'Lembretes',
                 description: 'Operações relacionadas a lembretes'
             },
             {
-                name: 'ChatBot',
-                description: 'Operações relacionadas a chatBot'
+                name: 'Transferência',
+                description: 'Operações relacionadas a transferencia de veículo'
             }
         ],
         components: {
@@ -202,13 +214,392 @@ const options = {
                             type: 'string',
                             description: 'Senha do usuário',
                             example: '123456'
+                        },
+                        foto_usuario: {
+                            type: 'string',
+                            description: 'Foto do usuário',
+                            example: 'https://meusite.com/fotos/usuario1.jpg'
                         }
                     },
                     required: [
                         'nome',
                         'email',
                         'cpf',
+                        'senha',
+                        'foto_usuario'
+                    ]
+                },
+                PasswordResetRequest: {
+                    type: 'object',
+                    properties: {
+                        email: {
+                            type: 'string',
+                            description: 'E-mail do usuário que receberá o token de recuperação de senha',
+                            example: 'usuario@email.com'
+                        }
+                    },
+                    required: [
+                        'email'
+                    ]
+                },
+                PasswordResetResponse: {
+                    type: 'object',
+                    properties: {
+                        meta: {
+                            type: 'object',
+                            properties: {
+                                api_description: {
+                                    type: 'string',
+                                    example: 'API da Car Assist'
+                                },
+                                request_date: {
+                                    type: 'string',
+                                    format: 'date-time'
+                                },
+                                development: {
+                                    type: 'string',
+                                    example: 'Breno Oliveira Assis Reis'
+                                }
+                            }
+                        },
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Requisição bem sucedida!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                mensagem: {
+                                    type: 'string',
+                                    example: 'Token enviado com sucesso para o e-mail cadastrado.'
+                                },
+                                email: {
+                                    type: 'string',
+                                    example: 'usuario@email.com'
+                                }
+                            }
+                        }
+                    }
+                },
+                PasswordResetConfirmRequest: {
+                    type: 'object',
+                    properties: {
+                        token: {
+                            type: 'string',
+                            description: 'Token de recuperação de senha enviado por e-mail',
+                            example: 'a162e451f0d0e18a2247868b81d182eb9487dea02d1d6a4ecd492cec29fd3971'
+                        },
+                        senha: {
+                            type: 'string',
+                            description: 'Nova senha do usuário',
+                            minLength: 6,
+                            maxLength: 255,
+                            example: 'NovaSenhaSegura2025'
+                        }
+                    },
+                    required: [
+                        'token',
                         'senha'
+                    ]
+                },
+                PasswordResetConfirmResponse: {
+                    type: 'object',
+                    properties: {
+                        meta: {
+                            type: 'object',
+                            properties: {
+                                api_description: {
+                                    type: 'string',
+                                    example: 'API da Car Assist'
+                                },
+                                request_date: {
+                                    type: 'string',
+                                    format: 'date-time'
+                                },
+                                development: {
+                                    type: 'string',
+                                    example: 'Breno Oliveira Assis Reis'
+                                }
+                            }
+                        },
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Item atualizado com sucesso!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                mensagem: {
+                                    type: 'string',
+                                    example: 'Senha redefinida com sucesso!'
+                                }
+                            }
+                        }
+                    }
+                },
+                UsuarioLoginRequest:
+                {
+                    "type": "object",
+                    "properties": {
+                        "email": {
+                            "type": "string",
+                            "description": "Email do usuário",
+                            "example": "joao@email.com"
+                        },
+                        "senha": {
+                            "type": "string",
+                            "description": "Senha do usuário",
+                            "example": "123456"
+                        }
+                    },
+                    "required": [
+                        "email",
+                        "senha"
+                    ]
+
+                },
+                UsuarioVeiculoRequest: {
+                    type: 'object',
+                    properties: {
+                        fk_id_usuario: {
+                            type: 'integer',
+                            description: 'ID do usuário'
+                        },
+                        fk_id_veiculo: {
+                            type: 'integer',
+                            description: 'ID do veículo'
+                        },
+                        papel_usuario: {
+                            type: 'string',
+                            description: 'Permissão do usuário sobre o veículo',
+                            enum: [
+                                'Proprietário',
+                                'Editor',
+                                'Visualizador'
+                            ],
+                            example: 'Proprietário'
+                        },
+                        data_vinculo: {
+                            type: 'string',
+                            format: 'date',
+                            description: 'Data em que o vínculo foi criado',
+                            example: '2026-06-05'
+                        }
+                    },
+                    required: [
+                        'fk_id_usuario',
+                        'fk_id_veiculo',
+                        'data_vinculo'
+                    ]
+                },
+                UsuarioVeiculoResponse: {
+                    type: 'object',
+                    properties: {
+                        fk_id_usuario: {
+                            type: 'integer',
+                            description: 'ID do usuário',
+                            example: 1
+                        },
+                        fk_id_veiculo: {
+                            type: 'integer',
+                            description: 'ID do veículo',
+                            example: 1
+                        },
+                        papel_usuario: {
+                            type: 'string',
+                            enum: [
+                                'Proprietário',
+                                'Editor',
+                                'Visualizador'
+                            ],
+                            example: 'Proprietário'
+                        },
+                        data_vinculo: {
+                            type: 'string',
+                            format: 'date',
+                            example: '2026-06-05'
+                        },
+                        data_desvinculo: {
+                            type: 'string',
+                            format: 'date',
+                            nullable: true,
+                            example: null
+                        },
+                        is_ativo: {
+                            type: 'boolean',
+                            example: true
+                        }
+                    }
+                },
+                UsuarioVeiculoByUsuarioResponse: {
+                    type: 'object',
+                    properties: {
+                        meta: {
+                            type: 'object',
+                            properties: {
+                                api_description: {
+                                    type: 'string',
+                                    example: 'API da Car Assist'
+                                },
+                                request_date: {
+                                    type: 'string',
+                                    format: 'date-time'
+                                },
+                                development: {
+                                    type: 'string',
+                                    example: 'Breno Oliveira Assis Reis'
+                                }
+                            }
+                        },
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Requisição bem sucedida!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                usuario_veiculo: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            id_usuario: {
+                                                type: 'integer',
+                                                example: 2
+                                            },
+                                            papel_usuario: {
+                                                type: 'string',
+                                                enum: [
+                                                    'Proprietário',
+                                                    'Editor',
+                                                    'Visualizador'
+                                                ],
+                                                example: 'Editor'
+                                            },
+                                            data_vinculo: {
+                                                type: 'string',
+                                                format: 'date-time'
+                                            },
+                                            is_ativo: {
+                                                type: 'boolean',
+                                                example: true
+                                            },
+                                            veiculo: {
+                                                type: 'object',
+                                                properties: {
+                                                    id: {
+                                                        type: 'integer',
+                                                        example: 1
+                                                    },
+                                                    placa: {
+                                                        type: 'string',
+                                                        example: 'ABC1299'
+                                                    },
+                                                    modelo: {
+                                                        type: 'string',
+                                                        example: 'Civic'
+                                                    },
+                                                    marca: {
+                                                        type: 'string',
+                                                        example: 'Honda'
+                                                    },
+                                                    cor: {
+                                                        type: 'string',
+                                                        example: 'PRETO'
+                                                    },
+                                                    score: {
+                                                        type: 'string',
+                                                        example: '100.00'
+                                                    },
+                                                    ano: {
+                                                        type: 'integer',
+                                                        example: 2020
+                                                    },
+                                                    foto: {
+                                                        type: 'string',
+                                                        example: 'https://uploadcarassist.blob.core.windows.net/uploadcarassist/imagem.png'
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                UsuarioVeiculoUpdateRequest: {
+                    type: 'object',
+                    properties: {
+                        papel_usuario: {
+                            type: 'string',
+                            description: 'Papel do usuário em relação ao veículo',
+                            enum: [
+                                'Proprietário',
+                                'Editor',
+                                'Visualizador'
+                            ],
+                            example: 'Editor'
+                        }
+                    },
+                    required: [
+                        'papel_usuario'
+                    ]
+                },
+                UsuarioServicoResponse: {
+                    type: 'object',
+                    properties: {
+                        fk_id_usuario: {
+                            type: 'integer',
+                            example: 1
+                        },
+                        fk_id_servico: {
+                            type: 'integer',
+                            example: 2
+                        }
+                    }
+                },
+                UsuarioServicoRequest: {
+                    type: 'object',
+                    properties: {
+                        fk_id_usuario: {
+                            type: 'integer',
+                            description: 'ID do usuário',
+                            example: 1
+                        },
+                        fk_id_servico: {
+                            type: 'integer',
+                            description: 'ID do serviço',
+                            example: 2
+                        }
+                    },
+                    required: [
+                        'fk_id_usuario',
+                        'fk_id_servico'
                     ]
                 },
                 VeiculoResponse: {
@@ -236,6 +627,11 @@ const options = {
                                                         type: 'string',
                                                         description: 'modelo',
                                                         example: 'lancer 1995'
+                                                    },
+                                                    quilometragem: {
+                                                        type: 'integer',
+                                                        description: 'quilometragem',
+                                                        example: 10000
                                                     },
                                                     score: {
                                                         type: 'integer',
@@ -302,6 +698,11 @@ const options = {
                             description: 'Modelo do veículo',
                             example: 'Lancer 1995'
                         },
+                        quilometragem: {
+                            type: 'integer',
+                            description: 'quilometragem',
+                            example: 10000
+                        },
                         marca: {
                             type: 'string',
                             description: 'Marca do veículo',
@@ -352,170 +753,228 @@ const options = {
                         'ano'
                     ]
                 },
-                ManutencaoResponse: {
-                    allOf: [
-                        {
-                            $ref: '#/components/schemas/BaseResponse'
+                VeiculoUsuarioRequest: {
+                    type: 'object',
+                    properties: {
+                        id_usuario: {
+                            type: 'integer',
+                            description: 'ID do usuário proprietário do veículo',
+                            example: 1
                         },
-                        {
+                        placa: {
+                            type: 'string',
+                            example: 'ABC1D23'
+                        },
+                        modelo: {
+                            type: 'string',
+                            example: 'Civic'
+                        },
+                        marca: {
+                            type: 'string',
+                            example: 'Honda'
+                        },
+                        cor: {
+                            type: 'string',
+                            example: 'PRETO'
+                        },
+                        ano: {
+                            type: 'integer',
+                            example: 2020
+                        },
+                        foto_veiculo: {
+                            type: 'string',
+                            format: 'binary',
+                            description: 'Imagem do veículo'
+                        }
+                    },
+                    required: [
+                        'id_usuario',
+                        'placa',
+                        'modelo',
+                        'marca',
+                        'cor',
+                        'ano'
+                    ]
+                },
+                ManutencaoListResponse: {
+                    type: 'object',
+                    properties: {
+                        meta: {
                             type: 'object',
                             properties: {
-                                data: {
-                                    type: 'object',
-                                    properties: {
-                                        manutencao: {
-                                            type: 'array',
-                                            items: {
+                                api_description: {
+                                    type: 'string',
+                                    example: 'API da Car Assist'
+                                },
+                                request_date: {
+                                    type: 'string',
+                                    format: 'date-time'
+                                },
+                                development: {
+                                    type: 'string',
+                                    example: 'Breno Oliveira Assis Reis'
+                                }
+                            }
+                        },
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Requisição bem sucedida!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                manutencao: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            id: {
+                                                type: 'integer',
+                                                example: 1
+                                            },
+                                            id_usuario: {
+                                                type: 'integer',
+                                                example: 1
+                                            },
+                                            id_veiculo: {
+                                                type: 'integer',
+                                                example: 1
+                                            },
+                                            data_manutencao: {
+                                                type: 'string',
+                                                format: 'date-time'
+                                            },
+                                            custo: {
+                                                type: 'string',
+                                                example: '250.00'
+                                            },
+                                            quilometragem: {
+                                                type: 'integer',
+                                                example: 50000
+                                            },
+                                            oficina: {
+                                                type: 'string',
+                                                example: 'Oficina do Zé'
+                                            },
+                                            pecas: {
+                                                type: 'string',
+                                                nullable: true,
+                                                example: null
+                                            },
+                                            observacoes: {
+                                                type: 'string',
+                                                example: 'Tudo ok'
+                                            },
+                                            is_ativo: {
+                                                type: 'boolean',
+                                                example: true
+                                            },
+                                            data: {
+                                                type: 'string',
+                                                format: 'date-time'
+                                            },
+                                            tipo_manutencao: {
                                                 type: 'object',
                                                 properties: {
                                                     id: {
                                                         type: 'integer',
-                                                        description: 'ID da manutenção',
-                                                        example: 10
-                                                    },
-                                                    evidencias: {
-                                                        type: 'string',
-                                                        description: 'Evidências da manutenção',
-                                                        example: 'https://img.com/foto1.jpg'
-                                                    },
-                                                    data_manutencao: {
-                                                        type: 'string',
-                                                        format: 'date-time',
-                                                        description: 'Data e hora da manutenção',
-                                                        example: '2026-05-05T14:30:00Z'
-                                                    },
-                                                    custo: {
-                                                        type: 'number',
-                                                        format: 'float',
-                                                        description: 'Custo da manutenção',
-                                                        example: 350.75
-                                                    },
-                                                    quilometragem: {
-                                                        type: 'integer',
-                                                        description: 'Quilometragem registrada',
-                                                        example: 85000
-                                                    },
-                                                    pecas: {
-                                                        type: 'string',
-                                                        description: 'Peças utilizadas',
-                                                        example: 'Filtro de óleo, pastilha de freio'
-                                                    },
-                                                    oficina: {
-                                                        type: 'string',
-                                                        description: 'Oficina responsável',
-                                                        example: 'Oficina do João'
-                                                    },
-                                                    observacoes: {
-                                                        type: 'string',
-                                                        description: 'Observações',
-                                                        example: 'Troca preventiva realizada'
-                                                    },
-                                                    is_ativo: {
-                                                        type: 'boolean',
-                                                        description: 'Status da manutenção',
-                                                        example: true
-                                                    },
-                                                    fk_id_tipo_manutencao: {
-                                                        type: 'integer',
-                                                        description: 'ID do tipo de manutenção',
                                                         example: 1
                                                     },
-                                                    fk_id_usuario: {
-                                                        type: 'integer',
-                                                        description: 'ID do usuário',
-                                                        example: 2
-                                                    },
-                                                    fk_id_veiculo: {
-                                                        type: 'integer',
-                                                        description: 'ID do veículo',
-                                                        example: 3
+                                                    nome: {
+                                                        type: 'string',
+                                                        example: 'Troca de óleo'
                                                     }
-                                                },
-                                                required: [
-                                                    'id',
-                                                    'data_manutencao',
-                                                    'custo',
-                                                    'quilometragem',
-                                                    'fk_id_tipo_manutencao',
-                                                    'fk_id_usuario',
-                                                    'fk_id_veiculo'
-                                                ]
+                                                }
+                                            },
+                                            evidencia: {
+                                                type: 'array',
+                                                items: {
+                                                    type: 'object',
+                                                    properties: {
+                                                        id: {
+                                                            type: 'integer',
+                                                            example: 1
+                                                        },
+                                                        url: {
+                                                            type: 'string',
+                                                            example: 'evidencia1.jpg'
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                    ]
+                    }
                 },
                 ManutencaoRequest: {
                     type: 'object',
                     properties: {
-                        evidencias: {
-                            type: 'string',
-                            description: 'Evidências da manutenção (ex: URL de imagem)',
-                            example: 'https://img.com/foto1.jpg'
-                        },
-                        data_manutencao: {
-                            type: 'string',
-                            format: 'date-time',
-                            description: 'Data e hora da manutenção',
-                            example: '2026-05-05T14:30:00Z'
-                        },
-                        custo: {
-                            type: 'number',
-                            format: 'float',
-                            description: 'Custo da manutenção',
-                            example: 350.75
-                        },
-                        quilometragem: {
+                        id_usuario: {
                             type: 'integer',
-                            description: 'Quilometragem do veículo no momento da manutenção',
-                            example: 85000
+                            description: 'ID do usuário responsável pela manutenção',
+                            example: 1
                         },
-                        pecas: {
-                            type: 'string',
-                            description: 'Peças utilizadas',
-                            example: 'Filtro de óleo, pastilha de freio'
+                        id_veiculo: {
+                            type: 'integer',
+                            description: 'ID do veículo que recebeu a manutenção',
+                            example: 1
                         },
-                        oficina: {
-                            type: 'string',
-                            description: 'Nome da oficina',
-                            example: 'Oficina do João'
-                        },
-                        observacoes: {
-                            type: 'string',
-                            description: 'Observações adicionais',
-                            example: 'Troca preventiva realizada'
-                        },
-                        is_ativo: {
-                            type: 'boolean',
-                            description: 'Indica se a manutenção está ativa',
-                            example: true
-                        },
-                        fk_id_tipo_manutencao: {
+                        id_tipo_manutencao: {
                             type: 'integer',
                             description: 'ID do tipo de manutenção',
                             example: 1
                         },
-                        fk_id_usuario: {
-                            type: 'integer',
-                            description: 'ID do usuário',
-                            example: 2
+                        data_manutencao: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Data em que a manutenção foi realizada',
+                            example: '2025-01-20T13:00:00.000Z'
                         },
-                        fk_id_veiculo: {
+                        custo: {
+                            type: 'number',
+                            format: 'float',
+                            description: 'Valor gasto na manutenção',
+                            example: 250.00
+                        },
+                        quilometragem: {
                             type: 'integer',
-                            description: 'ID do veículo',
-                            example: 3
+                            description: 'Quilometragem do veículo no momento da manutenção',
+                            example: 50000
+                        },
+                        oficina: {
+                            type: 'string',
+                            description: 'Nome da oficina onde a manutenção foi realizada',
+                            example: 'Oficina do Zé'
+                        },
+                        pecas: {
+                            type: 'string',
+                            description: 'Peças utilizadas na manutenção',
+                            example: 'Filtro de óleo, óleo 5W30'
+                        },
+                        observacoes: {
+                            type: 'string',
+                            description: 'Observações adicionais sobre a manutenção',
+                            example: 'Troca realizada sem intercorrências'
                         }
                     },
                     required: [
+                        'id_usuario',
+                        'id_veiculo',
+                        'id_tipo_manutencao',
                         'data_manutencao',
                         'custo',
-                        'quilometragem',
-                        'fk_id_tipo_manutencao',
-                        'fk_id_usuario',
-                        'fk_id_veiculo'
+                        'quilometragem'
                     ]
                 },
                 TipoManutencaoResponse: {
@@ -864,6 +1323,34 @@ const options = {
                         }
                     ]
                 },
+                TipoServicoListResponse: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Requisição bem sucedida!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                tipos_servico: {
+                                    type: 'array',
+                                    items: {
+                                        $ref: '#/components/schemas/TipoServicoResponse'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 EnderecosResponse: {
                     allOf: [
                         {
@@ -1002,6 +1489,11 @@ const options = {
                                                         type: 'integer',
                                                         description: 'ID do veículo',
                                                         example: 3
+                                                    },
+                                                    fk_id_usuario: {
+                                                        type: 'integer',
+                                                        description: 'ID do usuário',
+                                                        example: 3
                                                     }
                                                 },
                                                 required: [
@@ -1011,7 +1503,8 @@ const options = {
                                                     'data_criacao',
                                                     'data_vencimento',
                                                     'status',
-                                                    'fk_id_veiculo'
+                                                    'fk_id_veiculo',
+                                                    'fk_id_usuario'
                                                 ]
                                             }
                                         }
@@ -1049,6 +1542,11 @@ const options = {
                             type: 'integer',
                             description: 'ID do veículo',
                             example: 3
+                        },
+                        fk_id_usuario: {
+                            type: 'integer',
+                            description: 'ID do usuário',
+                            example: 3
                         }
                     },
                     required: [
@@ -1056,92 +1554,192 @@ const options = {
                         'descricao',
                         'data_vencimento',
                         'status',
-                        'fk_id_veiculo'
+                        'fk_id_veiculo',
+                        'fk_id_usuario'
                     ]
                 },
-                ChatbotResponse: {
-                    allOf: [
-                        {
-                            $ref: '#/components/schemas/BaseResponse'
-                        },
-                        {
-                            type: 'object',
-                            properties: {
-                                data: {
-                                    type: 'object',
-                                    properties: {
-                                        chatbot: {
-                                            type: 'array',
-                                            items: {
-                                                type: 'object',
-                                                properties: {
-                                                    id: {
-                                                        type: 'integer',
-                                                        description: 'ID da interação do chatbot',
-                                                        example: 1
-                                                    },
-                                                    pergunta: {
-                                                        type: 'string',
-                                                        description: 'Pergunta feita pelo usuário',
-                                                        example: 'Quando devo trocar o óleo do carro?'
-                                                    },
-                                                    resposta: {
-                                                        type: 'string',
-                                                        description: 'Resposta gerada pelo chatbot',
-                                                        example: 'Recomenda-se trocar o óleo a cada 10.000 km.'
-                                                    },
-                                                    data_interacao: {
-                                                        type: 'string',
-                                                        format: 'date-time',
-                                                        description: 'Data e hora da interação',
-                                                        example: '2026-05-06T14:30:00Z'
-                                                    },
-                                                    fk_id_usuario: {
-                                                        type: 'integer',
-                                                        description: 'ID do usuário que fez a pergunta',
-                                                        example: 2
-                                                    }
-                                                },
-                                                required: [
-                                                    'id',
-                                                    'pergunta',
-                                                    'resposta',
-                                                    'data_interacao',
-                                                    'fk_id_usuario'
-                                                ]
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    ]
-                },
-                ChatbotRequest: {
+                EvidenciaRequest: {
                     type: 'object',
                     properties: {
-                        pergunta: {
+                        descricao: {
                             type: 'string',
-                            description: 'Pergunta feita pelo usuário',
-                            example: 'Quando devo trocar o óleo do carro?'
+                            description: 'Descrição da evidência',
+                            example: 'Troca de óleo realizada'
                         },
-                        resposta: {
-                            type: 'string',
-                            description: 'Resposta gerada pelo chatbot',
-                            example: 'Recomenda-se trocar o óleo a cada 10.000 km.'
-                        },
-                        fk_id_usuario: {
+                        fk_id_manutencao: {
                             type: 'integer',
-                            description: 'ID do usuário',
-                            example: 2
+                            description: 'ID da manutenção associada',
+                            example: 1
+                        },
+                        url: {
+                            type: 'string',
+                            format: 'binary',
+                            description: 'Imagem da evidência'
                         }
                     },
                     required: [
-                        'pergunta',
-                        'resposta',
-                        'fk_id_usuario'
+                        'fk_id_manutencao',
+                        'url'
                     ]
-                }
+                },
+                EvidenciaResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'integer',
+                            description: 'ID da evidência',
+                            example: 1
+                        },
+                        descricao: {
+                            type: 'string',
+                            description: 'Descrição da evidência',
+                            example: 'Troca de óleo realizada'
+                        },
+                        url: {
+                            type: 'string',
+                            description: 'URL da imagem da evidência',
+                            example: 'https://uploadcarassist.blob.core.windows.net/uploadcarassist/evidencia.jpg'
+                        },
+                        fk_id_manutencao: {
+                            type: 'integer',
+                            description: 'ID da manutenção associada',
+                            example: 1
+                        }
+                    }
+                },
+                TransferenciaGerarRequest: {
+                    type: 'object',
+                    properties: {
+                        fk_id_veiculo: {
+                            type: 'integer',
+                            description: 'ID do veículo que será compartilhado',
+                            example: 2
+                        },
+                        fk_id_usuario_origem: {
+                            type: 'integer',
+                            description: 'ID do proprietário que está concedendo acesso ao veículo',
+                            example: 5
+                        },
+                        papel_concedido: {
+                            type: 'string',
+                            description: 'Papel que será concedido ao usuário destinatário',
+                            enum: [
+                                'Proprietário',
+                                'Editor',
+                                'Visualizador'
+                            ],
+                            example: 'Visualizador'
+                        }
+                    },
+                    required: [
+                        'fk_id_veiculo',
+                        'fk_id_usuario_origem',
+                        'papel_concedido'
+                    ]
+                },
+                TransferenciaGerarResponse: {
+                    type: 'object',
+                    properties: {
+                        meta: {
+                            type: 'object',
+                            properties: {
+                                api_description: {
+                                    type: 'string',
+                                    example: 'API da Car Assist'
+                                },
+                                request_date: {
+                                    type: 'string',
+                                    format: 'date-time',
+                                    example: '2026-06-07T02:41:27.328Z'
+                                },
+                                development: {
+                                    type: 'string',
+                                    example: 'Guilherme Moreira de Souza'
+                                }
+                            }
+                        },
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 201
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Item criado com sucesso!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                fk_id_veiculo: {
+                                    type: 'integer',
+                                    example: 2
+                                },
+                                codigo_verificacao: {
+                                    type: 'string',
+                                    example: '495714a354603352015d3de56678cc6aef5933fa0dd41eec8c0eb0fef8d8b5d6'
+                                },
+                                papel_concedido: {
+                                    type: 'string',
+                                    example: 'Visualizador'
+                                },
+                                expira_em_minutos: {
+                                    type: 'integer',
+                                    example: 5
+                                }
+                            }
+                        }
+                    }
+                },
+                TransferenciaAceitarRequest: {
+                    type: 'object',
+                    properties: {
+                        codigo_verificacao: {
+                            type: 'string',
+                            description: 'Código de verificação gerado pelo proprietário',
+                            example: '495714a354603352015d3de56678cc6aef5933fa0dd41eec8c0eb0fef8d8b5d6'
+                        },
+                        id_usuario_destino: {
+                            type: 'integer',
+                            description: 'ID do usuário que receberá o acesso ao veículo',
+                            example: 6
+                        }
+                    },
+                    required: [
+                        'codigo_verificacao',
+                        'id_usuario_destino'
+                    ]
+                }, TransferenciaAceitarResponse: {
+                    type: 'object',
+                    properties: {
+                        meta: {
+                            type: 'object'
+                        },
+                        status: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        status_code: {
+                            type: 'integer',
+                            example: 200
+                        },
+                        message: {
+                            type: 'string',
+                            example: 'Requisição bem sucedida!!!'
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                mensagem: {
+                                    type: 'string',
+                                    example: 'Vínculo de veículo processado com sucesso!'
+                                }
+                            }
+                        }
+                    }
+                },
             },
             ResponseApi: {
                 ERROR_NOT_FOUND: {

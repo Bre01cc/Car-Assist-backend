@@ -252,7 +252,7 @@ const deleteUserServiceById = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+     
         return false
     }
 }

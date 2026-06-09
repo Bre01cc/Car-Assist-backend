@@ -41,6 +41,31 @@ const getUserVehicleByIDs = async (idUsuario, idVeiculo) => {
 
         if (result[0].length > 0) {
 
+            return result[0][0]
+        }
+
+        else {
+
+            return false
+        }
+
+    } catch (error) {
+
+        return false;
+    }
+}
+
+const getUserVehicleByIDVehicle = async (idVeiculo) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(
+            'select * from vw_usuario_veiculo where id_veiculo = ?',
+            [idVeiculo]
+        );
+
+        if (result[0].length > 0) {
+
             return result[0]
         }
 
@@ -118,13 +143,12 @@ const postUserVehicle = async (dados) => {
                     ?,
                     ?,
                     ?,
-                    ? 
+                    curdate()
                     )
             `, [
             dados.fk_id_usuario,
             dados.fk_id_veiculo,
-            dados.papel_usuario,
-            dados.data_vinculo
+            dados.papel_usuario
         ]);
 
         if (result[0].affectedRows > 0) {
@@ -137,7 +161,7 @@ const postUserVehicle = async (dados) => {
         }
 
     } catch (error) {
-
+       
         return false;
     }
 }
@@ -171,7 +195,7 @@ const putUserVehicle = async (usuarioVeiculo) => {
         }
 
     } catch (error) {
-        console.log(error)
+
         return false
     }
 
@@ -214,5 +238,6 @@ module.exports = {
     putUserVehicle,
     deleteUserVehicle,
     getUserVehicleByIDUser,
-    getSelectLastIdUser
+    getSelectLastIdUser,
+    getUserVehicleByIDVehicle
 }

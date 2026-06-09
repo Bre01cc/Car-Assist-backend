@@ -71,31 +71,6 @@ INSERT INTO tbl_veiculo (
     2022,
     'corolla.jpg'
 );
-
--- =========================================
--- TIPOS DE MANUTENÇÃO
--- =========================================
-INSERT INTO tbl_tipo_manutencao (
-    nome,
-    valor_score,
-    descricao
-) VALUES
-(
-    'Troca de óleo',
-    -5,
-    'Manutenção preventiva'
-),
-(
-    'Revisão geral',
-    -10,
-    'Revisão completa'
-),
-(
-    'Troca de pneus',
-    -7,
-    'Substituição dos pneus'
-);
-
 -- =========================================
 -- TIPOS DE SERVIÇO
 -- =========================================
@@ -269,26 +244,6 @@ INSERT INTO tbl_manutencao (
 );
 
 -- =========================================
--- PEÇAS
--- =========================================
-INSERT INTO tbl_pecas (
-    nome,
-    fk_id_manutencao
-) VALUES
-(
-    'Filtro de óleo',
-    1
-),
-(
-    'Freios',
-    1
-),
-(
-    'Pneu Michelin',
-    1
-);
-
--- =========================================
 -- GASTOS
 -- =========================================
 INSERT INTO tbl_gastos (
@@ -430,3 +385,26 @@ INSERT INTO tbl_usuario_servico (
     1,
     CURDATE()
 );
+
+
+INSERT INTO tbl_tipo_manutencao (nome, valor_score, descricao) VALUES
+
+('Troca de Óleo', 2, 'Substituição do óleo lubrificante do motor'),
+('Troca de Filtros', 1, 'Substituição dos filtros do veículo'),
+('Revisão Completa', 5, 'Revisão geral preventiva do veículo'),
+('Check-up Preventivo', 3, 'Inspeção preventiva dos sistemas do veículo'),
+('Revisão dos Freios', 3, 'Manutenção preventiva do sistema de freios'),
+('Troca de Pneus', 2, 'Substituição dos pneus desgastados'),
+('Alinhamento', 1, 'Correção do alinhamento das rodas'),
+('Balanceamento', 1, 'Balanceamento das rodas do veículo'),
+('Troca de Bateria', 2, 'Substituição da bateria automotiva'),
+('Revisão Elétrica', 2, 'Inspeção e manutenção do sistema elétrico'),
+('Sistema de Arrefecimento', 2, 'Manutenção do sistema de arrefecimento do motor'),
+('Troca de Correia', 3, 'Substituição preventiva da correia do motor'),
+('Troca de Velas', 2, 'Substituição das velas de ignição'),
+('Funilaria e Pintura', 1, 'Reparo estético da carroceria'),
+('Recall Realizado', 2, 'Atendimento a recall do fabricante'),
+('Inspeção Veicular', 2, 'Inspeção técnica do veículo'),
+('Manutenção Corretiva', 1, 'Correção de falhas identificadas'),
+('Troca de Peças', 2, 'Substituição de componentes defeituosos');
+

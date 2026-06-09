@@ -83,6 +83,7 @@ usuario.nome,
 usuario.cpf,
 usuario.data_nascimento,
 usuario.foto_usuario,
+usuario.email,
 usuario.is_ativo from tbl_usuario usuario;
 
 create view vw_evidencia_data as select
@@ -98,15 +99,6 @@ manutencao.oficina,
 manutencao.data_manutencao data
 from tbl_evidencia evidencia join tbl_manutencao manutencao on
 evidencia.fk_id_manutencao = manutencao.id;
-
-create view vw_pecas as select 
-peca.id,
-peca.nome,
-manutencao.id id_manutencao,
-manutencao.data_manutencao data,
-manutencao.oficina
-from tbl_pecas peca join tbl_manutencao manutencao
-on peca.fk_id_manutencao = manutencao.id;
 
 create view vw_gasto as select 
 gasto.id,
@@ -167,6 +159,7 @@ veiculo.cor,
 veiculo.score,
 veiculo.ano,
 veiculo.foto_veiculo,
+veiculo.quilometragem,
 veiculo.is_ativo veiculo_is_ativo
 from tbl_usuario_veiculo usuario_veiculo join
 tbl_veiculo veiculo on 

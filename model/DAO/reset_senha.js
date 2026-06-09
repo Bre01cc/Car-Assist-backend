@@ -7,11 +7,13 @@
 
 const conexaoKnex = require('../../knex/index.js');
 
-const crypto = require('crypto');
+const bcrypt = require('bcrypt');
+
+
 
 const getPasswordResetByIdUser = async (idUsuario) => {
     try {
-        let result = conexaoKnex.conexao.raw(
+        let result = await conexaoKnex.conexao.raw(
             `select * from tbl_reset_senha where id_usuario = ?`,
             [idUsuario]
         );
@@ -23,38 +25,16 @@ const getPasswordResetByIdUser = async (idUsuario) => {
         }
 
     } catch (error) {
+    
         return false
     }
-}
-
-const generateToken = async () => {
-
-    try {
-        //utilizando biblioteca nativa do node pra gerar um token e=hexadecimal
-        const token = crypto.randomBytes(64).toString('hex');
-        console.log()
-        //gerando uma hash e passando para ela o token, por fim gera token que será guardado no banco
-        const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
-
-        return {
-            token,
-            tokenHash
-        }
-
-    } catch (error) {
-        return false
-    }
-
 }
 
 const postPasswordReset = async (dados) => {
 
     try {
 
-        let token = generateToken()
-
-        if (token) {
-            let result = conexaoKnex.conexao.raw(
+            let result = await conexaoKnex.conexao.raw(
                 `insert into tbl_reset_senha(
              id_usuario,
              token_hash
@@ -64,7 +44,7 @@ const postPasswordReset = async (dados) => {
             )`,
                 [
                     dados.id_usuario,
-                    token.tokenHash
+                    dados.token_hash
                 ]
             );
 
@@ -73,10 +53,97 @@ const postPasswordReset = async (dados) => {
             } else {
                 return false
             }
-        }
 
     } catch (error) {
 
         return false
     }
 }
+
+const validateResetToken = async (tokenHash) => {
+    try {
+       
+        let result = await conexaoKnex.conexao.raw(`
+            SELECT * FROM tbl_reset_senha 
+            WHERE token_hash = ? 
+              AND data_expiracao > NOW() 
+              AND data_uso IS NULL
+            LIMIT 1
+        `, [tokenHash]);
+
+        // Retorna o registro completo (contendo o id_usuario) se for válido
+        if (result && result[0] && result[0].length > 0) {
+            return result[0][0];
+        } else {
+            return false;
+        }
+    } catch (error) {
+       
+        return false;
+    }
+}
+
+const resetUserPassword = async (idUsuario, idToken, novaSenha) => {
+
+    try {
+       
+        let senhaCriptografada = await bcrypt.hash(novaSenha, 10);
+
+     
+        let result = await conexaoKnex.conexao.raw(`
+            UPDATE tbl_usuario 
+            SET senha = ? 
+            WHERE id = ?
+        `, 
+        [senhaCriptografada, idUsuario]
+    );
+
+
+        if (result[0].affectedRows>0) {
+          let invalidar = await invalidateToken(idToken)
+          if(invalidar){
+            return true
+          }else{
+            return false
+          }
+        }else{
+            return false
+        }
+
+    } catch (error) {
+
+        return false;
+    }
+}
+
+const invalidateToken = async (idToken) => {
+
+    try {
+
+        let result = await conexaoKnex.conexao.raw(`
+            UPDATE tbl_reset_senha 
+            SET data_uso = NOW() 
+            WHERE id = ?`,
+            [idToken]
+        );
+
+        if (result[0].affectedRows > 0) {
+            return true
+        } else {
+            return false
+        }
+
+    } catch (error) {
+   
+        return false
+    }
+
+}
+
+module.exports = {
+getPasswordResetByIdUser,
+postPasswordReset,
+resetUserPassword,
+validateResetToken
+}
+

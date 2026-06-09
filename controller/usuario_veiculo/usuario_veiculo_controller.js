@@ -103,6 +103,65 @@ const buscarUsuarioVeiculoIdUsuario = async (idUsuario) => {
 
 }
 
+//Retorna um viculo pelo id do veículo
+const buscarUsuarioVeiculoIdVeiculo = async (idVeiculo) => {
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
+
+    try {
+        //Validação da chegada do ID
+        if (!isNaN(idVeiculo) && idVeiculo != null && idVeiculo > 0) {
+
+            let resultUsuarioVeiculo = await usuarioVeiculoDAO.getUserVehicleByIDVehicle(idVeiculo);
+
+
+            if (resultUsuarioVeiculo) {
+
+                if (resultUsuarioVeiculo.length > 0) {
+
+
+                    let resultFormadato = resultUsuarioVeiculo.map(
+                        usuarioVeiculo => formatarUsuarioVeiculo(usuarioVeiculo)
+                    );
+
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.SUCCESS_REQUEST,
+                        { usuario_veiculo: resultFormadato }
+                    )
+
+                } else {
+
+                    return DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_NOT_FOUND
+                    )
+                }
+
+            } else {
+
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_NOT_FOUND
+                )
+            }
+
+        } else {
+
+            MESSAGES.ERROR_REQUIRED_FIELDS.message += '[ID incorreto]'
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_REQUIRED_FIELDS
+            )
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
+        )
+    }
+
+}
+
+
 //Retorna um viculo pelo id do usuaário
 const buscarUsuarioVeiculoIdUsuarioComIdVeiculo = async (idUsuario,idVeiculo) => {
 
@@ -279,7 +338,7 @@ const inserirVinculo = async (dados, contentType) => {
         }
 
     } catch (error) {
-        console.log(error)
+       
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER,
             null,
@@ -488,6 +547,7 @@ const formatarUsuarioVeiculo = (usuarioVeiculo) => {
             modelo: usuarioVeiculo.modelo,
             marca: usuarioVeiculo.marca,
             cor: usuarioVeiculo.cor,
+            quilometragem:usuarioVeiculo.quilometragem,
             score: usuarioVeiculo.score,
             ano: usuarioVeiculo.ano,
             foto: usuarioVeiculo.foto_veiculo
@@ -513,5 +573,6 @@ module.exports = {
     deletarVinculo,
     buscarUsuarioVeiculoIdUsuario,
     buscarUsuarioVeiculoIdUsuarioPost,
-    atualizerVinculo
+    atualizerVinculo,
+    buscarUsuarioVeiculoIdVeiculo
 }

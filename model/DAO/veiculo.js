@@ -27,7 +27,7 @@ const getAllVehicles = async () => {
         }
 
     } catch (error) {
-console.log(error)
+
         return false
     }
 
@@ -119,7 +119,8 @@ const setInsertVehicle = async function (veiculo) {
             marca: veiculo.marca,
             cor: veiculo.cor.toUpperCase(),
             ano: veiculo.ano,
-            foto_veiculo:veiculo.foto_veiculo
+            foto_veiculo:veiculo.foto_veiculo,
+            quilometragem:veiculo.quilometragem
         });
 
         if (result) {
@@ -133,7 +134,7 @@ const setInsertVehicle = async function (veiculo) {
         }
 
     } catch (error) {
-       console.log(error)
+     
         return false
     }
 
@@ -151,7 +152,8 @@ const putVeiculo = async (veiculo) => {
                 marca = ?,
                 cor = ?,
                 ano = ?,
-                foto_veiculo = ?
+                foto_veiculo = ?,
+                quilometragem = ?
             WHERE id = ?
         `, [
             veiculo.placa,
@@ -160,6 +162,7 @@ const putVeiculo = async (veiculo) => {
             veiculo.cor,
             veiculo.ano,
             veiculo.foto_veiculo,
+            veiculo.quilometragem,
             veiculo.id
         ]);
 
@@ -174,7 +177,7 @@ const putVeiculo = async (veiculo) => {
         }
 
     } catch (error) {
-console.log(error)
+
         return false
     }
 

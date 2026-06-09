@@ -48,14 +48,14 @@ const getReminderByIdUser = async (idUsuario) => {
     try {
 
         let result = await conexaoKnex.conexao.raw(`select * from tbl_lembretes where fk_id_usuario = ? `,[idUsuario]);
-        console.log(result)
+       
         if (result[0].length > 0)
             return result[0];
         else
             return false;
 
     } catch (error) {
-        console.log(error)
+       
         return false;
     }
 }
@@ -97,7 +97,7 @@ const insertReminder = async (dados) => {
             return false;
 
     } catch (error) {
-        console.log(error)
+      
         return false;
     }
 
@@ -169,7 +169,7 @@ const deleteReminder = async (id) => {
     try {
 
 
-        let result = await conexaoKnex.raw(
+        let result = await conexaoKnex.conexao.raw(
             `delete from tbl_lembretes where id = ?`,
             [id]
         );
@@ -180,6 +180,7 @@ const deleteReminder = async (id) => {
             return false;
 
     } catch (error) {
+       
         return false;
     }
 

@@ -6,5 +6,5 @@
 6-npm install dotenv
 7-npm install bcrypt
 8-npm install node-fetch
-9-
-10-
+9-npm install nodemailer
+10-npm install pdfkit

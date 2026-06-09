@@ -4,6 +4,8 @@
  * Autor: Breno Oliveira Assis Reis
  * Versão: 1.0
  ***********************************************************************************************************************/
+
+//Import das dependências
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -12,11 +14,11 @@ const bodyParserJSON = bodyParser.json();
 
 const router = express.Router();
 
+//Blob da azure
 const upload = require('./upload.js');
 
+//Regra de negócio do usuário
 const controllerUsuario = require('../controller/usuario/usuario_controller.js');
-
-
 
 /**
  * @swagger
@@ -36,7 +38,7 @@ const controllerUsuario = require('../controller/usuario/usuario_controller.js')
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/UsuarioRequest'
  *     responses:
@@ -60,6 +62,54 @@ const controllerUsuario = require('../controller/usuario/usuario_controller.js')
  *                 $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  * 
  */
+
+router.put('/v1/car-assist/usuario/:id', cors(), bodyParserJSON, upload.single('foto_usuario'), async function (request, response) {
+
+    let dadosBody = request.body;
+
+    let idUsuario = request.params.id;
+
+    let contentType = request.headers['content-type'];
+
+    let foto = request.file
+
+    let usuario = await controllerUsuario.atualizarUsuario(dadosBody, idUsuario, contentType, foto);
+
+    response.status(usuario.status_code).json(usuario);
+});
+
+
+/**
+ * @swagger
+ * /v1/car-assist/usuario:
+ *   post:
+ *     summary: Cria um novo Usuário
+ *     description: Cadastra um novo Usuário no sistema.
+ *     tags:
+ *       - Usuário
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UsuarioRequest'
+ *     responses:
+ *       201:
+ *         description: Usuário criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/SUCCESS_CREATED_ITEM'
+ *  
+ */
+
+router.post('/v1/car-assist/usuario', cors(), bodyParserJSON, async function (request, response) {
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type'];
+    let usuario = await controllerUsuario.inserirUsuario(dadosBody, contentType);
+    response.status(usuario.status_code).json(usuario);
+});
+
 
 /**
  * @swagger
@@ -97,30 +147,12 @@ const controllerUsuario = require('../controller/usuario/usuario_controller.js')
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
 
+router.delete('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
+    let idUsuario = req.params.id;
+    let usuario = await controllerUsuario.deletarUsuarioId(idUsuario)
 
-/**
- * @swagger
- * /v1/car-assist/usuario:
- *   post:
- *     summary: Cria um novo Usuário
- *     description: Cadastra um novo Usuário no sistema.
- *     tags:
- *       - Usuário
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/UsuarioRequest'
- *     responses:
- *       201:
- *         description: Usuário criado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/ResponseApi/SUCCESS_CREATED_ITEM'
- *  
- */
+    res.status(usuario.status_code).json(usuario);
+});
 
 /**
  * @swagger
@@ -158,44 +190,6 @@ const controllerUsuario = require('../controller/usuario/usuario_controller.js')
  *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
  */
 
-
-router.put('/v1/car-assist/usuario/:id', cors(), bodyParserJSON, upload.single('foto_usuario'), async function (request, response) {
-
-    let dadosBody = request.body;
-
-    let idUsuario = request.params.id;
-
-    let contentType = request.headers['content-type'];
-
-    let foto = request.file
-
-    let usuario = await controllerUsuario.atualizarUsuario(dadosBody, idUsuario, contentType, foto);
-
-    response.status(usuario.status_code).json(usuario);
-});
-
-router.post('/v1/car-assist/usuario', cors(), bodyParserJSON, async function (request, response) {
-    let dadosBody = request.body;
-    let contentType = request.headers['content-type'];
-    let usuario = await controllerUsuario.inserirUsuario(dadosBody, contentType);
-    response.status(usuario.status_code).json(usuario);
-});
-
-
-router.delete('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
-    let idUsuario = req.params.id;
-    let usuario = await controllerUsuario.deletarUsuarioId(idUsuario)
-
-    res.status(usuario.status_code).json(usuario);
-});
-
-router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
-
-    let usuario = await controllerUsuario.listarUsuarios()
-
-    res.status(usuario.status_code).json(usuario);
-});
-
 router.get('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
     let idUsuario = req.params.id;
     let usuario = await controllerUsuario.buscarUsuarioId(idUsuario)
@@ -203,25 +197,54 @@ router.get('/v1/car-assist/usuario/:id', cors(), async (req, res) => {
     res.status(usuario.status_code).json(usuario);
 });
 
+/**
+ * @swagger
+ * /v1/car-assist/login:
+ *   post:
+ *     summary: Realiza o login do usuário
+ *     description: Autentica um usuário no sistema utilizando email e senha.
+ *     tags:
+ *       - Usuário
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UsuarioLoginRequest'
+ *     responses:
+ *       200:
+ *         description: Login realizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UsuarioResponse'
+ *       400:
+ *         description: Email ou senha inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_REQUIRED_FIELDS'
+ *       404:
+ *         description: Usuário não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_NOT_FOUND'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/ResponseApi/ERROR_INTERNAL_SERVER'
+ */
+
+
 router.post('/v1/car-assist/usuario/login', cors(), bodyParserJSON, async function (req, res) {
     let dadosBody = req.body;
     let contentType = req.headers['content-type'];
     let usuario = await controllerUsuario.buscarUsuarioEmailComSenha(dadosBody, contentType);
     res.status(usuario.status_code).json(usuario);
 });
-
-router.get('/v1/car-assist/usuario', cors(), async (req, res) => {
-    let idUsuario = req.query.id;
-    let status = req.query.status
-    let usuario = await controllerUsuario.buscarUsuarioAtivo(idUsuario, status)
-
-    res.status(usuario.status_code).json(usuario);
-});
-
-
-
-
-
 
 
 module.exports = router

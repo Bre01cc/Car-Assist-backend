@@ -54,7 +54,7 @@ const listarVeiculos = async () => {
     } catch (error) {
 
         return DEFAULT_MESSAGES.criarResposta(
-            MESSAGES.ERROR_INTERNAL,
+            MESSAGES.ERROR_INTERNAL_SERVER,
             null,
             'Guilherme Moreira de Souza'
         )
@@ -92,7 +92,7 @@ const buscarVeiculoId = async (id) => {
             } else {
 
                 return DEFAULT_MESSAGES.criarResposta(
-                    MESSAGES.ERROR_INTERNAL,
+                    MESSAGES.ERROR_INTERNAL_SERVER,
                     null,
                     'Guilherme Moreira de Souza'
                 )
@@ -246,13 +246,13 @@ const inserirVeiculo = async (veiculo, contentType, foto) => {
 
                 } else {
                     MESSAGES.ERROR_EXISTING.message += 'Placa'
-                    
-                        DEFAULT_MESSAGES.criarResposta(
-                            MESSAGES.ERROR_EXISTING,
-                            null,
-                            'Guilherme Moreira de Souza'
-                        )
-                    
+
+                    DEFAULT_MESSAGES.criarResposta(
+                        MESSAGES.ERROR_EXISTING,
+                        null,
+                        'Guilherme Moreira de Souza'
+                    )
+
                     return DEFAULT_MESSAGES.criarResposta(
                         MESSAGES.ERROR_EXISTING,
                         null,
@@ -278,7 +278,7 @@ const inserirVeiculo = async (veiculo, contentType, foto) => {
     } catch (error) {
 
         return DEFAULT_MESSAGES.criarResposta(
-            MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER,
+            MESSAGES.ERROR_INTERNAL_SERVER,
             null,
             'Guilherme Moreira de Souza'
         )
@@ -404,7 +404,7 @@ const inserirVeiculoUsuario = async (veiculo, contentType, foto) => {
     } catch (error) {
 
         return DEFAULT_MESSAGES.criarResposta(
-            MESSAGES.ERROR_INTERNAL_SERVER_CONTROLLER,
+            MESSAGES.ERROR_INTERNAL_SERVER,
             null,
             'Guilherme Moreira de Souza'
         )
@@ -492,7 +492,7 @@ const atualizarVeiculo = async (veiculo, id, contentType, foto) => {
             }
 
         } else {
-            
+
             MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
 
             return DEFAULT_MESSAGES.criarResposta(
@@ -663,7 +663,22 @@ const validarDadosVeiculo = async function (veiculo) {
             'Guilherme Moreira de Souza'
         )
 
-    } else {
+    } else if (
+        veiculo.quilometragem == null ||
+        veiculo.quilometragem == undefined ||
+        veiculo.quilometragem < 0 ||
+        veiculo.quilometragem > 9999999
+    ) {
+        MESSAGES.ERROR_REQUIRED_FIELDS.message += '[Quilometragem incorreto]'
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_REQUIRED_FIELDS,
+            null,
+            'Guilherme Moreira de Souza'
+        )
+
+    }
+    else {
 
         return false
     }

@@ -61,7 +61,7 @@ const listarManutencao = async () => {
 
 
     } catch (error) {
-        console.log(error)
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -322,7 +322,7 @@ const buscarManutencaoIdVeiculo = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -406,9 +406,9 @@ const inserirManutencaoComEvidencia = async (manutencao, contentType, evidencias
             let validar = validarManutencao(manutencao);
 
             if (!validar) {
-console.log(manutencao)
+
                 let resultManutencao = await manutencaoDAO.postManutencao(manutencao);
-console.log(resultManutencao)
+
                 if (resultManutencao) {
 
                     let ultimoId = await manutencaoDAO.getSelectLastId();
@@ -492,7 +492,7 @@ console.log(resultManutencao)
         }
 
     } catch (error) {
-        console.log(error)
+
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -500,10 +500,9 @@ console.log(resultManutencao)
     }
 }
 
-
 //Atualiza uma manutenção pelo id
 const atualizarManutencao = async (manutencao, id, contentType, evidencias) => {
-console.log(manutencao)
+
     let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES));
 
     try {
@@ -512,13 +511,14 @@ console.log(manutencao)
         if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
 
             //Validação dos dados da manutenção
+            
             let validar = validarManutencao(manutencao, true);
-
+          
             if (!validar) {
 
                 //Verifica se o ID existe
                 let validarId = await buscarManutencaoId(id);
-               
+           
                 if (validarId.status_code == 200) {
 
                     //Adiciona o ID no objeto
@@ -526,7 +526,7 @@ console.log(manutencao)
 
                     //Chama a DAO para atualizar
                     let resultManutencao = await manutencaoDAO.putManutencao(manutencao);
-
+                   
                     if (resultManutencao) {
 
                         if (validarId.data.manutencao[0].evidencia) {
@@ -547,7 +547,6 @@ console.log(manutencao)
                         }
 
                         let resultEvidenciaDelete = await controllerEvidencia.deletarEvidenciaIdManutencao(manutencao.id);
-
 
                         if (resultEvidenciaDelete.status_code == 200 || resultEvidenciaDelete.status_code == 404) {
 
@@ -601,26 +600,30 @@ console.log(manutencao)
 
                     } else {
 
-                        return validarId
+                        return DEFAULT_MESSAGES.criarResposta(
+                            MESSAGES.ERROR_INTERNAL_SERVER
+                        )
                     }
 
                 } else {
 
-                    return validar
+                    return validarId
                 }
 
             } else {
 
-                MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
-
-                return DEFAULT_MESSAGES.criarResposta(
-                    MESSAGES.ERROR_INTERNAL_SERVER
-                )
+                return validar
             }
 
+        } else {
+            MESSAGES.ERROR_CONTENT_TYPE.message += '[MULTIPART/FORM-DATA]'
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_CONTENT_TYPE
+            )
         }
     } catch (error) {
-        console.log(error)
+     
         return DEFAULT_MESSAGES.criarResposta(
             MESSAGES.ERROR_INTERNAL_SERVER
         )
@@ -771,7 +774,135 @@ const validarManutencao = (manutencao) => {
 
 }
 
-//
+// Deleta uma manutenção pelo ID
+const deletarManutencao = async function (id) {
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+
+        let validarId = await buscarManutencaoId(id)
+
+        if (validarId.status_code == 200) {
+
+            let result = await manutencaoDAO.deleteMaintenance(id)
+
+            if (result) {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_DELETE
+                )
+            } else {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_INTERNAL_SERVER
+                )
+            }
+
+        } else {
+            return validarId
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
+        )
+    }
+}
+
+// Deleta uma manutenção pelo ID
+const deletarManutencaoStatus = async function (id) {
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+
+        let validarId = await buscarManutencaoId(id)
+
+        if (validarId.status_code == 200) {
+
+            let result = await manutencaoDAO.deleteMaintenanceStatus(id)
+
+            if (result) {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.SUCCESS_DELETE
+                )
+            } else {
+                return DEFAULT_MESSAGES.criarResposta(
+                    MESSAGES.ERROR_INTERNAL_SERVER
+                )
+            }
+
+        } else {
+            return validarId
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
+        )
+    }
+}
+
+// Deleta todas as manutenções de um veículo
+const deletarManutencaoPorVeiculo = async function (idVeiculo) {
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+
+        let result = await manutencaoDAO.deleteMaintenanceByIdVehicle(idVeiculo)
+
+        if (result) {
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.SUCCESS_DELETE
+            )
+
+        } else {
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_NOT_FOUND
+            )
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
+        )
+    }
+}
+
+// Deleta todas as manutenções de um usuário
+const deletarManutencaoPorUsuario = async function (idUsuario) {
+
+    let MESSAGES = JSON.parse(JSON.stringify(DEFAULT_MESSAGES))
+
+    try {
+
+        let result = await manutencaoDAO.deleteMaintenanceByIdUser(idUsuario)
+
+        if (result) {
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.SUCCESS_DELETE
+            )
+
+        } else {
+
+            return DEFAULT_MESSAGES.criarResposta(
+                MESSAGES.ERROR_NOT_FOUND
+            )
+        }
+
+    } catch (error) {
+
+        return DEFAULT_MESSAGES.criarResposta(
+            MESSAGES.ERROR_INTERNAL_SERVER
+        )
+    }
+}
 
 const formatarManutencao = (manutencao) => {
 
@@ -804,5 +935,9 @@ module.exports = {
     buscarManutencaoIdVeiculo,
     atualizarManutencao,
     inserirManutencao,
-    inserirManutencaoComEvidencia
+    inserirManutencaoComEvidencia,
+    deletarManutencao,
+    deletarManutencaoPorUsuario,
+    deletarManutencaoPorVeiculo,
+    deletarManutencaoStatus
 }

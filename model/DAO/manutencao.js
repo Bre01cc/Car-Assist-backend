@@ -12,7 +12,7 @@ const conexaoKnex = require('../../knex/index.js');
 const getMaintenanceById = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from vw_manutencao where id = ?', [id]
+            'select * from vw_manutencao where id = ? and is_ativo = TRUE', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -22,7 +22,7 @@ const getMaintenanceById = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
@@ -31,7 +31,7 @@ const getMaintenanceById = async (id) => {
 const getMaintenanceByIdType = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from vw_manutencao where id_tipo_manutencao = ?', [id]
+            'select * from vw_manutencao where id_tipo_manutencao = ? and is_ativo = TRUE', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -41,7 +41,7 @@ const getMaintenanceByIdType = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
@@ -50,7 +50,7 @@ const getMaintenanceByIdType = async (id) => {
 const getMaintenanceByIdUser = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from vw_manutencao where id_usuario = ?', [id]
+            'select * from vw_manutencao where id_usuario = ? and is_ativo = TRUE', [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -60,7 +60,7 @@ const getMaintenanceByIdUser = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
@@ -69,7 +69,7 @@ const getMaintenanceByIdUser = async (id) => {
 const getMaintenanceByIdVehicle = async (id) => {
     try {
         const result = await conexaoKnex.conexao.raw(
-            'select * from vw_manutencao where id_veiculo = ?', [id]
+            'select * from vw_manutencao where id_veiculo = ? and is_ativo = TRUE' , [id]
         );
 
         if (result && result[0] && result[0].length > 0) {
@@ -79,7 +79,7 @@ const getMaintenanceByIdVehicle = async (id) => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
@@ -98,14 +98,14 @@ const getAllMaintenance = async () => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
 
 const deleteMaintenance = async (id) => {
     try {
-        const result = conexaoKnex.conexao.raw('delete * from tbl_manutencao where id = ?', [id])
+        const result = await conexaoKnex.conexao.raw('delete  from tbl_manutencao where id = ?', [id])
 
         if (result[0].affectedRows > 0) {
 
@@ -114,7 +114,61 @@ const deleteMaintenance = async (id) => {
             return false
         }
     } catch (error) {
-        console.log(error)
+     
+        return false
+    }
+}
+
+const deleteMaintenanceStatus = async (id) => {
+    try {
+
+        const result = await conexaoKnex.conexao.raw(
+            `UPDATE tbl_manutencao
+             SET is_ativo = FALSE
+             WHERE id = ?`,
+            [id]
+        );
+
+        if (result[0].affectedRows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+        ;
+        return false;
+    }
+}
+
+const deleteMaintenanceByIdVehicle = async (id) => {
+    try {
+        const result = await conexaoKnex.conexao.raw('delete from tbl_manutencao where fk_id_veiculo = ?', [id])
+
+        if (result[0].affectedRows > 0) {
+
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+        
+        return false
+    }
+}
+
+const deleteMaintenanceByIdUser = async (id) => {
+    try {
+        const result = await conexaoKnex.conexao.raw('delete from tbl_manutencao where fk_id_usuario = ?', [id])
+
+        if (result[0].affectedRows > 0) {
+
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+        
         return false
     }
 }
@@ -135,12 +189,11 @@ const statusMaintenance = async (id, status) => {
             return false
         }
     } catch (error) {
-        console.log(error)
+        
         return false
 
     }
 }
-
 
 // Inserir uma manutenção
 const postManutencao = async (manutencao) => {
@@ -190,7 +243,7 @@ const postManutencao = async (manutencao) => {
         }
 
     } catch (error) {
-console.log(error)
+
         return false
 
     }
@@ -234,7 +287,7 @@ const putManutencao = async (manutencao) => {
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }
@@ -275,5 +328,8 @@ module.exports = {
     statusMaintenance,
     postManutencao,
     putManutencao,
-    getSelectLastId
+    deleteMaintenanceByIdUser,
+    deleteMaintenanceByIdVehicle,
+    getSelectLastId,
+    deleteMaintenanceStatus
 }
