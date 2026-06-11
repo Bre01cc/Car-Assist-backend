@@ -19,6 +19,7 @@
   "description": "![API REST](https://img.shields.io/badge/API-REST-blue) ![Node.js](https://img.shields.io/badge/Node.js-green?logo=node.js) ![Status](https://img.shields.io/badge/Status-em%20desenvolvimento-orange)",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "dev": "node --watch server.js"
   },
   "repository": {
