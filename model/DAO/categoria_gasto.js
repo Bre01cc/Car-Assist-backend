@@ -33,7 +33,7 @@ const getAllcategoryTypes = async () => {
         const result = await conexaoKnex.conexao.raw(
             'select * from tbl_categoria_gasto order by id'
         );
-
+        console.log(result)
         if (result && result[0] && result[0].length > 0) {
             return result[0]
         } else {
@@ -41,6 +41,7 @@ const getAllcategoryTypes = async () => {
         }
 
     } catch (error) {
+        console.log(error)
         return false
     }
 }
