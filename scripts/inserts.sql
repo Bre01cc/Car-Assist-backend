@@ -93,6 +93,13 @@ INSERT INTO tbl_categoria_gasto (
 ('Peças'),
 ('Lavagem');
 
+INSERT INTO tbl_categoria_gasto (
+    nome_categoria
+) VALUES
+('Pedágio'),
+('Estacionamento'),
+('Multas');
+
 -- =========================================
 -- SERVIÇOS
 -- =========================================
