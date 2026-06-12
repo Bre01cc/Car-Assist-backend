@@ -14,7 +14,7 @@ const usuarioVeiculoDAO = require('../../model/DAO/usuario_veiculo.js');
 const generateToken = () => {
 
     try {
-        const token = crypto.randomBytes(6).toString('hex');
+        const token = crypto.randomBytes(4).toString('hex');
 
         return { token };
 
