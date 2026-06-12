@@ -541,6 +541,7 @@ const formatarUsuarioVeiculo = (usuarioVeiculo) => {
         papel_usuario: usuarioVeiculo.papel_usuario,
         data_vinculo: usuarioVeiculo.data_vinculo,
         is_ativo: usuarioVeiculo.is_ativo,
+        data_desvinculo: usuarioVeiculo.data_desvinculo,
         veiculo: {
             id: usuarioVeiculo.id_veiculo,
             placa: usuarioVeiculo.placa,

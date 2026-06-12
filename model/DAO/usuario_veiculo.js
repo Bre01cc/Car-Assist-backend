@@ -88,7 +88,7 @@ const getUserVehicleByIDUser = async (id) => {
             'select * from vw_usuario_veiculo where id_usuario = ? and veiculo_is_ativo = 1',
             [id]
         );
-
+console.log(result)
         if (result[0].length > 0) {
 
             return result[0]
