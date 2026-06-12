@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-module.exports = {
+const config = {
   client: process.env.DB_CLIENT || 'mysql2',
 
   connection: {
@@ -23,3 +23,17 @@ module.exports = {
     tableName: 'knex_migrations'
   }
 }
+
+// TESTE DE CONEXÃO
+const knex = require('knex')(config)
+
+knex.raw('SELECT 1')
+  .then(() => {
+    console.log('✅ BANCO CONECTADO COM SUCESSO')
+  })
+  .catch((error) => {
+    console.error('❌ ERRO AO CONECTAR NO BANCO')
+    console.error(error)
+  })
+
+module.exports = config
