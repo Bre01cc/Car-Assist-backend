@@ -8,6 +8,7 @@
 const express = require('express');
 
 
+
 const cors       = require('cors');
 const bodyParser = require('body-parser');
 
@@ -70,6 +71,9 @@ app.use(usuarioServico);
 app.use(transferencia);
 app.use(reset_senha);
 
+console.log('DB_HOST:', process.env.DB_HOST)
+console.log('DB_USER:', process.env.DB_USER)
+console.log('DB_NAME:', process.env.DB_NAME)
 //Randando a API na porta definida
 app.listen(PORT, () => {
     console.log('API aguardando requisições na porta ' + PORT)
