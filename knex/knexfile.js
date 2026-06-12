@@ -24,16 +24,4 @@ const config = {
   }
 }
 
-// TESTE DE CONEXÃO
-const knex = require('knex')(config)
-
-knex.raw('SELECT 1')
-  .then(() => {
-    console.log('✅ BANCO CONECTADO COM SUCESSO')
-  })
-  .catch((error) => {
-    console.error('❌ ERRO AO CONECTAR NO BANCO')
-    console.error(error)
-  })
-
 module.exports = config
