@@ -85,7 +85,7 @@ const getUserVehicleByIDUser = async (id) => {
     try {
 
         let result = await conexaoKnex.conexao.raw(
-            'select * from vw_usuario_veiculo where id_usuario = ? and veiculo_is_ativo = 1',
+            'select * from vw_usuario_veiculo where id_usuario = ? and is_ativo = 1 and veiculo_is_ativo = 1',
             [id]
         );
 console.log(result)
