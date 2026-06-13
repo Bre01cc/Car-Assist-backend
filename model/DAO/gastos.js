@@ -46,7 +46,7 @@ const getExpenseByIdVehicle = async (id) => {
     try {
 
         let result = await conexaoKnex.conexao.raw(
-            `select * from vw_gasto where id_veiculo = ?`,
+            `select * from vw_gasto where id_veiculo = ? and is_ativo = true`,
             [id]
         );
 
