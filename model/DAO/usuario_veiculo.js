@@ -5,6 +5,7 @@
  * Versão: 1.0
  ***********************************************************************************************************************/
 
+const { buscarUsuarioVeiculoIdUsuario, buscarUsuarioVeiculoIdUsuarioPost } = require('../../controller/usuario_veiculo/usuario_veiculo_controller.js');
 const conexaoKnex = require('../../knex/index.js');
 
 const getAllUserVehicles = async () => {
@@ -35,7 +36,7 @@ const getUserVehicleByIDs = async (idUsuario, idVeiculo) => {
     try {
 
         let result = await conexaoKnex.conexao.raw(
-            'select * from tbl_usuario_veiculo where fk_id_usuario = ? and fk_id_veiculo = ?',
+            'select * from vw_usuario_veiculo where id_usuario = ? and id_veiculo = ? and is_ativo=true',
             [idUsuario, idVeiculo]
         );
 
@@ -88,7 +89,7 @@ const getUserVehicleByIDUser = async (id) => {
             'select * from vw_usuario_veiculo where id_usuario = ? and is_ativo = 1 and veiculo_is_ativo = 1',
             [id]
         );
-console.log(result)
+        console.log(result)
         if (result[0].length > 0) {
 
             return result[0]
@@ -133,6 +134,13 @@ const postUserVehicle = async (dados) => {
 
     try {
 
+        let busca = await getUserVehicleByIDs(dados.fk_id_usuario,
+            dados.fk_id_veiculo)
+        if(busca){
+            let desativa = await deleteUserVehicle(dados.fk_id_usuario,
+            dados.fk_id_veiculo)
+        }
+
         let result = await conexaoKnex.conexao.raw(`
             insert into tbl_usuario_veiculo (
                         fk_id_usuario, 
@@ -161,7 +169,7 @@ const postUserVehicle = async (dados) => {
         }
 
     } catch (error) {
-       
+
         return false;
     }
 }

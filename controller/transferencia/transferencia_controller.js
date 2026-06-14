@@ -91,7 +91,7 @@ const aceitarTransferenciaVeiculo = async (solicitacao, contentType) => {
                     'Guilherme Moreira de Souza'
                 );
             }
-            
+
             if (!solicitacao.id_usuario_destino || isNaN(solicitacao.id_usuario_destino)) {
 
                 MESSAGES.ERROR_REQUIRED_FIELDS.message += ' [Usuário destino não identificado]';
@@ -118,6 +118,7 @@ const aceitarTransferenciaVeiculo = async (solicitacao, contentType) => {
                     );
                 }
 
+               
                 let transferidoComSucesso = await transferenciaDAO.executeTransferenciaPropriedade(
                     solicitacao.id_usuario_destino,
                     tokenInfo
@@ -142,7 +143,7 @@ const aceitarTransferenciaVeiculo = async (solicitacao, contentType) => {
                 }
 
             } else {
-                
+
                 return DEFAULT_MESSAGES.criarResposta(
                     MESSAGES.ERROR_NOT_FOUND,
                     null,
@@ -195,7 +196,7 @@ const validarDadosToken = async (dados) => {
         );
     }
     let resultUsuario = await usuarioVeiculoDAO.getUserVehicleByIDs(dados.fk_id_usuario_origem, dados.fk_id_veiculo);
-    
+
     if (!resultUsuario) {
 
         MESSAGES.ERROR_NOT_FOUND.message += '[Vículo não existente]'
